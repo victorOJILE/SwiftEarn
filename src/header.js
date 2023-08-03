@@ -1,25 +1,6 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
-import { onAuthStateChanged, signOut, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, getDocs, setDoc, where, collection, query } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
-import loader from './components/loader.js';
 import { icons } from './icons.js';
-
-const firebaseConfig = {
-	apiKey: "AIzaSyCF-PBbVOapUFD52kVTwWaLWg5Rbzh5E88",
-	authDomain: "swiftearn-e35b4.firebaseapp.com",
-	projectId: "swiftearn-e35b4",
-	storageBucket: "swiftearn-e35b4.appspot.com",
-	messagingSenderId: "25885277320",
-	appId: "1:25885277320:web:d3af5cdb62625cd095b33d",
-	measurementId: "G-7Q7DF5L5X1",
-};
-
-const firebase_app = initializeApp(firebaseConfig);
-
-const auth = getAuth(firebase_app);
-const db = getFirestore(firebase_app);
-
-export { firebase_app, auth, getFirestore, db, doc, getDoc, getDocs, setDoc, where, collection, query };
+import loader from './components/loader.js';
+let pageName;
 
 const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -30,126 +11,14 @@ if (currentTheme == "dark") {
 	document.body.classList.toggle("light-theme");
 }
 
-const pages = {
-	'/overview.html': {
-		link: './pages/overview.js',
-		name: 'Overview'
-	},
-	'/marketplace.html': {
-		link: './pages/marketplace.js',
-		name: 'Marketplace'
-	},
-	'/vendors.html': {
-		link: './pages/vendors.js',
-		name: 'Vendors'
-	},
-	'/vendors/signup.html': {
-		link: './pages/vendorSignup.js',
-		name: 'Vendors'
-	},
-	'/vendors/info.html': {
-		link: './pages/vendorInfo.js',
-		name: 'Vendors'
-	},
-	'/product/product.html': {
-		link: './pages/product.js',
-		name: 'Marketplace'
-	},
-	'/product/addProduct.html': {
-		link: './pages/addProduct.js',
-		name: 'Add Product'
-	},
-	'/product/products.html': {
-		link: './pages/manageProducts.js',
-		name: 'Manage products'
-	},
-	'/withdrawal.html': {
-		link: './pages/withdrawal.js',
-		name: 'Withdrawal'
-	},
-	'/profile.html': {
-		link: './pages/profile.js',
-		name: 'Settings'
-	},
-	'/login.html': './pages/login.js',
-	'/signup.html': './pages/signup.js'
-}
-
-const url = new URL(location.href).pathname;
-let pageName;
-
-(function() {
-	if (!pages[url]) return // 404 page
-
-	let myPage;
-
-	function showAuth(show) {
-		myPage = authWrapper();
-
-		import(show)
-			.then(currentPage => {
-				myPage.empty();
-
-				myPage.append(currentPage.default({
-					createUserWithEmailAndPassword,
-					signInWithEmailAndPassword,
-					signInWithPopup,
-					GoogleAuthProvider,
-					FacebookAuthProvider,
-					signOut
-				}));
-			});
-	}
-	if (url == '/signup.html' || url.pathname == '/login.html') {
-		showAuth(pages[url]);
-		return;
-	}
-	
-	onAuthStateChanged(auth, user => {
-		try {
-			if (user) {
-				if (!user.reloadUserInfo) {
-					// User is authenticated but offline
-					throw new Error('');
-				}
-	
-				let hrs = Math.floor(Math.floor((new Date().getTime() - user.reloadUserInfo.lastLoginAt) / 1000) / 60 / 60);
-	
-				if (hrs >= 2) {
-					signOut(auth)
-						.then(() => {
-							alert('Your session has expired!');
-							location.href = '/login.html?redirect=true&page=' + url;
-						})
-						.catch(e => console.error(e));
-					return;
-				}
-				pageName = pages[url].name;
-				myPage = app(user.uid);
-	
-				import(pages[url].link)
-					.then(currentPage => {
-						try { myPage.lastElementChild.remove() } catch (e) {}
-						myPage.append(currentPage.default(user.uid, myPage));
-					});
-	
-			} else {
-				location.href = '/login.html?redirect=true&page=' + url;
-			}
-		} catch (e) {
-			myPage.lastElementChild.remove();
-			console.error(e);
-			myPage.append(cEl('div', { class: 'py-64 px-12 text-center text-red-700', textContent: 'Error loading page. Please check your internet connection and try again!' }));
-		}
-	});
-})();
-
-function app(uid) {
+export default function app(name, uid) {
+ pageName = name;
 	const body = document.body;
 	const asideL = asideLeft();
 	const mainComp = main();
 	const asideR = asideRight(uid);
-
+ 
+ 
 	mainComp[1].ae('click', function() {
 		asideL.classList.toggle("-left-full");
 		asideL.ariaHidden = false;
@@ -313,8 +182,7 @@ function main() {
 						svg(icons.notification)
 					), profile)
 			)
-		),
-		loader()
+		)
 	);
 
 	function displayHeader() {
@@ -343,17 +211,17 @@ function main() {
 function asideRight(uid) {
 	const aside = cEl('aside', { class: 'bg-custom-main-bg border-2 border fixed -top-full hidden right-4 w-56 z-10 color2 trans profileBar' }, loader());
 
-
-	function getData() {
+	function getData() {/*
 		getDoc(doc(db, 'users', uid))
-			.then(res => {
+			.then(res => {*/
 				aside.empty();
-				let data = res.data();
-				sessionStorage.setItem('user', JSON.stringify(data));
+				let data = { role: 'vendor' } || res.data();
+			//	sessionStorage.setItem('user', JSON.stringify(data));
 
 				if (data.role.includes('vendor')) {
 					const vendors = Array.from(elId('mainNav').children).find(li => li.dataset.text == 'Vendors');
-					const products = cEl('li', { class: 'mb-2' },
+					const products = cEl('li', 
+					 { class: 'mb-2' },
 						cEl('div', {
 								class: 'font-bold p-3 flex items-center trans',
 								event: {
@@ -393,8 +261,11 @@ function asideRight(uid) {
 
 					vendors.insertAdjacentElement('afterend', products);
 				}
-
-				aside.append(cEl('section', { class: 'mt-6' },
+    
+    return;
+    
+				aside.append(cEl('section', 
+				{ class: 'mt-6' },
 					cEl('div', { class: 'relative mb-6' },
 						cEl('div', { class: 'w-24 h-24 border-2 border rounded-full mx-auto overflow-hidden' },
 							cEl('img', { src: '/static/images/' + (data.profilePictureUrl || 'userImage.svg'), alt: 'Profile picture' })
@@ -411,40 +282,11 @@ function asideRight(uid) {
 						cEl('a', { class: 'inline-block underline text-green-600', href: '/profile.html', textContent: 'Edit profile' })
 					)
 				));
-
+/*
 			})
-			.catch(e => getData());
+			.catch(e => getData());*/
 	}
-	getData();
+	setTimeout(getData, 1000);
 
 	return aside;
-}
-
-function authWrapper() {
-	const formDiv = cEl('div', {},
-		cEl('div', { class: 'h-56 flex items-center justify-center' }, cEl('span', { class: 'loader' }))
-	);
-
-	const header = cEl('header', {},
-		cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
-			cEl('a', { href: '/' },
-				cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
-			),
-			cEl('a', { href: '/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
-		),
-		cEl('section', { class: 'container mx-auto pt-12 pb-20 md:pr-8 md:pt-24 md:pb-32 grid md:grid-cols-2 items-center' },
-			cEl('div', { class: 'hidden md:block px-4 py-8 md:pr-6 color2' },
-				cEl('small', { class: 'color4 md:block', textContent: 'Welcome to Swift Earn' }),
-				cEl('h1', { class: 'text-4xl font-bold leading-normal', textContent: 'Simplify Your Online Business Journey and Boost Your Profits' }),
-				cEl('p', { class: 'mt-2', textContent: 'Our entire team is dedicated to providing you with the highest standard of quality affiliate marketing services.' })
-			),
-			cEl('div', {},
-				formDiv
-			)
-		)
-	);
-	document.body.innerHTML = '';
-	document.body.append(header);
-
-	return formDiv;
 }

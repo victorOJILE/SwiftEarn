@@ -1,17 +1,21 @@
-import { db, query, where, collection, getDocs } from '../project368hdo37.js';
-import EditProduct from './addProduct.js';
+/*import { db, getDocs, where, collection, query } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';*/
+import Header from '../header.js';
+import EditProduct from '../components/addProductComp.js';
 import loader from '../components/loader.js';
 
-export default function manageProducts(uid) {
+function ManageProducts(uid) {
 	let tableData = cEl('div', { class: 'bg-custom-main-bg overflow-auto my-2' }, loader());
-
-	const q = query(collection(db, "products"), where('vendor_id', '==', uid));
 	
+	return tableData;
+
+	//const q = query(collection(db, "products"), where('vendor_id', '==', uid));
+	/*
 	getDocs(q)
 		.then(doc => {
 			const data = [];
 			doc.forEach(d => data.push(d.data()));
-			console.log(data);
+			console.log(data);*/
+			let data= [];
 			if (data.length) {
 				tableData.empty();
 				
@@ -31,10 +35,10 @@ export default function manageProducts(uid) {
 						...data.slice(0, 5).map((each, ind) => createRow(each, ind + 1))
 					)
 				));
-			}
+			}/*
 		})
 		.catch(e => console.log(e));
-		
+		*/
 	const section = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
 		cEl('section', { class: 'mt-6' },
 			cEl('div', { class: 'overflow-auto' },
@@ -86,3 +90,16 @@ function createRow(data, ind) {
 }
 
 const deleteIcon = `<svg stroke="red" fill="red" stroke-width="0" viewBox="0 0 448 512" width="1.2em" height="1.2em" class="mx-2" xmlns="http://www.w3.org/2000/svg"> <path d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" /></svg>`;
+
+/*
+unsubscribe.then(res => {
+ if(res === 0) alert('Your session has expired!');
+ if(res === 0 || res === 1) {
+  location.href = '/login.html?redirect=true&page=' + new URL(location.href).pathname;
+ }
+ if(res === 2) {*/
+let myPage = Header('My Products', /* res.uid*/ );
+myPage.append(ManageProducts(/*res.uid*/ ));
+/*
+ }
+});*/

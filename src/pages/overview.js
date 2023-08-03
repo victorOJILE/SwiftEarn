@@ -1,4 +1,6 @@
-import { db, doc, getDoc } from '../project368hdo37.js';
+/*import { firebase_app, unsubscribe } from '../auth.js';
+import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';*/
+import Header from '../header.js';
 import homeStats from '../components/homeStats.js';
 import weeklyChart from '../components/weeklyChart.js';
 import Transactions from '../components/transactions.js';
@@ -6,26 +8,26 @@ import Activities from '../components/activities.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 import Vendors from '../components/vendors.js';
 
+//const db = getFirestore(firebase_app);
 
-export default function Overview(uid, myPage) {
+
+function Overview(uid) {
 	const welcome = cEl('p', { textContent: 'Welcome back' });
 	
 	let data = sessionStorage.getItem('user');
-	
+	/*
 	if(!data) {
 		getDoc(doc(db, 'users', uid))
 			.then(res => {
 				data = res.data();
 				welcome.textContent = 'Welcome back, ' + data.lastName;
-				sessionStorage.setItem('user', JSON.stringify(data));/*
-				let loadedEvent = new CustomEvent('userLoaded');
-				loadedEvent*/
+				sessionStorage.setItem('user', JSON.stringify(data));
 			});
 	} else {
 		data = JSON.parse(data);
 		welcome.textContent = 'Welcome back, ' + data.lastName;
 	}
-	
+	*/
 	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
 		cEl('div', {},
 			cEl('h1', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Dashboard' }),
@@ -56,3 +58,15 @@ export default function Overview(uid, myPage) {
 
 	return main;
 }
+/*
+unsubscribe.then(res => {
+ if(res === 0) alert('Your session has expired!');
+ if(res === 0 || res === 1) {
+  location.href = '/login.html?redirect=true&page=' + new URL(location.href).pathname;
+ }
+ if(res === 2) {*/
+  let myPage = Header('Overview'/*, res.uid*/);
+  
+  myPage.append(Overview(/*res.uid*/));/*
+ }
+});*/

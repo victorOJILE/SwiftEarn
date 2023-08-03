@@ -5,7 +5,7 @@ export default function generateList(product) {
 			cEl('img', { src: '/static/images/' + product.imgsrc || '' })
 		),
 		cEl('div', { class: 'col-span-5 py-2 pr-2' },
-			cEl('a', { class: 'pr-1', href: product.href || './marketplace/product.html' },
+			cEl('a', { class: 'pr-1', href: product.href || './marketplace/product.html?product_id=' + encodeURIComponent(product.product_id) },
 				cEl('h3', { class: 'font-bold line-clamp text-xs sm:text-sm', textContent: product.title || '' }),
 				cEl('p', { class: 'text-gray-400 text-xs sm:text-sm', textContent: product.vendor || '' }),
 				cEl('div', { class: 'text-xs' },

@@ -1,17 +1,23 @@
-//import { db, doc, getDoc } from '../project368hdo37.js';
+/*import { firebase_app, unsubscribe } from '../auth.js';
+import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';*/
+import Header from '../header.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 import { icons } from '../icons.js';
 import loader from '../components/loader.js';
 import moreProductsFromVendor from '../components/moreProductFromVendor.js';
+//const db = getFirestore(firebase_app);
 
 
-export default function vendorComp(uid) {
-	let data;
+function VendorComp(uid) {
+ 
+	let vendorPage = new URL(location.href);
+	let vendor_id = decodeURIComponent(vendorPage.searchParams.get('vendor_id'));
+	
 	let comp = cEl('div', {}, loader());
-	/*getDoc(doc(db, 'vendors', uid))
-		.then(res => {*/
-		(async function() {
-		data = {
+	/*
+	getDoc(doc(db, 'vendors', vendor_id))
+		.then(data => {*/
+		let data = {
 			_id: "vendor1",
 			user_id: "user1",
 			business_title: "Data Scientist and Lead Researcher",
@@ -54,14 +60,20 @@ export default function vendorComp(uid) {
 					})
 				));
 		}
-		comp.append(
-			moreProductsFromVendor(uid),
-			HighDemandProducts()
-		);
-	//})
-})()
+ 		comp.append(
+ 			moreProductsFromVendor(uid),
+ 			HighDemandProducts()
+ 		);
+	//	});
+		
 	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
 		comp);
 
 	return main;
 }
+
+//unsubscribe.then(res => {
+ let myPage =/* res === 2 ? */Header('Vendors'/*, res.uid*/) /*: authWrapper()*/;
+ 
+ myPage.append(VendorComp(/*res.uid*/));
+//});

@@ -15,49 +15,6 @@ const firebase_app = initializeApp(firebaseConfig);
 
 const auth = getAuth(firebase_app);
 
-const pages = {
-	'/overview.html': {
-		link: './pages/overview.js',
-		name: 'Overview'
-	},
-	'/marketplace.html': {
-		link: './pages/marketplace.js',
-		name: 'Marketplace'
-	},
-	'/vendors.html': {
-		link: './pages/vendors.js',
-		name: 'Vendors'
-	},
-	'/vendors/signup.html': {
-		link: './pages/vendorSignup.js',
-		name: 'Vendors'
-	},
-	'/vendors/info.html': {
-		link: './pages/vendorInfo.js',
-		name: 'Vendors'
-	},
-	'/product/product.html': {
-		link: './pages/product.js',
-		name: 'Marketplace'
-	},
-	'/product/addProduct.html': {
-		link: './pages/addProduct.js',
-		name: 'Add Product'
-	},
-	'/product/products.html': {
-		link: './pages/manageProducts.js',
-		name: 'Manage products'
-	},
-	'/withdrawal.html': {
-		link: './pages/withdrawal.js',
-		name: 'Withdrawal'
-	},
-	'/profile.html': {
-		link: './pages/profile.js',
-		name: 'Settings'
-	}
-}
-
 const unsubscribe = onAuthStateChanged(auth, user => {
  try {
   if (user) {

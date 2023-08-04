@@ -1,6 +1,7 @@
 /*import { firebase_app, unsubscribe } from '../auth.js';
 import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';*/
 import Header from '../header.js';
+import AuthWrapper from '../components/authWrapper.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 import { icons } from '../icons.js';
 import loader from '../components/loader.js';
@@ -58,22 +59,21 @@ function VendorComp(uid) {
 							}
 						}
 					})
-				));
-		}
- 		comp.append(
- 			moreProductsFromVendor(uid),
+				),
+				moreProductsFromVendor(uid),
  			HighDemandProducts()
- 		);
+				);
+		}
 	//	});
 		
-	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
-		comp);
+	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' }, comp
+		);
 
 	return main;
 }
 
 //unsubscribe.then(res => {
- let myPage =/* res === 2 ? */Header('Vendors'/*, res.uid*/) /*: authWrapper()*/;
+ let myPage =/* res === 2 ? Header('Vendors', res.uid) :*/ AuthWrapper();
  
  myPage.append(VendorComp(/*res.uid*/));
 //});

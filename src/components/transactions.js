@@ -56,7 +56,7 @@ export default function Transactions(uid) {
 	
 	
 	if(data && data.length) {
-		tableData.parentElement.replaceChild(cEl('table', { class: "text-xs", width: "100%", style: { minWidth: "20rem" } },
+		tableData.append(cEl('table', { class: "text-xs", width: "100%", style: { minWidth: "20rem" } },
 			cEl('thead', {}, 
 				cEl('tr', {},
 					cEl('th', { class: 'p-2', textContent: 'No.' }),
@@ -68,7 +68,7 @@ export default function Transactions(uid) {
 			cEl('tbody', { class: 'text-center color2' },
 			...data.slice(0, 5).map((each, ind) => createRow(each, ind+1))
 			)
-		), tableData);
+		));
 	}
  //});
 	const section = cEl('section', { class: 'mt-6' },

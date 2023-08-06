@@ -168,6 +168,6 @@ function observeElem(elem, parent, config) {
 }
 
 const rank = {
-	1: '/static/images/coffee-badge.webp',
-	2: '/static/images/coffee-badge.webp'
+	1: '/SwiftEarn/static/images/coffee-badge.webp',
+	2: '/SwiftEarn/static/images/coffee-badge.webp'
 };

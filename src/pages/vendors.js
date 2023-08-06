@@ -1,51 +1,61 @@
-//import { firebase_app, unsubscribe } from '../auth.js';
+import { firebase_app, unsubscribe } from '../auth.js';
+import { getFirestore, getDoc, getDocs, doc, collection } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import Header from '../header.js';
 import Vendors from '../components/vendors.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 
-function VendorsComp() {
+const db = getFirestore(firebase_app);
+
+export { db, getDoc, getDocs, doc, collection };
+
+function VendorsComp(user) {
+ const becomeVendor = cEl('div');
+ 
+ if(user && user.product_id) {
+  getDoc(doc(db, 'user', user.product_id))
+   .then(res => {
+    const data = res.data();
+    if(!data.role.includes('vendor')) {
+     becomeVendor.append(cEl('div', { class: 'mt-4 mb-12' },
+       cEl('button', { class: 'text-lg py-3 px-8 rounded-lg border-2 border font-bold font-special', textContent: 'Become a vendor!', event: { click: () => location.href = '/vendors/signup.html' } })
+      ));
+    }
+   });
+ }
+ 
 	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
-	/* Hide this if user has a role of a vendor, get from sessionStorage*/
 		cEl('div', { class: 'px-2 mb-4 max-w-xl' },
-			cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Become a Vendor and Unleash Your Business Potential!' }),
-			cEl('p', { class: 'text-xs color4', innerText: 'Take the next step and become a vendor on our platform to unlock the full potential of your business. \n\nExpand your reach, increase sales, and tap into a vibrant network of buyers.' })
+			cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Our Vibrant Vendor Network: Where Affiliates and Brands Converge' }),
+			cEl('p', { class: 'text-xs color4', innerText: 'Join a Diverse Community of Influencers, Creators, and Entrepreneurs Who Drive Innovation and Excellence in Affiliate Marketing.\n\nUncover a World of Opportunities to Collaborate and Flourish.' })
 		),
-		cEl('div', { class: 'mt-4 mb-12' },
-			cEl('button', { class: 'text-lg py-3 px-8 rounded-lg border-2 border font-bold font-special', textContent: 'Become a vendor!', event: { click: () => location.href = '/vendors/signup.html' } })
-		),
-		Vendors({ title: 'Top Vendors', listCls: 'my-6 px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 text-center color4 font-bold vendors' }),
-		Vendors({ title: 'More Vendors', listCls: 'my-6 px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 text-center color4 font-bold vendors', addMore: true }),
+		becomeVendor,
+		Vendors({ title: 'Top Vendors' }),
+		Vendors({ title: 'More Vendors', addMore: true }),
 		HighDemandProducts()
 	);
 	return main;
 }
 
-function authWrapper() {
- const formDiv = cEl('div');
-
- const header = cEl('header', {},
+function AuthWrapper() {
+ const page = cEl('header', { class: 'fixed top-0 left-0 w-full' },
   cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
    cEl('a', { href: '/' },
     cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
    ),
-   cEl('a', { href: '/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
-  ),
-  cEl('section', { class: 'container mx-auto pt-12 pb-20 md:pr-8 md:pt-24 md:pb-32 grid md:grid-cols-2 items-center' },
-   cEl('div', { class: 'hidden md:block px-4 py-8 md:pr-6 color2' },
-    cEl('small', { class: 'color4 md:block', textContent: 'Welcome to Swift Earn' }),
-    cEl('h1', { class: 'text-4xl font-bold leading-normal', textContent: 'Simplify Your Online Business Journey and Boost Your Profits' }),
-    cEl('p', { class: 'mt-2', textContent: 'Our entire team is dedicated to providing you with the highest standard of quality affiliate marketing services.' })
-   ), formDiv
+   cEl('a', { href: '/login.html', textContent: 'Login', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
   )
  );
- document.body.innerHTML = '';
- document.body.append(header);
+ const body = document.body;
+ body.classList.remove('grid');
+ body.classList.remove('md:grid-cols-5');
+ body.innerHTML = '';
+ body.append(page);
 
- return formDiv;
+ return body;
 }
 
-//unsubscribe.then(res => {
- let myPage =/* res === 2 ? */Header('Vendors'/*, res.uid*/) /*: authWrapper()*/;
- 
- myPage.append(VendorsComp(/*res.uid*/));
-//});
+unsubscribe.authenticate = function(type, user) {
+ let myPage = type ? Header('Vendors', user.uid) : AuthWrapper();
+  
+ myPage.append(VendorsComp(user));
+}

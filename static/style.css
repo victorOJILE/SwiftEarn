@@ -506,6 +506,16 @@ background-color: #FFF2;
 	animation: 2s ease-in-out 0s infinite alternate running grow;
 }
 
+@media (min-width: 576px) {
+	.sm\:order-1 {
+		order: 1
+	}
+
+	.sm\:order-2 {
+		order: 2
+	}
+}
+
 @media (min-width: 768px) {
 	.green-btn {
 		padding: 0.5rem 1.2rem;

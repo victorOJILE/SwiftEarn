@@ -1,6 +1,6 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 import { firebase_app, unsubscribe } from '../auth.js';
-import { getFirestore, setDoc, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
+import { getFirestore, setDoc, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import Header from '../header.js';
 
 const db = getFirestore(firebase_app);
@@ -115,7 +115,28 @@ function Profile(uid) {
  }
 
  const storage = getStorage();
-
+ 
+ async function getData() {
+  try {
+   getDoc(doc(db, 'users', uid))
+   .then(res => {
+    const data = res.data();
+    const form = document.forms.setting;
+    
+    for(let key in data) {
+     if(key == 'profilePictureUrl') {
+      if(data[key]) img.src = data[key];
+     } else if(form[key]) {
+      form[key].value = data[key];
+     }
+    }
+   }).catch(e => getData());
+  } catch(e) {
+   getData();
+  }
+ }
+ getData();
+ 
  function field({ label, type, name, useDatalist, id, arr }) {
   return cEl('div', { class: 'py-2 px-3 bg-8 rounded-lg' },
    cEl('div', { class: 'bg-9 flex justify-between items-center' },
@@ -150,14 +171,14 @@ function Profile(uid) {
        }
       }
      },
-     cEl('img', { class: 'w-5', src: './static/images/faEdit.svg' })
+     cEl('img', { class: 'w-5', src: '/static/images/faEdit.svg' })
     )
    )
   )
  }
 
  let currentFile;
- const img = cEl('img', { src: './static/images/background.jpg', alt: 'Profile picture' });
+ const img = cEl('img', { src: '/static/images/username-icon.svg', alt: 'Profile picture' });
 
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },
@@ -182,7 +203,7 @@ function Profile(uid) {
          change: function() {
           try {
            let file = this.files[0];
-           if (!file.type.match(new RegExp('image.*')) && file.type.match(new RegExp('jpg||JPG||png||PNG||gif||GIF||webp'))) return alert('Please upload an image file of these formats: .jpg .JPG .png .PNG .gif .GIF .webp');
+           if (!file.type.match(new RegExp('image.*')) && file.type.match(new RegExp('jpg||png||gif||webp', 'i'))) return alert('Please upload an image file of these formats: .jpg .png .gif .webp');
 
            if (currentFile) URL.revokeObjectURL(currentFile);
            let url = URL.createObjectURL(file);
@@ -190,6 +211,9 @@ function Profile(uid) {
            currentFile = url;
            this.disabled = true;
            this.parentElement.firstElementChild.innerHTML = '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.4em" height="1.4em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>';
+           let stop = () => {
+            
+           }
            // Upload image
            // Create a reference to 'images/imageName.jpg'
            const imageRef = ref(storage, 'images/' + file.name);
@@ -201,12 +225,9 @@ function Profile(uid) {
                  // Add profilePictureUrl to vendor data
                  profilePictureUrl: url
                 })
-                .then(() => {
-                 this.parentElement.firstElementChild.innerHTML = 'Upload';
-                 this.disabled = false;
-                })
+                .then(stop)
               })
-              .catch(err);
+              .catch(stop);
             })
             .catch(err => console.error(err));
           } catch (e) {
@@ -247,13 +268,11 @@ function Profile(uid) {
  return main;
 }
 
-unsubscribe.then(res => {
- if (res === 0) alert('Your session has expired!');
- if (res === 0 || res === 1) {
+unsubscribe.authenticate = function(type, user) {
+ if (type) {
+  let myPage = Header('Settings', user.uid);
+  myPage.append(Profile(user.uid));
+ } else {
   location.href = '/login.html?redirect=true&page=' + new URL(location.href).pathname;
  }
- if (res === 2) {
-  let myPage = header('Settings', res.uid);
-  myPage.append(Profile(res.uid));
- }
-});
+}

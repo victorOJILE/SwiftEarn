@@ -15,31 +15,45 @@ const firebase_app = initializeApp(firebaseConfig);
 
 const auth = getAuth(firebase_app);
 
-const unsubscribe = onAuthStateChanged(auth, user => {
+class Unsubscribe {
+ run(type, user) {
+  this.authenticate(type, user);
+ }
+}
+
+const unsubscribe = new Unsubscribe();
+
+onAuthStateChanged(auth, user => {
  try {
   if (user) {
    if (!user.reloadUserInfo) {
     // User is authenticated but offline
     throw new Error('');
    }
- 
+   
+   const cookie = document.cookie;
+   console.log(cookie);
+   //const time = cookie.split(';').find(e => e.includes('uid='+ user.uid));
+   
+   
    let hrs = Math.floor(Math.floor((new Date().getTime() - user.reloadUserInfo.lastLoginAt) / 1000) / 60 / 60);
  
    if (hrs >= 2) {
     signOut(auth)
      .then(() => {
       // User is authenticated but login has expired
-      return 0;
+      alert('Your session has expired! Please Login.')
+      return unsubscribe.run(false);
      })
      .catch(e => console.error(e));
    }
    
    // User is authenticated
-   return 2;
+   return unsubscribe.run(true, user);
    
   } else {
    // User is not authenticated
-   return 1;
+   return unsubscribe.run(false);
   }
  } catch (e) {
   document.body.innerHTML = '';
@@ -47,5 +61,6 @@ const unsubscribe = onAuthStateChanged(auth, user => {
   document.body.append(cEl('div', { class: 'py-64 px-12 text-center text-red-700', textContent: 'Error loading page. Please check your internet connection and try again!' }));
  }
 });
+
 
 export { firebase_app, unsubscribe };

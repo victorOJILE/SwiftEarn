@@ -1,7 +1,7 @@
-/*import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';*/
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
 import otherAuthOptions from '../components/otherAuthOptions.js';
-/*
+
 const firebaseConfig = {
  apiKey: "AIzaSyCF-PBbVOapUFD52kVTwWaLWg5Rbzh5E88",
  authDomain: "swiftearn-e35b4.firebaseapp.com",
@@ -17,7 +17,7 @@ const firebase_app = initializeApp(firebaseConfig);
 const auth = getAuth(firebase_app);
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
-*/
+
 function authWrapper() {
  const formDiv = cEl('div');
 

@@ -1,5 +1,10 @@
+import { firebase_app } from './auth.js';
+import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import { icons } from './icons.js';
 import loader from './components/loader.js';
+
+const db = getFirestore(firebase_app);
+
 let pageName;
 
 const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
@@ -112,7 +117,7 @@ function asideLeft() {
 	const aside = cEl('aside', { class: 'bg-main fixed top-0 -left-full md:static h-screen md:col-span-1 w-9/12 md:w-auto max-w-sm md:max-w-xl z-20 flex flex-col justify-between overflow-auto scroll-bar', ariaHidden: true },
 		cEl('div', {}, cEl('div', { class: 'flex items-center p-3 md:pt-10' },
 				cEl('div', { class: 'flex-grow md:text-center' },
-					cEl('a', { href: '#' },
+					cEl('a', { href: '/' },
 						cEl('img', { src: '/static/images/Logo.png' })
 					)
 				),
@@ -172,7 +177,7 @@ function main() {
 		cEl('header', { class: 'fixed top-0 w-full md:static z-10 trans' },
 			cEl('div', { class: 'p-3 flex items-center justify-between container mx-auto' },
 				hamburger,
-				cEl('a', { href: '#', class: 'inline-block md:hidden' },
+				cEl('a', { href: '/', class: 'inline-block md:hidden' },
 					cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
 				),
 				cEl('div'),
@@ -211,13 +216,13 @@ function main() {
 function asideRight(uid) {
 	const aside = cEl('aside', { class: 'bg-custom-main-bg border-2 border fixed -top-full hidden right-4 w-56 z-10 color2 trans profileBar' }, loader());
 
-	function getData() {/*
+	function getData() {
 		getDoc(doc(db, 'users', uid))
-			.then(res => {*/
+			.then(res => {
 				aside.empty();
-				let data = { role: 'vendor' } || res.data();
-			//	sessionStorage.setItem('user', JSON.stringify(data));
-
+				const data = res.data();
+				sessionStorage.setItem('user', JSON.stringify(data));
+				
 				if (data.role.includes('vendor')) {
 					const vendors = Array.from(elId('mainNav').children).find(li => li.dataset.text == 'Vendors');
 					const products = cEl('li', 
@@ -262,13 +267,11 @@ function asideRight(uid) {
 					vendors.insertAdjacentElement('afterend', products);
 				}
     
-    return;
-    
 				aside.append(cEl('section', 
 				{ class: 'mt-6' },
 					cEl('div', { class: 'relative mb-6' },
 						cEl('div', { class: 'w-24 h-24 border-2 border rounded-full mx-auto overflow-hidden' },
-							cEl('img', { src: '/static/images/' + (data.profilePictureUrl || 'userImage.svg'), alt: 'Profile picture' })
+							cEl('img', { src: data.profilePictureUrl || '/static/images/username-icon.svg', alt: 'Profile picture' })
 						),
 						cEl('div', { class: 'absolute top-full left-1/2 w-16 mx-auto', style: { transform: "translate(-50%, -50%)" } },
 							cEl('img', { src: rank[data.rank || 1] })
@@ -282,11 +285,10 @@ function asideRight(uid) {
 						cEl('a', { class: 'inline-block underline text-green-600', href: '/profile.html', textContent: 'Edit profile' })
 					)
 				));
-/*
 			})
-			.catch(e => getData());*/
+			.catch(e => getData());
 	}
-	setTimeout(getData, 1000);
+	setTimeout(getData, 0);
 
 	return aside;
 }

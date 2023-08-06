@@ -249,19 +249,3 @@ window.addEventListener('scroll', function() {
 		bottomToTop.classList.add('hidden');
 	}
 });
-/*
-gsap.registerPlugin(ScrollTrigger);
-
-document.querySelectorAll('.fadeInUp').forEach(elem => {
-	gsap.to(elem, {
-		x: 0,
-		ease: 'power1.out',
-		duration: 2,
-		scrollTrigger: {
-			trigger: elem,
-			start: "top top",
-			end: "bottom top"
-		}
-	})
-});
-*/

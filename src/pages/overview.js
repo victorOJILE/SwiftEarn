@@ -1,5 +1,5 @@
-/*import { firebase_app, unsubscribe } from '../auth.js';
-import { getFirestore, getDoc, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';*/
+import { firebase_app, unsubscribe } from '../auth.js';
+import { getFirestore, getDoc, getDocs, collection, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import Header from '../header.js';
 import homeStats from '../components/homeStats.js';
 import weeklyChart from '../components/weeklyChart.js';
@@ -8,14 +8,13 @@ import Activities from '../components/activities.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 import Vendors from '../components/vendors.js';
 
-//const db = getFirestore(firebase_app);
-
+const db = getFirestore(firebase_app);
 
 function Overview(uid) {
 	const welcome = cEl('p', { textContent: 'Welcome back' });
 	
 	let data = sessionStorage.getItem('user');
-	/*
+
 	if(!data) {
 		getDoc(doc(db, 'users', uid))
 			.then(res => {
@@ -27,7 +26,7 @@ function Overview(uid) {
 		data = JSON.parse(data);
 		welcome.textContent = 'Welcome back, ' + data.lastName;
 	}
-	*/
+	
 	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
 		cEl('div', {},
 			cEl('h1', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Dashboard' }),
@@ -58,15 +57,12 @@ function Overview(uid) {
 
 	return main;
 }
-/*
-unsubscribe.then(res => {
- if(res === 0) alert('Your session has expired!');
- if(res === 0 || res === 1) {
+
+unsubscribe.authenticate = function(type, user) {
+ if (type) {
+  let myPage = Header('Overview', user.uid);
+  myPage.append(Overview(user.uid));
+ } else {
   location.href = '/login.html?redirect=true&page=' + new URL(location.href).pathname;
  }
- if(res === 2) {*/
-  let myPage = Header('Overview'/*, res.uid*/);
-  
-  myPage.append(Overview(/*res.uid*/));/*
- }
-});*/
+}

@@ -1,18 +1,17 @@
-/*import { firebase_app, unsubscribe } from '../auth.js';
-import { getFirestore, getDocs, where, collection, query } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';*/
+import { firebase_app, unsubscribe } from '../auth.js';
+import { getFirestore, getDocs, where, collection, query } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+
 import loader from '../components/loader.js';
 import { icons } from '../icons.js';
 import Header from '../header.js';
 import generateList from '../components/productList.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 
-//const db = getFirestore(firebase_app);
+const db = getFirestore(firebase_app);
 
-function Marketplace(uid) {
+function Marketplace() {
  let productPage = new URL(location.href);
  let currentPage = productPage.searchParams.get('page');
-
-// const q = query(collection(db, "products"), where('vendor_id', '==', uid));
 
  let comp = cEl('div', {}, loader());
 
@@ -24,265 +23,32 @@ function Marketplace(uid) {
  const pagination = cEl('div', { class: 'container flex items-center justify-center text-gray-400 mt-4' });
 
  function getData() {
-/*  getDocs(q)
+  getDocs(collection(db, 'products'))
    .then(doc => {
     let data = [];
     doc.forEach(d => data.push(d.data()));
-    console.log(data);
-
-    return;*/
-    let data = [
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 		},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 		},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			},
-     {
-      title: 'The Complete Python Bootcamp from Zero to Hero in Python',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Julius Berger',
-      currentPrice: '#3,000',
-      oldPrice: '#4,500',
-      commission: '50'
- 			},
-     {
-      title: 'Affiliate Marketing Accelerator Program',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Nwnaka Chukwu',
-      currentPrice: '#2,500',
-      oldPrice: '#5,000',
-      commission: '45'
- 			},
-     {
-      title: 'AMAZON KDP FOR SMARTPHONE',
-      imgsrc: 'krakenimages-376KN_ISplE-unsplash.jpg',
-      vendor: 'Gregory Joshua',
-      currentPrice: '#1,500',
-      oldPrice: '#3,000',
-      commission: '50'
- 			}
- 	];
-    
+ 	  let len = data.length;
     let slicedPage = currentPage ? (currentPage * 15) - 15 : 0;
-    //data = data.slice(slicedPage, 15);
-
+    data = data.slice(slicedPage, 15);
+    
+    if(!len) {
+     comp.empty();
+     comp.append(
+      cEl('section', { class: 'px-2' },
+       cEl('div', { class: 'h-24 flex items-center justify-center' }, cEl('span', { textContent: 'No products at the moment!', class: 'block p-3 border text-sm' }))
+      )
+     );
+     return;
+    }
+    
     function rerender(data) {
      comp.empty();
+     
      comp.append(cEl('ul', { class: 'color2 bg-custom-main-bg grid md:grid-cols-2 md:gap-12' },
-      ...data.map(product => generateList(product))
+      ...data.map(product => (product.vendor_id && generateList(product)) || '')
      ));
     }
+    
     rerender(data);
 
     form.ae('submit', function(e) {
@@ -309,10 +75,10 @@ function Marketplace(uid) {
      match.length ? rerender(match) : rerender(data);
     });
     setTimeout(function() { // Marketplace pagination
-     if (data.length < 15) return;
+     if (len < 15) return;
      pagination.innerHTML = '';
      // 15 is the maximum number of allowed children in the DOM
-     let count = Math.floor(data.length / 15);
+     let count = Math.floor(len / 15);
      // 35 is the custom client width for the link element below
      let looplen = pagination.clientWidth / 35;
      let linkCount = 1;
@@ -329,9 +95,9 @@ function Marketplace(uid) {
       pagination.insertBefore(cEl('span', { textContent: '...', className: 'mr-1' }), pagination.lastElementChild);
      }
 
-     window.addEventListener('resize', () => marketplacePagination(150));
+     window.addEventListener('resize', () => marketplacePagination(len));
     }, 500);
-   //});
+  });
  };
  getData();
 
@@ -356,8 +122,26 @@ function Marketplace(uid) {
  return main;
 }
 
-//unsubscribe.then(res => {
- let myPage = /*res === 2 ?*/ Header('Marketplace'/*, res.uid*/)/* : authWrapper()*/;
- 
- myPage.append(Marketplace(/*res.uid*/));
-//});
+function AuthWrapper() {
+ const page = cEl('header', { class: 'fixed top-0 left-0 w-full'},
+  cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
+   cEl('a', { href: '/' },
+    cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
+   ),
+   cEl('a', { href: '/login.html', textContent: 'Login', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
+  )
+ );
+ const body = document.body;
+ body.classList.remove('grid');
+ body.classList.remove('md:grid-cols-5');
+ body.innerHTML = '';
+ body.append(page);
+
+ return body;
+}
+
+unsubscribe.authenticate = function(type, user) {
+ let myPage = type ? Header('Marketplace', user.uid) : AuthWrapper();
+  
+ myPage.append(Marketplace());
+}

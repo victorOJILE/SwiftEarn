@@ -1,5 +1,9 @@
+import { firebase_app, unsubscribe } from '../auth.js';
+import { getFirestore, getDocs, where, collection, query } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import { icons } from '../icons.js';
 import loader from './loader.js';
+
+const db = getFirestore(firebase_app);
 
 export default function highDemandProducts(products) {
 	products = [

@@ -1,4 +1,4 @@
-//import { firebase_app, unsubscribe } from '../auth.js';
+import { unsubscribe } from '../auth.js';
 import Header from '../header.js';
 import Transactions from '../components/transactions.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
@@ -35,15 +35,12 @@ function Withdrawal(uid) {
 	);
 	return main;
 }
-/*
-unsubscribe.then(res => {
- if(res === 0) alert('Your session has expired!');
- if(res === 0 || res === 1) {
+
+unsubscribe.authenticate = function(type, user) {
+ if (type) {
+  let myPage = Header('Withdrawal', user.uid);
+  myPage.append(Withdrawal(user.uid));
+ } else {
   location.href = '/login.html?redirect=true&page=' + new URL(location.href).pathname;
  }
- 
- if(res === 2) {*/
-  let myPage = Header('Vendors'/*, res.uid*/);
-  myPage.append(Withdrawal(/*res.uid*/));/*
- }
-});*/
+}

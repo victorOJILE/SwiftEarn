@@ -1,40 +1,37 @@
-/*import { collection, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
-import { db } from '../project368hdo37.js';*/
+//import { collection, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { db, getDocs, collection } from '../pages/vendors.js';
 import { icons } from '../icons.js';
 import loader from './loader.js';
-
 
 export default function vendors(config) {
 	const section = cEl('section', { class: 'mt-12' }, loader());
 	
 	/*const q = query(collection(db, "vendors"), orderBy("total_sales"), limit(config.addMore ? 6 : 5));
-
-	getDocs(q)
+*/
+	getDocs(collection(db, 'vendors'))
 	.then(doc => {
 		const	data = [];
-		
 		doc.forEach((d) => data.push(d.data()));
-		console.log(data);
 		
-		const len = data.length;*/
+		const len = data.length;
 		section.empty();
-		let data = [{ vendor_name: 'Ojile Victor' }, { vendor_name: 'Ojile Victor' }], len = 0;
-		section.append(cEl('div', 
+		
+		section.append(
+		 cEl('div', 
 			{},
 			cEl('h2', { class: 'flex items-center text-xl' },
 				cEl('span', { class: 'color4' }, svg(icons.vendors)),
 				document.createTextNode(config.title)
 			),
-			data.length ? cEl('ul', { class: config.listCls },
+			data.length ? cEl('ul', { class: config.listCls || 'my-6 px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 text-center color4 font-bold vendors' },
 				...data.map(each => generateVendor(each))
 			) : cEl('div', { class: 'p-3 mt-4 mx-auto border text-center', textContent: 'Sorry, we currently have no vendors!' })
 		),
 		(config.addMore && data && len > 5) && cEl('div', { class: 'text-center border-2 border' },
 			cEl('a', { href: '/vendors.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
-		) || '');/*
+		) || '');
 	})
 	.catch(e => console.error(e));
-*/
 		/*
 		{
   "total_sales": 10000,

@@ -106,7 +106,7 @@ function handleSubmit(e) {
  cover.classList.add('form-cover');
  form.append(cover);
 
- config.createUserWithEmailAndPassword(auth, email, password)
+ createUserWithEmailAndPassword(auth, email, password)
   .then(result => {
    setDoc(doc(db, 'users', result.user.uid),
     {

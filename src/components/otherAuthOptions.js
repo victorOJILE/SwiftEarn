@@ -9,7 +9,7 @@ export default function options(google, facebook) {
 				document.createTextNode('Continue with Google')
 			),
 			cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: facebook } },
-				cEl('img', { class: 'w-7 mr-2 ml-1', src: './static/images/facebook.png' }),
+				cEl('img', { class: 'w-7 mr-2 ml-1', src: '/SwiftEarn/static/images/facebook.png' }),
 				cEl('span', { textContent: 'Continue with Facebook' })
 			)
 		);

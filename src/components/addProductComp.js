@@ -40,7 +40,7 @@ export default function AddProduct(uid, productData) {
 
  let currentFile;
 
- const img = cEl('img', { src: edit && productData.productImageUrl || '/static/images/background.jpg', alt: 'Product image' });
+ const img = cEl('img', { src: edit && productData.productImageUrl || '/SwiftEarn/static/images/background.jpg', alt: 'Product image' });
 
  const submit = cEl('button', {
   type: 'submit',

@@ -28,7 +28,7 @@ function VendorComp(uid) {
     comp.append(
      cEl('section', { class: 'bg-custom-main-bg py-4 px-2' },
       cEl('div', { class: 'rounded-full mt-6 w-20 h-20 border-4 border-gray-500 mx-auto overflow-hidden' },
-       cEl('img', { src: data.businessImageUrl || '/static/images/username-icon.svg', alt: data.vendor_name })
+       cEl('img', { src: data.businessImageUrl || '/SwiftEarn/static/images/username-icon.svg', alt: data.vendor_name })
       ),
       cEl('div', { class: 'text-center' },
        cEl('h3', { class: 'text-lg color4', textContent: data.vendor_name }),

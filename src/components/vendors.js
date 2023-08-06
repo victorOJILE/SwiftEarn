@@ -57,7 +57,7 @@ function generateVendor(vendor) {
  return cEl('li', {},
   cEl('a', { href: '/SwiftEarn/vendors/info.html?vendor_id=' + encodeURIComponent(vendor.vendor_id) },
    cEl('div', { className: 'w-24 h-24 mx-auto rounded-full overflow-hidden' },
-    cEl('img', { src: vendor.businessImageUrl || '/static/images/username-icon.svg', alt: 'Vendor picture' })
+    cEl('img', { src: vendor.businessImageUrl || '/SwiftEarn/static/images/username-icon.svg', alt: 'Vendor picture' })
    ),
    cEl('small', { textContent: vendor.vendor_name || '' })
   )

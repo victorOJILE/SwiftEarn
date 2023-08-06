@@ -2,7 +2,7 @@ export default function generateList(product) {
 
 	return cEl('li', { class: 'grid grid-cols-7 md:grid-cols-1 border-b-2 border-gray-400 py-4' },
 		cEl('div', { class: 'col-span-2 p-3 md:p-0' },
-			cEl('img', { src: product.productImageUrl || '/static/images/krakenimages-376KN_ISplE-unsplash.jpg' })
+			cEl('img', { src: product.productImageUrl || '/SwiftEarn/static/images/krakenimages-376KN_ISplE-unsplash.jpg' })
 		),
 		cEl('div', { class: 'col-span-5 py-2 pr-2' },
 			cEl('a', { class: 'pr-1', href: './product/product.html?product_id=' + encodeURIComponent(product.product_id) },

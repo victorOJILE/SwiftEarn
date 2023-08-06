@@ -34,7 +34,7 @@ function ProductComp() {
       cEl('section', { class: 'px-2' },
        cEl('div', { class: 'grid md:grid-cols-2 md:gap-6' },
         cEl('div', { class: 'mb-4 max-w-2xl mx-auto' },
-         cEl('img', { class: 'img-placeholder', src:  data.productImageUrl || '/static/images/krakenimages-376KN_ISplE-unsplash.jpg', event: { load: function() { this.classList.remove('img-placeholder') }  } })
+         cEl('img', { class: 'img-placeholder', src:  data.productImageUrl || '/SwiftEarn/static/images/krakenimages-376KN_ISplE-unsplash.jpg', event: { load: function() { this.classList.remove('img-placeholder') }  } })
         ),
         cEl('div', 
          {},
@@ -102,7 +102,7 @@ function vendorInformation(vendor_id) {
   let descrLength = isMobile ? 150 : 300;
   comp.append(
    cEl('div', { class: 'rounded-full mt-12 w-28 h-28 border-4 border-gray-500 mx-auto overflow-hidden' },
-    cEl('img', { src: '/static/images/' + data.businessImageUrl, alt: data.vendor_name || 'SwiftEarn Vendor' })
+    cEl('img', { src: '/SwiftEarn/static/images/' + data.businessImageUrl, alt: data.vendor_name || 'SwiftEarn Vendor' })
    ),
    cEl('div', { class: 'text-center' },
     cEl('h3', { class: 'text-lg color4', textContent: data.vendor_name }),
@@ -137,7 +137,7 @@ function AuthWrapper() {
  const page = cEl('header', { class: 'fixed top-0 left-0 w-full' },
   cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
    cEl('a', { href: '/SwiftEarn/' },
-    cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
+    cEl('img', { src: '/SwiftEarn/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
    ),
    cEl('a', { href: '/SwiftEarn/login.html', textContent: 'Login', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
   )

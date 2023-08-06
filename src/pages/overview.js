@@ -36,7 +36,7 @@ function Overview(uid) {
 					cEl('p', { class: 'color4 pr-2', style: { fontSize: '0.65rem' }, textContent: 'Get Ready to Boost Your Sales and Make an Impact Today!' })
 				),
 				cEl('div', { class: 'text-center' },
-					cEl('img', { class: 'w-16', src: '/static/images/coffee-badge.webp' })
+					cEl('img', { class: 'w-16', src: '/SwiftEarn/static/images/coffee-badge.webp' })
 				)
 			)
 		),

@@ -118,7 +118,7 @@ function asideLeft() {
 		cEl('div', {}, cEl('div', { class: 'flex items-center p-3 md:pt-10' },
 				cEl('div', { class: 'flex-grow md:text-center' },
 					cEl('a', { href: '/SwiftEarn/' },
-						cEl('img', { src: './static/images/Logo.png' })
+						cEl('img', { src: '/SwiftEarn/static/images/Logo.png' })
 					)
 				),
 				cEl('div', {}, closeSidebarIcon)
@@ -178,7 +178,7 @@ function main() {
 			cEl('div', { class: 'p-3 flex items-center justify-between container mx-auto' },
 				hamburger,
 				cEl('a', { href: '/SwiftEarn/', class: 'inline-block md:hidden' },
-					cEl('img', { src: './static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
+					cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
 				),
 				cEl('div'),
 				cEl('div', {},
@@ -271,7 +271,7 @@ function asideRight(uid) {
 				{ class: 'mt-6' },
 					cEl('div', { class: 'relative mb-6' },
 						cEl('div', { class: 'w-24 h-24 border-2 border rounded-full mx-auto overflow-hidden' },
-							cEl('img', { src: data.profilePictureUrl || './static/images/username-icon.svg', alt: 'Profile picture' })
+							cEl('img', { src: data.profilePictureUrl || '/SwiftEarn/static/images/username-icon.svg', alt: 'Profile picture' })
 						),
 						cEl('div', { class: 'absolute top-full left-1/2 w-16 mx-auto', style: { transform: "translate(-50%, -50%)" } },
 							cEl('img', { src: rank[data.rank || 1] })

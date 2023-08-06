@@ -163,7 +163,7 @@ function Profile(uid) {
          this.innerHTML = '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.6em" height="1.6em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>';
          updateRequest(data)
           .then(() => {
-           this.innerHTML = `<img class="w-5" src="./static/images/faEdit.svg" />`;
+           this.innerHTML = `<img class="w-5" src="/SwiftEarn/static/images/faEdit.svg" />`;
            this.previousElementSibling.firstElementChild.disabled = true;
           })
           .catch(e => console.log(e));
@@ -171,14 +171,14 @@ function Profile(uid) {
        }
       }
      },
-     cEl('img', { class: 'w-5', src: '/static/images/faEdit.svg' })
+     cEl('img', { class: 'w-5', src: '/SwiftEarn/static/images/faEdit.svg' })
     )
    )
   )
  }
 
  let currentFile;
- const img = cEl('img', { src: '/static/images/username-icon.svg', alt: 'Profile picture' });
+ const img = cEl('img', { src: '/SwiftEarn/static/images/username-icon.svg', alt: 'Profile picture' });
 
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },

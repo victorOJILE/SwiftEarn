@@ -23,10 +23,10 @@ function authWrapper() {
 
  const header = cEl('header', {},
   cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
-   cEl('a', { href: '/' },
-    cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
+   cEl('a', { href: '/SwiftEarn/' },
+    cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
    ),
-   cEl('a', { href: '/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
+   cEl('a', { href: '/SwiftEarn/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
   ),
   cEl('section', { class: 'container mx-auto pt-12 pb-20 md:pr-8 md:pt-24 md:pb-32 grid md:grid-cols-2 items-center' },
    cEl('div', { class: 'hidden md:block px-4 py-8 md:pr-6 color2' },
@@ -94,7 +94,7 @@ function handleSubmit(e) {
    let redirect = params.get('redirect');
    let page = params.get('page');
 
-   location.href = redirect ? page : './overview.html';
+   location.href = redirect ? page : '/SwiftEarn/overview.html';
   })
   .catch((error) => {
    cover.remove();
@@ -162,7 +162,7 @@ const form = cEl('form',
   submitBtn,
   cEl('p', { class: "py-2", style: { fontSize: "0.7rem" } },
    document.createTextNode('You do not have an account.'),
-   cEl('a', { href: "signup.html", class: "text-green-500 font-bold underline", textContent: 'Sign up' })
+   cEl('a', { href: "/SwiftEarn/signup.html", class: "text-green-500 font-bold underline", textContent: 'Sign up' })
   )
  ),
  otherAuthOptions(

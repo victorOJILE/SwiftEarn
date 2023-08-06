@@ -146,7 +146,7 @@ function VendorSetting(uid) {
             updateRequest('users', {
              role: 'affiliate-vendor'
             })
-            .then(() => location.href = '/product/products.html');
+            .then(() => location.href = '/SwiftEarn/product/products.html');
            })
           })
           .catch(err);
@@ -158,7 +158,7 @@ function VendorSetting(uid) {
          updateRequest('users', {
            role: 'affiliate-vendor'
           })
-          .then(() => location.href = '/product/products.html');
+          .then(() => location.href = '/SwiftEarn/product/products.html');
         })
         .catch(err);
       }
@@ -175,7 +175,7 @@ unsubscribe.authenticate = function(type, user) {
   let myPage = Header('Vendors', user.uid);
   myPage.append(VendorSetting(user.uid));
  } else {
-  location.href = '/login.html?redirect=true&page=' + new URL(location.href).pathname;
+  location.href = '/SwiftEarn/login.html?redirect=true&page=' + new URL(location.href).pathname;
  }
 }
 

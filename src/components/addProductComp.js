@@ -101,7 +101,7 @@ export default function AddProduct(uid, productData) {
             })
             .then(() => {
              updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) })
-             .then(() => location.href = '/product/products.html')
+             .then(() => location.href = '/SwiftEarn/product/products.html')
             });
           })
           .catch(err);
@@ -112,7 +112,7 @@ export default function AddProduct(uid, productData) {
         sendRequest(data)
          .then(() => {
           updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) })
-          .then(() => location.href = '/product/products.html')
+          .then(() => location.href = '/SwiftEarn/product/products.html')
          });
        }
       }

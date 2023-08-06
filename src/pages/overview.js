@@ -63,6 +63,6 @@ unsubscribe.authenticate = function(type, user) {
   let myPage = Header('Overview', user.uid);
   myPage.append(Overview(user.uid));
  } else {
-  location.href = '/login.html?redirect=true&page=' + new URL(location.href).pathname;
+  location.href = '/SwiftEarn/login.html?redirect=true&page=' + new URL(location.href).pathname;
  }
 }

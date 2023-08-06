@@ -49,27 +49,27 @@ function asideLeft() {
 
 	const firstNavLists = [
 		{
-			link: '/overview.html',
+			link: './overview.html',
 			icon: icons.dashboard,
 			text: 'Overview'
 		},
 		{
-			link: '/marketplace.html',
+			link: './marketplace.html',
 			icon: icons.marketplace,
 			text: 'Marketplace'
 		},
 		{
-			link: '/vendors.html',
+			link: './vendors.html',
 			icon: icons.vendors,
 			text: 'Vendors'
 		},
 		{
-			link: '/withdrawal.html',
+			link: './withdrawal.html',
 			icon: icons.withdrawal,
 			text: 'Withdrawal'
 		},
 		{
-			link: '/analytics.html',
+			link: './analytics.html',
 			icon: icons.analytics,
 			text: 'Analytics'
 		},
@@ -82,12 +82,12 @@ function asideLeft() {
 
 	const secondNavLists = [
 		{
-			link: '/profile.html',
+			link: './profile.html',
 			icon: icons.settings,
 			text: 'Settings'
 		},
 		{
-			link: '/help.html',
+			link: './help.html',
 			icon: icons.help,
 			text: 'Help'
 		}
@@ -117,8 +117,8 @@ function asideLeft() {
 	const aside = cEl('aside', { class: 'bg-main fixed top-0 -left-full md:static h-screen md:col-span-1 w-9/12 md:w-auto max-w-sm md:max-w-xl z-20 flex flex-col justify-between overflow-auto scroll-bar', ariaHidden: true },
 		cEl('div', {}, cEl('div', { class: 'flex items-center p-3 md:pt-10' },
 				cEl('div', { class: 'flex-grow md:text-center' },
-					cEl('a', { href: '/' },
-						cEl('img', { src: '/static/images/Logo.png' })
+					cEl('a', { href: '/SwiftEarn/' },
+						cEl('img', { src: './static/images/Logo.png' })
 					)
 				),
 				cEl('div', {}, closeSidebarIcon)
@@ -177,8 +177,8 @@ function main() {
 		cEl('header', { class: 'fixed top-0 w-full md:static z-10 trans' },
 			cEl('div', { class: 'p-3 flex items-center justify-between container mx-auto' },
 				hamburger,
-				cEl('a', { href: '/', class: 'inline-block md:hidden' },
-					cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
+				cEl('a', { href: '/SwiftEarn/', class: 'inline-block md:hidden' },
+					cEl('img', { src: './static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
 				),
 				cEl('div'),
 				cEl('div', {},
@@ -250,13 +250,13 @@ function asideRight(uid) {
 						),
 						cEl('ul', { class: 'text-xs hidden pb-1' },
 							cEl('li', { class: 'm-1' },
-								cEl('a', { href: '/product/addProduct.html', class: 'py-2 px-3 flex items-center trans ' + (pageName == 'Add Product' ? 'bg-blue-800 hover:bg-blue-800' : 'bg-gray-800 hover:bg-gray-900') },
+								cEl('a', { href: './product/addProduct.html', class: 'py-2 px-3 flex items-center trans ' + (pageName == 'Add Product' ? 'bg-blue-800 hover:bg-blue-800' : 'bg-gray-800 hover:bg-gray-900') },
 									svg(icons.cartPlus),
 									document.createTextNode('Add Product')
 								)
 							),
 							cEl('li', { class: 'm-1' },
-								cEl('a', { href: '/product/products.html', class: 'py-2 px-3 flex items-center trans ' + (pageName == 'Manage Products' ? 'text-blue-100 bg-blue-800 hover:bg-blue-800' : 'bg-gray-800 hover:bg-gray-900') },
+								cEl('a', { href: './product/products.html', class: 'py-2 px-3 flex items-center trans ' + (pageName == 'Manage Products' ? 'text-blue-100 bg-blue-800 hover:bg-blue-800' : 'bg-gray-800 hover:bg-gray-900') },
 									svg(icons.vendors),
 									document.createTextNode('Manage Products')
 								)
@@ -271,7 +271,7 @@ function asideRight(uid) {
 				{ class: 'mt-6' },
 					cEl('div', { class: 'relative mb-6' },
 						cEl('div', { class: 'w-24 h-24 border-2 border rounded-full mx-auto overflow-hidden' },
-							cEl('img', { src: data.profilePictureUrl || '/static/images/username-icon.svg', alt: 'Profile picture' })
+							cEl('img', { src: data.profilePictureUrl || './static/images/username-icon.svg', alt: 'Profile picture' })
 						),
 						cEl('div', { class: 'absolute top-full left-1/2 w-16 mx-auto', style: { transform: "translate(-50%, -50%)" } },
 							cEl('img', { src: rank[data.rank || 1] })
@@ -282,7 +282,7 @@ function asideRight(uid) {
 						cEl('p', { class: 'text-xs text-gray-400', textContent: data.title || 'Affiliate Marketer' })
 					),
 					cEl('div', { class: 'text-center mb-6' },
-						cEl('a', { class: 'inline-block underline text-green-600', href: '/profile.html', textContent: 'Edit profile' })
+						cEl('a', { class: 'inline-block underline text-green-600', href: './profile.html', textContent: 'Edit profile' })
 					)
 				));
 			})

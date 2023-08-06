@@ -25,10 +25,10 @@ function authWrapper() {
 
  const header = cEl('header', {},
   cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
-   cEl('a', { href: '/' },
-    cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
+   cEl('a', { href: '/SwiftEarn/' },
+    cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
    ),
-   cEl('a', { href: '/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
+   cEl('a', { href: '/SwiftEarn/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
   ),
   cEl('section', { class: 'container mx-auto pt-12 pb-20 md:pr-8 md:pt-24 md:pb-32 grid md:grid-cols-2 items-center' },
    cEl('div', { class: 'hidden md:block px-4 py-8 md:pr-6 color2' },
@@ -128,7 +128,7 @@ function handleSubmit(e) {
      affiliateEarning: '0',
      currency: '$USD'
     })
-    .then(() => location.href = '/overview.html');
+    .then(() => location.href = '/SwiftEarn/overview.html');
   })
   .catch((error) => {
    if (error.code == 'auth/email-already-in-use') {
@@ -179,7 +179,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
   submitClicked,
   cEl('p', { class: "py-2", style: { fontSize: "0.7rem" } },
    document.createTextNode('Already have an account.'),
-   cEl('a', { href: "login.html", class: "text-green-500 font-bold underline", textContent: 'Login' })
+   cEl('a', { href: "/SwiftEarn/login.html", class: "text-green-500 font-bold underline", textContent: 'Login' })
   )
  ),
  otherAuthOptions(

@@ -81,7 +81,7 @@ function ProductComp() {
     }
    });
  } else {
-  location.href = '/marketplace.html';
+  location.href = '/SwiftEarn/marketplace.html';
  }
 
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
@@ -136,10 +136,10 @@ function vendorInformation(vendor_id) {
 function AuthWrapper() {
  const page = cEl('header', { class: 'fixed top-0 left-0 w-full' },
   cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
-   cEl('a', { href: '/' },
-    cEl('img', { src: '/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
+   cEl('a', { href: '/SwiftEarn/' },
+    cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
    ),
-   cEl('a', { href: '/login.html', textContent: 'Login', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
+   cEl('a', { href: '/SwiftEarn/login.html', textContent: 'Login', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
   )
  );
  const body = document.body;

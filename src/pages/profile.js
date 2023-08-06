@@ -178,7 +178,7 @@ function Profile(uid) {
  }
 
  let currentFile;
- const img = cEl('img', { src: '/SwiftEarn/static/images/username-icon.svg', alt: 'Profile picture' });
+ const img = cEl('img', { src: '/SwiftEarn/static/images/faEdit.svg', alt: 'Profile picture' });
 
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },

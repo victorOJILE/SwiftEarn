@@ -1,10 +1,11 @@
+import { db, collection, getDocs, query, where } from '../header.js';
 import loader from '../loader.js';
 import generateList from './productList.js';
 
-export default function moreProducts(uid, vendorName, fb) {
+export default function moreProducts(uid, vendorName) {
  const comp = loader();
  
- fb.getDocs(fb.query(fb.collection(db, "products"), fb.where('vendor_id', uid)))
+ getDocs(query(collection(db, "products"), where('vendor_id', uid)))
  .then(doc => {
   const data = [];
   doc.forEach((d) => data.push(d.data()));

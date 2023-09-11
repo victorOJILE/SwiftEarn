@@ -1,9 +1,5 @@
-/*import { firebase_app, unsubscribe } from '../auth.js';
-import { getFirestore, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';*/
+//import { db, doc, getDocs } from '../header.js';
 import loader from './loader.js';
-
-//const db = getFirestore(firebase_app);
-
 
 export default function Transactions(uid) {
  const table = loader();
@@ -16,7 +12,7 @@ export default function Transactions(uid) {
   )
  );
  /*
-	getDocs(doc(db, 'sales', uid))
+	getDocs(doc(db, 'transactions', uid))
 		.then(data => {*/
 
  let data = [
@@ -66,7 +62,7 @@ export default function Transactions(uid) {
  if (data && data.length) {
   tableData.empty();
   tableData.append(
-   cEl('table', { class: "text-xs", width: "100%", style: { minWidth: "20rem" } },
+   cEl('table', { class: "text-sm", width: "100%", style: { minWidth: "20rem" } },
     cEl('thead', {},
      cEl('tr', {},
       cEl('th', { class: 'p-2', textContent: 'No.' }),

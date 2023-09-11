@@ -48,7 +48,7 @@ export default function activities(data) {
 ];
 
 	if(data && data.length) {
-		comp = cEl('table', { class: "text-xs", width: "100%", style: { minWidth: "30rem" } },
+		comp = cEl('table', { class: "text-sm", width: "100%", style: { minWidth: "30rem" } },
 			cEl('thead', {},
 				cEl('tr', {},
 					cEl('th', { class: 'p-2', textContent: 'No.' }),
@@ -72,7 +72,7 @@ export default function activities(data) {
 		comp
 		),
 		(data && data.length && data.length > 5) && cEl('div', { class: 'text-center border-2 border' },
-			cEl('a', { href: '/SwiftEarn/analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more'})
+			cEl('a', { href: urlPrefix + '/analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more'})
 		) || ''
 	);
 

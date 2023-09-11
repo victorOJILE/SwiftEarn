@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title></title>
+</head>
+
+<body>
+ <canvas id="canvas"></canvas>
+ <input type="file" id="file" />
+</body>
+<script>
+ const width = 320,
+  height = width;//(width / 3) * 2;
+ const canvas = document.getElementById('canvas');
+ canvas.width = width;
+ canvas.height = height;
+
+ const ctx = canvas.getContext("2d");
+
+ let originalWidth, originalHeight, imageHeight, y1, y2;
+
+ canvas.addEventListener('pointerdown', function(ev) {
+  y1 = ev.clientY;
+ });
+ 
+ let move = function() {};
+ 
+ file.addEventListener('change', function() {
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+   let imageObj = new Image();
+   imageObj.src = event.target.result;
+
+   imageObj.addEventListener('load', function() {
+    originalWidth = imageObj.width;
+    originalHeight = imageObj.height;
+
+    imageHeight = originalHeight * (width / originalWidth);
+
+    y2 = width > imageHeight ? 0 : -((width / 3) * 2) / 2;
+    canvas.addEventListener('pointermove', function callback(e) {
+     y2 += Math.min(2, -(y1 - e.clientY));
+     
+     ctx.clearRect(0, 0, width, height);
+     ctx.drawImage(imageObj, 0, y2, width, imageHeight);
+     move = callback;
+    });
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(imageObj, 0, y2, width, imageHeight);
+   });
+  }
+  
+  canvas.removeEventListener('pointermove', move);
+
+  reader.readAsDataURL(new Blob(this.files));
+ });
+</script>
+
+</html>

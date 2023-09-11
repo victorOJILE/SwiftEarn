@@ -1,19 +1,15 @@
-import { firebase_app, unsubscribe } from '../auth.js';
-import { getStorage, getMetadata, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
-import { getFirestore, getDocs, where, collection, query, doc, deleteDoc, updateDoc, arrayRemove } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
-import Header from '../header.js';
+import { unsubscribe } from '../auth.js';
+import Header, { db, getDocs, where, collection, query, doc, deleteDoc, updateDoc, arrayRemove } from '../header.js';
+import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 import EditProduct from '../components/addProductComp.js';
 import loader from '../components/loader.js';
 
-const db = getFirestore(firebase_app);
 const storage = getStorage();
 
 function ManageProducts(uid) {
  let tableData = cEl('div', { class: 'bg-custom-main-bg overflow-auto my-2' }, loader());
 
- const q = query(collection(db, "products"), where('vendor_id', '==', uid));
-
- getDocs(q)
+ getDocs(query(collection(db, "products"), where('vendor_id', '==', uid)))
   .then(doc => {
    const data = [];
    doc.forEach(d => data.push(d.data()));
@@ -21,7 +17,7 @@ function ManageProducts(uid) {
     tableData.empty();
 
     tableData.append(
-     cEl('table', { class: "text-xs", style: { minWidth: "20rem" } },
+     cEl('table', { class: "text-sm", style: { minWidth: "20rem" } },
       cEl('thead', {},
        cEl('tr', {},
         cEl('th', { class: 'p-2 py-4', textContent: 'No.' }),
@@ -36,6 +32,11 @@ function ManageProducts(uid) {
        ...data.slice(0, 5).map((each, ind) => createRow(each, ind + 1))
       )
      ));
+   } else {
+    tableData.empty();
+    tableData.append(
+     cEl('div', { class: 'border p-3 text-center', textContent: 'No products' })
+    );
    }
   })
   .catch(e => console.log(e));
@@ -79,11 +80,13 @@ function createRow(data, ind) {
         let modal = cEl('div', { class: 'absolute top-0 w-full p-6 h-screen overflow-auto z-20', style: { backgroundColor: '#000000A1' } },
          EditProduct(undefined, data)
         );
-        let close = cEl('button', { event: {
-         click: function() {
-          modal.remove();
-         }
-        }},
+        let close = cEl('button', {
+          event: {
+           click: function() {
+            modal.remove();
+           }
+          }
+         },
          svg(`<svg style="width: 30px; height: 30px;" viewbox="-5 -5 40 40">
         <path d="M2 2L28 28" stroke="maroon" stroke-width="5" />
         <path d="M2 28L28 2" stroke="maroon" stroke-width="5" />
@@ -98,22 +101,20 @@ function createRow(data, ind) {
     }),
     cEl('button', {
      event: {
-      click: function() {
-       let url = data.productImageUrl.match(/images%2F(.+)\?alt/)[1];
-       
-      // deleteObject()
-       
-       
-       deleteDoc(doc(db, 'products', product_id))
-       .then(() => location.reload())
-       .catch(err => console.error(err));
-       
-       updateDoc(doc(db, 'vendors', uid), { products: arrayRemove(data.product_id) })
-       .then(() => location.reload())
-       .catch(err => console.error(err));
-       
-       //https://firebasestorage.googleapis.com/v0/b/swiftearn-e35b4.appspot.com/o/images%2F-5920541065700556072_121.jpg?alt=media&token=1110c420-30a3-4de0-b37a-d062256c9f0f
+      click: async function() {
+       try {
+        let url = ref(storage, data.productImageUrl);
 
+        await deleteObject(url);
+
+        await deleteDoc(doc(db, 'products', product_id));
+
+        await updateDoc(doc(db, 'vendors', uid), { products: arrayRemove(data.product_id) });
+
+        location.reload();
+       } catch (e) {
+        alert('Error: Cannot complete product deletion. Please try again!');
+       }
       }
      }
     }, svg(deleteIcon))
@@ -124,11 +125,6 @@ function createRow(data, ind) {
 
 const deleteIcon = `<svg stroke="red" fill="red" stroke-width="0" viewBox="0 0 448 512" width="1.2em" height="1.2em" class="mx-2" xmlns="http://www.w3.org/2000/svg"> <path d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" /></svg>`;
 
-unsubscribe.authenticate = function(type, user) {
- if (type) {
-  let myPage = Header('Manage Products', user.uid);
-  myPage.append(ManageProducts(user.uid));
- } else {
-  location.href = '/SwiftEarn/login.html?redirect=true&page=' + new URL(location.href).pathname;
+unsubscribe.authenticate = function(uid) {
+ Header('Manage Products', uid).append(ManageProducts(uid));
  }
-}

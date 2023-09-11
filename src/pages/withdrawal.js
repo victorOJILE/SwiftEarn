@@ -17,13 +17,13 @@ function Withdrawal(uid) {
 	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
 		cEl('div', {},
 			cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Fund Withdrawal' }),
-			cEl('p', { class: 'text-xs color4', textContent: 'Enjoy a seamless withdrawal experience on our platform. Request withdrawals, keep track of your financial activities, and conveniently manage your funds.' })
+			cEl('p', { class: 'text-sm color4', textContent: 'Enjoy a seamless withdrawal experience on our platform. Request withdrawals, keep track of your financial activities, and conveniently manage your funds.' })
 		),
 		cEl('section', 
 			{ class: 'pt-2' },
 			cEl('div', 
 				{ class: 'select-none text-center my-4 relative' },
-				cEl('span', { class: 'absolute top-0 right-4 text-xs color4 p-1', textContent: '12/04/2023 12:45AM' }),
+				cEl('span', { class: 'absolute top-0 right-4 text-sm color4 p-1', textContent: '12/04/2023 12:45AM' }),
 				cEl('a', { href: '', class: 'block p-4 bg-green-900 rounded-lg border-2 border-green-700 text-green-100 font-bold' },
 					svg(moneybag),
 					cEl('span', { class: 'p-2 inline-block py-4 text-sm', textContent: 'Request Withdrawal' })
@@ -36,11 +36,6 @@ function Withdrawal(uid) {
 	return main;
 }
 
-unsubscribe.authenticate = function(type, user) {
- if (type) {
-  let myPage = Header('Withdrawal', user.uid);
-  myPage.append(Withdrawal(user.uid));
- } else {
-  location.href = '/SwiftEarn/login.html?redirect=true&page=' + new URL(location.href).pathname;
- }
+unsubscribe.authenticate = function(uid) {
+ Header('Withdrawal', uid).append(Withdrawal(uid));
 }

@@ -1,46 +1,40 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 import { firebase_app } from '../auth.js';
-import { getFirestore, getDoc, getDocs, setDoc, doc, query, collection, where, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { db, getDoc, getDocs, setDoc, doc, query, collection, where, updateDoc, arrayUnion } from '../header.js';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 
-const db = getFirestore(firebase_app);
-
-export { db, getDocs, query, collection, where };
+const storage = getStorage();
 
 export default function AddProduct(uid, productData) {
  let edit = productData && productData.product_id;
 
- // productData here means we are trying to edit an existing product using this interface
+ // productData here means we are trying to edit an existing product using this UI component
  let product_id = edit || generateId();
 
  function sendRequest(data) {
   return setDoc(doc(db, 'products', product_id), data, { merge: true });
  }
 
- const storage = getStorage();
- 
  let username;
  if (!edit) {
-  setTimeout(() => {
-   let user = sessionStorage.getItem('user');
-   if (user) {
-    user = JSON.parse(user);
-    username = `${user.firstName} ${user.lastName}`;
-   } else {
-    getDoc(doc(db, 'users', uid))
-     .then(res => {
-      aside.innerHTML = '';
-      let data = res.data();
-      username = `${data.firstName} ${data.lastName}`;
-     });
+  let user = sessionStorage.getItem('user');
+  if (user) {
+   user = JSON.parse(user);
+   username = `${user.firstName} ${user.lastName}`;
+  } else {
+   getDoc(doc(db, 'users', uid))
+    .then(res => {
+     aside.innerHTML = '';
+     let data = res.data();
+     username = `${data.firstName} ${data.lastName}`;
+     res(1);
+    });
    }
-  }, 10000);
  } else {
   username = productData.vendor_name
  }
-
- let currentFile;
-
- const img = cEl('img', { src: edit && productData.productImageUrl || '/SwiftEarn/static/images/background.jpg', alt: 'Product image' });
+ 
+ const oldImage = edit && productData.productImageUrl;
+ const img = cEl('img', { src: oldImage || '../static/images/background.jpg', alt: 'Product image' });
 
  const submit = cEl('button', {
   type: 'submit',
@@ -51,11 +45,12 @@ export default function AddProduct(uid, productData) {
  const section = cEl('section', { class: 'color2 bg-9' },
   cEl('form', {
     name: 'setting',
-    class: 'text-xs',
+    class: 'text-sm',
     autoComplete: true,
     event: {
-     submit: function(e) {
+     submit: async function(e) {
       e.preventDefault();
+      // TODO: wrap in try...catch
       let formData = new FormData(this);
       let data = edit && productData || {
        vendor_id: uid,
@@ -64,8 +59,7 @@ export default function AddProduct(uid, productData) {
        conversion: '0%',
        vendor_name: username,
        product_id,
-       status: 'Pending',
-       aff_id: `/analytics?action=aff&id=${uid}swift${product_id}`
+       status: 'Pending'
       };
 
       iter(formData, key => data[key[0]] = key[1]);
@@ -86,46 +80,44 @@ export default function AddProduct(uid, productData) {
       }
 
       submit.innerHTML = loader;
+      
       // Upload image
-      if (productImg && productImg.type.match(new RegExp('image.*')) && productImg.type.match(new RegExp('jpg||png||gif||webp', 'i'))) {
+      if (productImg && productImg.type.match(/image.{0,3}/) && productImg.type.match(/jpg|png|gif|webp/i)) {
+       if(oldImage && oldImage.startsWith('https://firebasestorage.googleapis.com')) {
+        // Delete old product image from firebase
+        await deleteObject(ref(storage, oldImage));
+       }
+       
+       const imageRef = ref(storage, 'products/' + productImg.name);
 
-       const imageRef = ref(storage, 'images/' + productImg.name);
-
-       uploadBytes(imageRef, productImg).then((snapshot) => {
-         getDownloadURL(imageRef)
-          .then(url => {
-           sendRequest({
-             // Add productImageUrl to product data
-             ...data,
-             productImageUrl: url
-            })
-            .then(() => {
-             updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) })
-             .then(() => location.href = '/SwiftEarn/product/products.html')
-            });
-          })
-          .catch(err);
-        })
-        .catch(err);
+       await uploadBytes(imageRef, productImg);
+       
+       await sendRequest({
+        // Add productImageUrl to product data
+        ...data,
+        productImageUrl: await getDownloadURL(imageRef)
+       });
+       
+       await updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) });
       } else {
-       if (confirm('No product image was added! Do you want to continue?')) {
-        sendRequest(data)
-         .then(() => {
-          updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) })
-          .then(() => location.href = '/SwiftEarn/product/products.html')
-         });
+       if (confirm('Product image was not added or modified! Do you want to continue?')) {
+        await sendRequest(data);
+        
+        await updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) });
        }
       }
+      
+      location.href = './products.html';
      }
     }
    },
    cEl('div', { class: edit ? 'py-12' : 'my-12' },
-    cEl('h3', { class: 'text-lg mb-2 text-center', textContent: 'Product Information' }),
+    cEl('h2', { class: 'text-lg mb-2 text-center', textContent: 'Product Information' }),
     cEl('div', { class: 'flex flex-col items-center' },
      cEl('div', { class: 'mt-6 mx-auto w-24 h-24 rounded-full bg-7 overflow-hidden' },
       img
      ),
-     cEl('button', { class: 'relative p-1 px-3 text-xs font-bold bg-gray-700 text-gray-100 rounded-lg mt-2 overflow-hidden', type: 'button' },
+     cEl('button', { class: 'relative p-1 px-3 text-sm font-bold bg-gray-700 text-gray-100 rounded-lg mt-2 overflow-hidden', type: 'button' },
       cEl('span', { textContent: 'Upload image' }),
       cEl('input',
       {
@@ -137,14 +129,12 @@ export default function AddProduct(uid, productData) {
          try {
           let file = this.files[0];
 
-          if (!file.type.match(new RegExp('image.*')) && !file.type.match(new RegExp('jpg||png||gif||webp', 'i'))) {
-           return alert('Please upload an image file of these formats: .jpg .png .gif .webp');
+          if (!file.type.match(/image.{0,3}/) || !file.type.match(/jpg|png|gif|webp/i)) {
+           return alert('Please upload an image file of these formats: jpg, png, gif, webp');
           }
 
-          if (currentFile) URL.revokeObjectURL(currentFile);
-          let url = URL.createObjectURL(file);
-          img.src = url;
-          currentFile = url;
+          // use canvas from image.html
+          alert('Please, add the canvas feature!');
          } catch (e) {
           if (e.name == 'TypeError') return;
           alert('Please upload an image file!');
@@ -166,7 +156,7 @@ export default function AddProduct(uid, productData) {
    ),
    cEl('div', { class: 'm-3 mb-8 grid' },
     cEl('label', { class: 'block mb-2 font-bold', textContent: 'Product Category:', htmlFor: 'category' }),
-    cEl('select', { class: 'block p-3 bg-7 color2', id: 'category', name: 'category' },
+    cEl('select', { class: 'block p-3 bg-7 color2', id: 'category', name: 'category', defaultValue: productData.category || '' },
      new Option('Category', ''),
      new Option('E-commerce'),
      new Option('Forex'),
@@ -181,13 +171,11 @@ export default function AddProduct(uid, productData) {
     cEl('div', {},
      cEl('label', { class: 'block mb-2 font-bold', textContent: 'Product Price:', htmlFor: 'price' }),
      cEl('div', { class: 'grid grid-cols-2' },
-      cEl('select', { class: 'text-center bg-7 color2', name: 'currency' },
-       new Option('USD', '$'),
-       new Option('EUR', '€'),
-       new Option('GBP', '£'),
-       new Option('NGN', '₦'),
-       new Option('GHS', '¢'),
-       new Option('ZAR', 'R')
+      cEl('select', { class: 'text-center bg-7 color2', name: 'currency', defaultValue: productData.currency || '' },
+       new Option('USD'),
+       new Option('NGN'),
+       new Option('GHS'),
+       new Option('ZAR')
       ),
       cEl('input', { class: 'p-3 bg-7 color2', type: 'number', name: 'price', id: 'price', value: edit && productData.price || '', placeholder: 'Price' })
      )
@@ -217,7 +205,7 @@ export default function AddProduct(uid, productData) {
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
   cEl('div', { class: 'mb-4 max-w-xl mx-auto' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Add New Product' }),
-   cEl('p', { textContent: 'Update your profile. Manage contact details, payment info, and preferences for enhanced performance.', class: "color4 pr-2 text-xs" }),
+   cEl('p', { textContent: 'Update your profile. Manage contact details, payment info, and preferences for enhanced performance.', class: "color4 pr-2 text-sm" }),
   ),
   edit || section
  );
@@ -228,8 +216,7 @@ export default function AddProduct(uid, productData) {
 function id() {
  let idVals = [],
   i = 48,
-  limit = 58,
-  id = "";
+  limit = 58;
 
  while (i < limit) {
   idVals.push(String.fromCodePoint(i));
@@ -245,6 +232,7 @@ function id() {
  }
 
  return function(salt = 25) {
+  let id = '';
   for (let j = 0; j < salt; j++) {
    id += idVals[Math.floor(Math.random() * 60)];
   }

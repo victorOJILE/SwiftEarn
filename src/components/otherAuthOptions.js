@@ -1,18 +1,48 @@
-export default function options(google, facebook) {
-	
-	return cEl('div', { class: 'mt-2 my-6 border-b-2 border-gray-300 text-center' },
-			cEl('span', { class: "inline-block bg-gray-100 w-12 font-semibold font-special", style: { transform: "translateY(50%)" }, textContent: 'OR' })
-		),
-		cEl('div', { class: 'py-5 font-semibold text-sm text-gray-500' },
-			cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: google } },
-				svg(googleIcon),
-				document.createTextNode('Continue with Google')
-			),
-			cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: facebook } },
-				cEl('img', { class: 'w-7 mr-2 ml-1', src: '/SwiftEarn/static/images/facebook.png' }),
-				cEl('span', { textContent: 'Continue with Facebook' })
-			)
-		);
+export default function options(auth, sig, FacebookAuthProvider, GoogleAuthProvider, setD) {
+
+ const google = new GoogleAuthProvider();
+ const facebook = new FacebookAuthProvider();
+ const params = new URL(location.href).searchParams;
+ const redirect = params.get('redirect');
+
+ function useOtherMeth(provider, mainProvider) {
+  signInWithPopup(auth, provider)
+   .then(result => {
+    // This gives you a Provider Access Token. You can use it to access the Provider API.
+    const credential = mainProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+    // The signed-in user info.
+    const user = result.user;
+    console.log(user);
+    console.log(token);
+
+    document.cookie = `lastRefresh=${Date.now()};max-age=1111111`;
+
+    if (setD) {
+     setD(user.uid)
+      .then(() => location.href = redirect ? params.get('page') : './overview.html');
+    }
+
+    location.href = redirect ? params.get('page') : './overview.html';
+   })
+   .catch((error) => {
+    console.error(error);
+   });
+ }
+
+ return cEl('div', { class: 'mt-2 my-6 border-b-2 border-gray-300 text-center' },
+   cEl('span', { class: "inline-block bg-gray-100 w-12 font-semibold font-special", style: { transform: "translateY(50%)" }, textContent: 'OR' })
+  ),
+  cEl('div', { class: 'py-5 font-semibold text-sm text-gray-500' },
+   cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: () => useOtherMeth(google, GoogleAuthProvider) } },
+    svg(googleIcon),
+    document.createTextNode('Continue with Google')
+   ),
+   cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: () => useOtherMeth(facebook, FacebookAuthProvider) } },
+    cEl('img', { class: 'w-7 mr-2 ml-1', src: './static/images/facebook.png' }),
+    cEl('span', { textContent: 'Continue with Facebook' })
+   )
+  );
 }
 
 const googleIcon = `<svg class="mr-2" width="2.4em" height="2.4em" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Capa_1" style="enable-background:new 0 0 150 150;" version="1.1" viewBox="10 5 120 120" xml:space="preserve"><style type="text/css">.st0 {fill: #1A73E8}.st1 {fill: #EA4335}.st2 {fill: #4285F4}.st3 {fill: #FBBC04}.st4 {fill: #34A853}.st5 {fill: #4CAF50}.st6 {fill: #1E88E5}.st7 {fill: #E53935}.st8 {fill: #C62828}

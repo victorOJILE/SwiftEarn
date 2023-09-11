@@ -17,7 +17,7 @@ export default function chartComp(data) {
 
 	const comp = cEl('div', {}, chart,
 		cEl('div', { class: 'text-center border-2 border' },
-			cEl('a', { href: '', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
+			cEl('a', { href: './analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
 		));
 
 	setTimeout(() => renderWeeklyDataChart(chart, data), 500);

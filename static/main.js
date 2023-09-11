@@ -21,10 +21,7 @@ function isVisible(elem) {
 
 const carousel = elCls("carousel")[0];
 
-let useIntersectionObserver = false;
-if (IntersectionObserver) {
-	useIntersectionObserver = true;
-}
+const useIntersectionObserver = Boolean(IntersectionObserver);
 
 function observeElem(elem, par, config) {
 	let observer = new IntersectionObserver(
@@ -152,6 +149,7 @@ navigateCarousel();
 			}
 		);
 	}
+	
 	addFadeInUpFunc(elCls('fadeInUp1')[0], 'fadeInUp', '80%');
 	for (let elem of elCls('fadeIn')) addFadeInUpFunc(elem, 'fadeInUp', "20%");
 	
@@ -183,7 +181,7 @@ navigateCarousel();
 	function generateFaq(data) {
 		let togglers = getTogglers();
 		let toggler = cEl('div', { className: 'flex items-center justify-between p-3' },
-			cEl('h3', { textContent: data.question, className: 'mr-3 text-sm' }), togglers
+			cEl('h2', { textContent: data.question, className: 'mr-3 text-sm' }), togglers
 		);
 		let answer = cEl('div', { className: 'hidden p-4' });
 		for (let ans of data.answers) {
@@ -208,30 +206,27 @@ navigateCarousel();
 			answers: ["Getting started with SwiftEarn is simple. Just sign up for free on our website, and upon registration, explore our marketplace's offerings, select the products you wish to promote, and start earning commissions.", "Signing up as an affiliate on SwiftEarn is absolutely <b>free</b>, because we earn only if you earn.", ""]
 			}, {
 			question: 'Is there a cost to join SwiftEarn?',
-			answers: ['Absolutely not. Joining SwiftEarn is completely free. We firmly believe in the principle of "pay when you get paid."', 'There are no registration fees or annual subscriptions required. We only earn a small transaction fee when you earn (make a sale and receive payment).']
+			answers: ['Absolutely not. Joining SwiftEarn is completely free. We firmly believe in the principle of "pay when you get paid."', 'There are no registration fees or annual subscriptions required. We only earn a small transaction fee when you earn (make a sale and receive payment).', "Whether you're a beginner or an experienced marketer, SwiftEarn offers opportunities for everyone."]
 			}, {
 			question: 'How does SwiftEarn help me track my sales and performance?',
 			answers: ['SwiftEarn offers a robust analytics system integrated into your personalized dashboard, ensuring you have a clear understanding of your sales performance, earnings, and payment schedules.']
 			}, {
 			question: 'Who are the vendors and affiliates?',
 			answers: ['The vendor refers to the person who owns the product that is been sold.', 'Affiliates are marketers who recommend the products on the platform to people and when any of the people they refer buys, they get a commission.', 'Customers are simply those who purchase the products being sold on SwiftEarn.']
-			}, {
-			question: 'Are there any requirements to become a SwiftEarn affiliate?',
-			answers: ['There are no specific requirements to become a SwiftEarn affiliate. As long as you are interested in starting an online business and promoting products from our marketplace, you can join our partnership.', "Whether you're a beginner or an experienced marketer, SwiftEarn offers opportunities for everyone."]
-			}, {
+			},
+			{
 			question: 'How often are payments made to affiliates?',
 			answers: ['At SwiftEarn, we believe in rewarding your efforts promptly. As an affiliate, you will receive payments on a weekly basis.', 'This allows you to enjoy the fruits of your sales efforts more frequently and helps you maintain a steady income stream.']
 			}, {
 			question: 'How do I withdraw my earnings from SwiftEarn?',
 			answers: ['Withdrawing your earnings from SwiftEarn is simple and convenient. Once you have accumulated sufficient funds in your account, you can initiate a withdrawal request.', 'SwiftEarn pays both vendors and affiliates via bank deposit. Your money is sent to a valid bank account bearing your registered name.', 'Affiliates and vendors are paid on a weekly basis at the end of the week.']
 			}, {
-			question: 'Does SwiftEarn provide training or resources for beginners in affiliate marketing?',
-			answers: ['Yes. We provide comprehensive training resources, guides, and tutorials to help beginners understand the fundamentals of affiliate marketing and navigate the platform effectively.']
-			}, {
 			question: 'Is there a minimum sales threshold to receive payments as an affiliate on SwiftEarn?',
 			answers: ['SwiftEarn does not impose a minimum sales threshold for affiliates to receive payments.', 'You will receive payments for your successful sales regardless of the quantity or value of those sales.']
+			}, {
+			 question: 'Does SwiftEarn provide training or resources for beginners in affiliate marketing?',
+			 answers: ['Yes. We provide comprehensive training resources, guides, and tutorials to help beginners understand the fundamentals of affiliate marketing and navigate the platform effectively.']
 			}
-
 		];
 	let faqDomUl = document.getElementsByClassName('faqs')[0];
 	faqs.forEach(each => faqDomUl.append(generateFaq(each)));

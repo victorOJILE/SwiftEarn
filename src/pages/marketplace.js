@@ -1,13 +1,10 @@
-import { firebase_app, unsubscribe } from '../auth.js';
-import { getFirestore, getDocs, where, collection, query } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { unsubscribe } from '../auth.js';
+import Header, { db, getDocs, where, collection, query } from '../header.js';
 
 import loader from '../components/loader.js';
-import { icons } from '../icons.js';
-import Header from '../header.js';
+import { search, marketplace } from '../icons.js';
 import generateList from '../components/productList.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
-
-const db = getFirestore(firebase_app);
 
 function Marketplace() {
  let productPage = new URL(location.href);
@@ -17,16 +14,17 @@ function Marketplace() {
 
  const form = cEl('form', { name: 'searhMarketPlace', class: 'grid grid-cols-6 items-center bg-gray-500 mx-4 max-w-xl mx-auto' },
   cEl('input', { class: 'col-span-5 p-3 bg-gray-500 placeholder-gray-300 text-xs text-gray-100 outline-none', type: 'search', name: 'q', placeholder: 'Search marketplace' }),
-  cEl('button', { class: 'col-span-1 text-gray-100 py-2 flex items-center justify-center', type: 'submit' }, svg(icons.search))
+  cEl('button', { class: 'col-span-1 text-gray-100 py-2 flex items-center justify-center', type: 'submit' }, svg(search))
  );
 
  const pagination = cEl('div', { class: 'container flex items-center justify-center text-gray-400 mt-4' });
 
  function getData() {
-  getDocs(collection(db, 'products'))
+  getDocs(query(collection(db, "products"), where('status', '==', 'Approved')))
    .then(doc => {
     let data = [];
     doc.forEach(d => data.push(d.data()));
+    
  	  let len = data.length;
     let slicedPage = currentPage ? (currentPage * 15) - 15 : 0;
     data = data.slice(slicedPage, 15);
@@ -77,7 +75,7 @@ function Marketplace() {
     setTimeout(function() { // Marketplace pagination
      if (len < 15) return;
      pagination.innerHTML = '';
-     // 15 is the maximum number of allowed children in the DOM
+     // 15 is the maximum number of allowed products on a page
      let count = Math.floor(len / 15);
      // 35 is the custom client width for the link element below
      let looplen = pagination.clientWidth / 35;
@@ -104,14 +102,14 @@ function Marketplace() {
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
   cEl('section', { class: 'mb-4' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'SwiftEarn Marketplace' }),
-   cEl('p', { class: 'text-xs md:text-lg color4 md:py-4', textContent: 'Welcome to our vibrant and dynamic marketplace, where endless possibilities and extraordinary deals await you!' })
+   cEl('p', { class: 'text-sm md:text-lg color4 md:py-4', textContent: 'Welcome to our vibrant and dynamic marketplace, where endless possibilities and extraordinary deals await you!' })
   ),
   cEl('section', {},
    form
   ),
   cEl('section', { class: 'my-12' },
    cEl('h2', { class: 'text-xl my-2 flex items-center' },
-    cEl('span', { class: 'color4' }, svg(icons.marketplace)),
+    cEl('span', { class: 'color4' }, svg(marketplace)),
     document.createTextNode('Available Products')
    ),
    comp, pagination
@@ -122,26 +120,6 @@ function Marketplace() {
  return main;
 }
 
-function AuthWrapper() {
- const page = cEl('header', { class: 'fixed top-0 left-0 w-full'},
-  cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
-   cEl('a', { href: '/SwiftEarn/' },
-    cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
-   ),
-   cEl('a', { href: '/SwiftEarn/login.html', textContent: 'Login', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
-  )
- );
- const body = document.body;
- body.classList.remove('grid');
- body.classList.remove('md:grid-cols-5');
- body.innerHTML = '';
- body.append(page);
-
- return body;
-}
-
-unsubscribe.authenticate = function(type, user) {
- let myPage = type ? Header('Marketplace', user.uid) : AuthWrapper();
-  
- myPage.append(Marketplace());
+unsubscribe.authenticate = function(uid) {
+ Header('Marketplace', uid).append(Marketplace());
 }

@@ -1,5 +1,4 @@
-import { firebase_app, unsubscribe } from '../auth.js';
-import { getFirestore, getDoc, getDocs, collection, doc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { unsubscribe } from '../auth.js';
 import Header from '../header.js';
 import homeStats from '../components/homeStats.js';
 import weeklyChart from '../components/weeklyChart.js';
@@ -8,38 +7,10 @@ import Activities from '../components/activities.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 import Vendors from '../components/vendors.js';
 
-const db = getFirestore(firebase_app);
 
 function Overview(uid) {
-	const welcome = cEl('p', { textContent: 'Welcome back' });
-	
-	let data = sessionStorage.getItem('user');
-
-	if(!data) {
-		getDoc(doc(db, 'users', uid))
-			.then(res => {
-				data = res.data();
-				welcome.textContent = 'Welcome back, ' + data.lastName;
-				sessionStorage.setItem('user', JSON.stringify(data));
-			});
-	} else {
-		data = JSON.parse(data);
-		welcome.textContent = 'Welcome back, ' + data.lastName;
-	}
-	
 	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
-		cEl('div', {},
-			cEl('h1', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Dashboard' }),
-			cEl('div', { class: 'md:text-md p-3 bg-8 flex justify-between items-center' },
-				cEl('div', {},
-					welcome,
-					cEl('p', { class: 'color4 pr-2', style: { fontSize: '0.65rem' }, textContent: 'Get Ready to Boost Your Sales and Make an Impact Today!' })
-				),
-				cEl('div', { class: 'text-center' },
-					cEl('img', { class: 'w-16', src: '/SwiftEarn/static/images/coffee-badge.webp' })
-				)
-			)
-		),
+		cEl('h1', { class: 'bg-8 text-2xl md:text-3xl p-2', textContent: 'Dashboard' }),
 		cEl('section', { class: 'pt-2' },
 			homeStats(uid)
 		),
@@ -58,11 +29,6 @@ function Overview(uid) {
 	return main;
 }
 
-unsubscribe.authenticate = function(type, user) {
- if (type) {
-  let myPage = Header('Overview', user.uid);
-  myPage.append(Overview(user.uid));
- } else {
-  location.href = '/SwiftEarn/login.html?redirect=true&page=' + new URL(location.href).pathname;
- }
+unsubscribe.authenticate = function(uid) {
+ Header('Overview', uid).append(Overview(uid));
 }

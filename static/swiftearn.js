@@ -1,5 +1,19 @@
-const elCls = (cls) => document.getElementsByClassName(cls);
-const elId = (id) => document.getElementById(id);
+function elCls(cls) {
+ return document.getElementsByClassName(cls);
+}
+
+function elId(id) {
+ return document.getElementById(id);
+}
+
+const isMobile = (function() {
+		try {
+			document.createEvent("TouchEvent");
+			return true;
+		} catch (e) {
+			return false;
+		}
+})();
 
 Element.prototype.addCss = function(val = {}) {
 	for (let i of Object.keys(val)) {
@@ -13,18 +27,6 @@ Element.prototype.empty = function() {
 	}
 }
 
-let isMobile;
-(function isMobileF() {
-	if (isMobile == null) {
-		try {
-			document.createEvent("TouchEvent");
-			isMobile = true;
-		} catch (e) {
-			isMobile = false;
-		}
-	}
-})();
-
 Element.prototype.ae = function(type, callback, props = {}) {
 	this.addEventListener(type, callback, props);
 };
@@ -37,50 +39,51 @@ String.prototype.capitalize = function() {
 	return this.length > 1 ? this[0].toUpperCase() + this.slice(1) : this.toUpperCase();
 };
 
-let useIntersectionObserver = false;
-if (IntersectionObserver) {
-	useIntersectionObserver = true;
-}
+const useIntersectionObserver = Boolean(IntersectionObserver);
 
-// Create html DOM elements
 /**
+ * Create html DOM elements
  * @param {string} elem - Type of element
  */
-const cEl = function(elem, props = {}, ...children) {
-	let element = document.createElement(elem);
-	if (props && typeof props == 'object') {
-		for (let prop in props) {
-			let properties = {
-				class() {
-					if (props[prop].includes(' ')) {
+function cEl(elem, props = {}, ...children) {
+ let element = document.createElement(elem);
+ if (props && typeof props == 'object') {
+  for (let prop in props) {
+   switch (prop) {
+    case 'class':
+     if (props[prop].includes(' ')) {
 						let cls = props[prop].split(' ');
 						iter(cls, each => element.classList.add(each));
 					} else {
 						element.classList.add(props[prop]);
 					}
-				},
-				data() {
-					for (let d in props[prop]) {
-						element.dataset[d] = props[prop][d];
-					}
-				},
-				style() {
-					element.addCss(props[prop]);
-				},
-				event() {
-					for (let ev in props[prop]) {
-						element.ae(ev, props[prop][ev]);
-					}
-				}
-			}
-			properties[prop] ? properties[prop]() : (element[prop] = props[prop]);
-		}
-	}
-	if (children) {
-		for (let child of children) element.append(child);
-	}
-	return element;
+     break;
+    case 'data':
+     for (let d in props[prop]) {
+      element.dataset[d] = props[prop][d];
+     }
+     break;
+    case 'style':
+     element.addCss(props[prop]);
+     break;
+    case 'event':
+     for (let ev in props[prop]) {
+      element.ae(ev, props[prop][ev]);
+     }
+     break;
+    default:
+     element[prop] = props[prop];
+   }
+  }
+ }
+
+ if (children) {
+  for (let child of children) element.append(child);
+ }
+ return element;
 }
+
+const text = (str) => document.createTextNode(str);
 
 const iter = function(v, func) {
 	if (v == null || typeof v === undefined) return alert('Error: First parameter is not an iterable!');
@@ -121,8 +124,7 @@ function copyToClipboard(text) {
 }
 
 function svg(str) {
-	let i = cEl('i', { innerHTML: str });
-	return i.firstElementChild;
+	return cEl('i', { innerHTML: str }).firstElementChild;
 }
 
 function isVisible(elem) {
@@ -135,7 +137,7 @@ function isVisible(elem) {
 
 /**
  * @param {object} config
- * @param {string} config.rootMargin
+ * @param {String} config.rootMargin
  * @param {Function} config.isVisible
  * @param {Function|Boolean} config.notVisible
  */
@@ -167,7 +169,6 @@ function observeElem(elem, parent, config) {
 	}
 }
 
-const rank = {
-	1: '/SwiftEarn/static/images/coffee-badge.webp',
-	2: '/SwiftEarn/static/images/coffee-badge.webp'
-};
+const pathname = new URL(location.href).pathname;
+
+const urlPrefix = '.'.repeat(pathname.match(/\//g).length) + '/';

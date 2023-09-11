@@ -4,13 +4,27 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>SwiftEarn product</title>
-	<meta name="description" content="SwiftEarn product description" />
-	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.17/dist/tailwind.min.css" rel="stylesheet" /><!--
-	<link rel="stylesheet" href="/static/tailwind.min.css">-->
-	<link rel="stylesheet" href="/SwiftEarn/static/style.css" />
-	<link rel="stylesheet" href="/SwiftEarn/static/project64ar7r4.css" />
-	<base href="https://victorojile.github.io/SwiftEarn/">
+	<title>SwiftEarn - Product page</title>
+	<meta name="description" content="SwiftEarn product information" />
+	<script>
+	 +(function() {
+	  const productInfo = {};
+	  const params = new URL(location.href).searchParams;
+	  const aff_id = params.get('aff_id');
+	  if (aff_id) {
+	   let jvpage = new URL(productInfo.jvpage).searchParams;
+	   jvpage.append('aff_id', aff_id);
+	   jvpage.append('prd_id', params.get('prd_id'));
+	   location.href = jvpage;
+	  }
+	 })()
+	 console.log('fhh')
+	</script>
+	<!--
+	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.17/dist/tailwind.min.css" rel="stylesheet" />-->
+	<link rel="stylesheet" href="../static/tailwind.min.css" />
+	<link rel="stylesheet" href="../static/style.css" />
+	<link rel="stylesheet" href="../static/project64ar7r4.css" />
 </head>
 
 <body class="grid md:grid-cols-5 bg-main">
@@ -18,7 +32,7 @@
 		<span class="loader"></span>
 	</div>
 </body>
-<script src="./static/swiftearn.js"></script>
-<script type="module" src="./src/pages/product.js"></script>
+<script src="../static/swiftearn.js"></script>
+<script type="module" src="../src/pages/product.js"></script>
 
 </html>

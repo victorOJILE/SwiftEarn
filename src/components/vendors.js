@@ -1,13 +1,13 @@
-//import { db, getDocs, collection, query, orderBy, limit } from '../header.js';
+//import { db, getDocs, collection, where, query, orderBy, limit } from '../header.js';
 import { vendors } from '../icons.js';
 import loader from './loader.js';
 
 export default function Vendors(config) {
  const section = cEl('section', { class: 'mt-12' }, loader());
 
- /*const q = query(collection(db, "vendors"), orderBy("total_sales"), limit(config.addMore ? 6 : 5));
+ /*const q = query(collection(db, "users"), where('role', '==', 'affiliate-vendor'), orderBy("total_sales"), limit(config.addMore ? 6 : 5));
   
- getDocs(collection(db, 'vendors'))
+ getDocs(query(collection(db, "users"), where('role', '==', 'affiliate-vendor') ))
   .then(doc => {*/
    const data = [];
    //doc.forEach((d) => data.push(d.data()));

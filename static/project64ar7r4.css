@@ -32,17 +32,6 @@ body.dark-theme {
 		--bg-9: rgba(17, 24, 39);
 		--border-color: gray
 	}
-
-	body.light-theme {
-		--text-color2: #6A6B73;
-		--text-color3: mediumpurple;
-		--text-color4: #70571B;
-		--custom-main-bg: rgba(243, 244, 246);
-		--bg-7: rgba(229, 231, 235);
-		--bg-8: rgba(243, 244, 246);
-		--bg-9: rgba(249, 250, 251);
-	--border-color: #C7C7C7
-	}
 }
 
 header {

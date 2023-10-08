@@ -2,6 +2,10 @@ import { auth, unsubscribe, updateProfile, updateEmail, updatePassword } from '.
 import Header, { db, setDoc, getDoc, doc } from '../header.js';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 
+const checkMark = '<svg stroke="green" fill="green" stroke-width="0" viewBox="0 0 512 512" width="1.6em" height="1.6em" xmlns="http://www.w3.org/2000/svg"> <path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" /></svg>';
+
+const loadingIcon = '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.6em" height="1.6em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>';
+
 function Profile(uid) {
  const countries = [
 		"",
@@ -105,14 +109,62 @@ function Profile(uid) {
 		"Yemen", "Zambia", "Zimbabwe"
 	];
  const banks = [
-		'', "Access Bank Plc ", "Citibank Nigeria Limited", "Ecobank Nigeria Plc", "First Bank Plc", "First City Monument Bank Plc", "Fidelity Bank Plc", "Globus Bank Limited", "Guaranty Trust Bank Plc", "Heritage Banking Company Ltd", "Keystone Bank Limited", "Parallex Bank Ltd", "Polaris Bank Plc", "Premium Trust Bank", "Providus Bank", "Stanbic IBTC Bank Plc", "Standard Chartered Bank Nigeria Ltd.", "Sterling Bank Plc", "Sun Trust Bank Nigeria Limited", "Titan Trust Bank Ltd", "Union Bank of Nigeria Plc", "United Bank for Africa", "Unity Bank Plc", "Wema Bank Plc", "Zenith Bank Plc", "Optimus Bank", "Jaiz Bank Plc", "Taj Bank", "Lotus Bank"];
+    "",
+		  "Access Bank",
+		  "Access Money",
+		  "ASO Savings and & Loans",
+		  "Cellulant",
+		  "ChamsMobile",
+		  "Citibank Nigeria Limited",
+		  "Coronation Merchant Bank",
+		  "Covenant Microfinance Bank",
+		  "Diamond Bank",
+		  "Eartholeum",
+		  "Ecobank Plc",
+		  "EcoMobile",
+		  "Enterprise Bank",
+		  "eTranzact",
+		  "FBNMobile", "FET",
+		  "Fidelity Bank", "Fidelity Mobile",
+		  "First Bank of Nigeria",
+		  "First City Monument Bank",
+		  "Fortis Microfinance Bank",
+		  "FortisMobile", "FSDH",
+		  "GTBank Plc", "GTMobile",
+		  "Hedonmark", "Heritage",
+		  "Imperial Homes Mortgage Bank",
+		  "JAIZ Bank",
+		  "Jubilee Life Mortgage Bank",
+		  "Keystone Bank", "Mkudi",
+		  "MoneyBox", "NIP Virtual Bank",
+		  "NPF MicroFinance Bank",
+		  "Omoluabi Mortgage Bank",
+		  "Pagatech", "Page MFBank",
+		  "Parralex", "PayAttitude Online",
+		  "Paycom", "Polaris Bank Plc",
+		  "Premium Trust Bank",
+		  "Providus Bank",
+		  "ReadyCash (Parkway)",
+		  "SafeTrust Mortgage Bank",
+		  "Skye Bank", "Stanbic IBTC Bank",
+		  "Stanbic Mobile Money",
+		  "Standard Chartered Bank",
+		  "Sterling Bank", "Sterling Mobile",
+		  "SunTrust Bank", "TagPay",
+		  "TCF MFB", "TeasyMobile",
+		  "Trustbond", "Union Bank",
+		  "United Bank for Africa",
+		  "Unity Bank", "VTNetworks",
+		  "Wema Bank", "Zenith Bank",
+		  "ZenithMobile"
+		 ];
 
  function updateRequest(data) {
   return setDoc(doc(db, 'users', uid), data, { merge: true });
  }
 
  const storage = getStorage();
- 
+
  function field({ label, type, name, useDatalist, id, arr }) {
   // Save a state to keep track of 
   return cEl('div', { class: 'py-2 px-3 bg-8 rounded-lg' },
@@ -132,29 +184,28 @@ function Profile(uid) {
          // Enable its input field
          this.previousElementSibling.firstElementChild.disabled = false;
          // Change icon to a check mark
-         this.innerHTML = (
-          '<svg stroke="green" fill="green" stroke-width="0" viewBox="0 0 512 512" width="1.6em" height="1.6em" xmlns="http://www.w3.org/2000/svg"> <path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" /></svg>');
+         this.innerHTML = checkMark;
         } else if (!this.firstElementChild.classList.contains('spin')) {
          // send update request data
          let value = this.previousElementSibling.firstElementChild.value;
-         if(!value) return;
+         if (!value) return;
 
          let data = {};
          data[id || name] = value;
-         this.innerHTML = (
-          '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.6em" height="1.6em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>');
+
+         this.innerHTML = loadingIcon;
 
          if (name === 'email') {
-          await updateEmail(auth.currentUser, data.email);
+          await updateEmail(auth.currentUser, value);
          } else if (name === 'password') {
-          await updatePassword(auth.currentUser, data.password);
+          await updatePassword(auth.currentUser, value);
          } else {
           await updateRequest(data);
 
           if (name === 'firstName') {
-           updateProfile(auth.currentUser, { displayName: `${data.firstName} ${document.forms.setting.lastName.value}` });
+           await updateProfile(auth.currentUser, { displayName: `${data.firstName} ${document.forms.setting.lastName.value}` });
           } else if (name === 'lastName') {
-           updateProfile(auth.currentUser, { displayName: `${document.forms.setting.firstName.value} ${data.lastName}` });
+           await updateProfile(auth.currentUser, { displayName: `${document.forms.setting.firstName.value} ${data.lastName}` });
           }
          }
 
@@ -170,10 +221,10 @@ function Profile(uid) {
   )
  }
 
- let oldUserImage, data;
- 
+ let oldUserImage;
+
  const width = 280,
-  height = width;//(width / 3) * 2;
+  height = width; //(width / 3) * 2;
  const canvas = cEl('canvas');
  canvas.width = width;
  canvas.height = height;
@@ -185,26 +236,26 @@ function Profile(uid) {
  canvas.addEventListener('pointerdown', function(ev) {
   y1 = ev.clientY;
  });
- 
+
  async function getData() {
   try {
    const res = await getDoc(doc(db, 'users', uid));
-   data = res.data();
+   const data = res.data();
    const form = document.forms.setting;
-   
+
    for (let key in data) {
     if (key == 'photoUrl') {
      if (data[key]) {
+      oldUserImage = data[key];
+
       const imageObj = new Image();
-      
+
       imageObj.src = data[key];
-      
+
       imageObj.addEventListener('load', function() {
        ctx.clearRect(0, 0, width, height);
        ctx.drawImage(imageObj, 0, 0, width, imageHeight);
       });
-      
-      oldUserImage = data[key];
      }
     } else if (form[key]) {
      form[key].value = data[key];
@@ -215,7 +266,7 @@ function Profile(uid) {
   }
  }
  getData();
- 
+
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Profile settings' }),
@@ -240,55 +291,52 @@ function Profile(uid) {
           function stop() {
            this.previousElementSibling.innerHTML = 'Upload';
           }
-          
+
           try {
            const files = this.files;
            const file = files[0];
-           
-           const imageType = /image.{0,3}/;
-           const validType = /jpg|png|gif|webp/i;
-           
-           if (!imageType.test(file.type) || !validType.test(file.type)) return alert('Please upload an image file of these formats: .jpg .png .gif .webp');
-           
+
+           if (!file.type.match(/image.{3,}/) || !file.type(/jpg|png|gif|webp/i)) return alert('Please upload an image file of these formats: .jpg .png .gif .webp');
+
            const reader = new FileReader();
-           
+
            reader.onload = function(event) {
             const imageObj = new Image();
             imageObj.src = event.target.result;
-           
+
             imageObj.addEventListener('load', function() {
              originalWidth = imageObj.width;
              originalHeight = imageObj.height;
-           
+
              imageHeight = originalHeight * (width / originalWidth);
-           
+
              y2 = width > imageHeight ? 0 : -((width / 3) * 2) / 2;
-             
+
              function callback(e) {
               y2 += Math.min(2, -(y1 - e.clientY));
-              
+
               ctx.clearRect(0, 0, width, height);
               ctx.drawImage(imageObj, 0, y2, width, imageHeight);
              }
-             
+
              canvas.addEventListener('pointermove', callback);
-             
+
              move = callback;
-           
+
              ctx.clearRect(0, 0, width, height);
              ctx.drawImage(imageObj, 0, y2, width, imageHeight);
             });
            }
-           
+
            move && canvas.removeEventListener('pointermove', move);
-           
+
            reader.readAsDataURL(new Blob(files));
-           
+
            this.disabled = true;
            this.previousElementSibling.innerHTML = (
             '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.4em" height="1.4em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>');
-           
-           if(oldUserImage) {
+
+           if (oldUserImage) {
             // Delete old user image from firebase
             await deleteObject(ref(storage, oldUserImage));
            }
@@ -300,7 +348,7 @@ function Profile(uid) {
            await uploadBytes(imageRef, file);
 
            const photoUrl = await getDownloadURL(imageRef);
-           
+
            // To be used to get reference to this image in case we change the image again, so we can delete this one
            oldUserImage = photoUrl;
 
@@ -332,7 +380,7 @@ function Profile(uid) {
      field({ label: 'Edit Country', useDatalist: true, id: 'country', arr: countries })
     ),
     cEl('h2', { class: 'text-lg mb-2 mt-12', textContent: 'Account Information' }),
-    field({ label: 'Edit Bank Name', useDatalist: true, id: 'bank', arr: banks }),
+    field({ label: 'Edit Bank Name', useDatalist: true, id: 'bankName', arr: banks }),
     cEl('div', { class: 'grid md:grid-cols-2 md:gap-4' },
      field({ label: 'Edit Account Name', type: 'text', name: 'bankAccName' }),
      field({ label: 'Edit Account No', type: 'number', name: 'bankAccNo' })

@@ -89,7 +89,7 @@ function ProductComp(uid) {
 function vendorInformation(vendor_id) {
  let comp = cEl('div', {}, loader());
  
-  getDoc(doc(db, 'vendors', vendor_id))
+  getDoc(doc(db, 'users', vendor_id))
    .then(res => {
   const data = res.data();
   console.log(data);

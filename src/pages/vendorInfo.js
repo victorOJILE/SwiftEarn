@@ -15,7 +15,7 @@ function VendorComp(uid) {
  const comp = cEl('div', {}, loader());
 
  if (vendor_id) {
-  getDoc(doc(db, 'vendors', vendor_id))
+  getDoc(doc(db, 'users', vendor_id))
    .then(res => {
     const data = res.data();
 

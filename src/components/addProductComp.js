@@ -1,5 +1,5 @@
 import { firebase_app } from '../auth.js';
-import { db, getDoc, getDocs, setDoc, doc, query, collection, where, updateDoc, arrayUnion } from '../header.js';
+import { db, getDoc, getDocs, setDoc, doc, query, collection, where, updateDoc } from '../header.js';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 
 const storage = getStorage();
@@ -82,7 +82,7 @@ export default function AddProduct(uid, productData) {
       submit.innerHTML = loader;
       
       // Upload image
-      if (productImg && productImg.type.match(/image.{0,3}/) && productImg.type.match(/jpg|png|gif|webp/i)) {
+      if (productImg && productImg.type.match(/image.{3,}/) && productImg.type.match(/jpg|png|gif|webp/i)) {
        if(oldImage && oldImage.startsWith('https://firebasestorage.googleapis.com')) {
         // Delete old product image from firebase
         await deleteObject(ref(storage, oldImage));
@@ -92,18 +92,13 @@ export default function AddProduct(uid, productData) {
 
        await uploadBytes(imageRef, productImg);
        
-       await sendRequest({
-        // Add productImageUrl to product data
-        ...data,
-        productImageUrl: await getDownloadURL(imageRef)
-       });
+       // Add productImageUrl to product data
+       data.productImageUrl = await getDownloadURL(imageRef);
        
-       await updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) });
+       await sendRequest(data);
       } else {
        if (confirm('Product image was not added or modified! Do you want to continue?')) {
         await sendRequest(data);
-        
-        await updateDoc(doc(db, 'vendors', uid), { products: arrayUnion(product_id) });
        }
       }
       
@@ -129,7 +124,7 @@ export default function AddProduct(uid, productData) {
          try {
           let file = this.files[0];
 
-          if (!file.type.match(/image.{0,3}/) || !file.type.match(/jpg|png|gif|webp/i)) {
+          if (!file.type.match(/image.{3,}/) || !file.type.match(/jpg|png|gif|webp/i)) {
            return alert('Please upload an image file of these formats: jpg, png, gif, webp');
           }
 

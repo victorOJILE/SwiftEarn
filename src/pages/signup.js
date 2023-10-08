@@ -149,7 +149,7 @@ function handleSubmit(e) {
    document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
    
    if(!done.updatedProfile) {
-    await updateProfile(auth.currentUser, { displayName: `${names[0]} ${names.slice(1).join(' ')}`, role: 'affiliate' });
+    await updateProfile(auth.currentUser, { displayName: `${names[0]} ${names.slice(1).join(' ')}` });
     done.updatedProfile = true;
    }
    
@@ -166,8 +166,8 @@ function handleSubmit(e) {
 
    location.href = './overview.html';
   } catch (error) {
+   cover.remove();
    if (error.code == 'auth/email-already-in-use') {
-    cover.remove();
     submitButton.innerHTML = 'Create account';
     emailInUse.classList.remove('hidden');
     let emailInUseInput = emailInUse.previousElementSibling.lastElementChild;
@@ -306,6 +306,9 @@ function handleSubmit(e) {
 
      modal.open || document.body.append(modal);
      modal.open || modal.showModal();
+    })
+    .catch(function(err) {
+     cover.remove();
     });
   }
 
@@ -324,7 +327,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
    cEl('div', { class: 'w-10 pl-2 border-r-2' },
     svg(userIcon)
    ),
-   cEl('input', { type: 'text', name: 'fullName', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'fullName', placeholder: 'John Doe', required: false })
+   cEl('input', { type: 'text', name: 'fullName', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'fullName', placeholder: 'John Doe', required: true })
   )
  ),
  cEl('div', { class: 'mb-6' },
@@ -334,7 +337,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
    cEl('div', { class: 'w-10 pl-2 border-r-2' },
     svg(envelope)
    ),
-   cEl('input', { type: 'email', name: 'email', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'email', placeholder: 'name@yahoo.com', required: false })
+   cEl('input', { type: 'email', name: 'email', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'email', placeholder: 'name@yahoo.com', pattern: '\S+@\S+\.\S+', required: true })
   ), emailInUse
  ),
  cEl('div', { class: 'mb-6' },
@@ -344,7 +347,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
    cEl('div', { class: 'w-10 pl-2 border-r-2' },
     svg(envelope)
    ),
-   cEl('input', { type: 'email', name: 'confEmail', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'confEmail', placeholder: 'name@yahoo.com', required: false })
+   cEl('input', { type: 'email', name: 'confEmail', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'confEmail', placeholder: 'name@yahoo.com', required: true })
   ), emailNotMatch
  ),
  cEl('div', { class: 'mb-12' },
@@ -354,7 +357,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
    cEl('div', { class: 'w-10 pl-2 border-r-2' },
     svg(lockIcon)
    ),
-   cEl('input', { class: 'bg-white w-3/4 p-3 text-sm', type: 'password', name: 'password', id: 'password', pattern: '.[A-Za-z0-9#$&@%]{8,35}', placeholder: 'abcABC123#$&', required: false }),
+   cEl('input', { class: 'bg-white w-3/4 p-3 text-sm', type: 'password', name: 'password', id: 'password', pattern: '[A-Za-z0-9#$&@%]{8,35}', placeholder: 'abcABC123#$&', required: true }),
    eyes
   ),
   cEl('small', { class: 'hidden info text-yellow-400 py-1 email-info' },

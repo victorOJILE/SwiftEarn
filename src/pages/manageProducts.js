@@ -1,5 +1,5 @@
 import { unsubscribe } from '../auth.js';
-import Header, { db, getDocs, where, collection, query, doc, deleteDoc, updateDoc, arrayRemove } from '../header.js';
+import Header, { db, getDocs, where, collection, query, doc, deleteDoc, updateDoc } from '../header.js';
 import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 import EditProduct from '../components/addProductComp.js';
 import loader from '../components/loader.js';
@@ -109,8 +109,6 @@ function createRow(data, ind) {
 
         await deleteDoc(doc(db, 'products', product_id));
 
-        await updateDoc(doc(db, 'vendors', uid), { products: arrayRemove(data.product_id) });
-
         location.reload();
        } catch (e) {
         alert('Error: Cannot complete product deletion. Please try again!');
@@ -127,4 +125,4 @@ const deleteIcon = `<svg stroke="red" fill="red" stroke-width="0" viewBox="0 0 4
 
 unsubscribe.authenticate = function(uid) {
  Header('Manage Products', uid).append(ManageProducts(uid));
- }
+}

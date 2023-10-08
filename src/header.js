@@ -1,11 +1,11 @@
 import { firebase_app, callSignout } from './auth.js';
-import { getFirestore, doc, setDoc, getDoc, getDocs, where, collection, query, orderBy, limit, deleteDoc, updateDoc, arrayUnion, arrayRemove } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, getDocs, where, collection, query, orderBy, limit, deleteDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import * as icons from './icons.js';
 import loader from './components/loader.js';
 
 const db = getFirestore(firebase_app);
 
-export { db, doc, setDoc, getDoc, getDocs, where, collection, query, orderBy, limit, deleteDoc, updateDoc, arrayUnion, arrayRemove };
+export { db, doc, setDoc, getDoc, getDocs, where, collection, query, orderBy, limit, deleteDoc, updateDoc, arrayUnion };
 
 function signout() {
  callSignout()
@@ -15,13 +15,9 @@ function signout() {
 
 let pageName;
 
-const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
-const currentTheme = localStorage.getItem("theme");
+const currentTheme = localStorage.getItem("spider-theme") || 'dark';
 if (currentTheme == "dark") {
  document.body.classList.toggle("dark-theme");
-} else if (currentTheme == "light") {
- document.body.classList.toggle("light-theme");
 }
 
 export default function app(name, uid) {
@@ -117,18 +113,9 @@ function asideLeft() {
  }
 
  themeToggle.addEventListener("change", function() {
-  if (prefersDarkScheme.matches) {
-   document.body.classList.toggle("light-theme");
-   var theme = document.body.classList.contains("light-theme") ?
-    "light" :
-    "dark";
-  } else {
-   document.body.classList.toggle("dark-theme");
-   var theme = document.body.classList.contains("dark-theme") ?
-    "dark" :
-    "light";
-  }
-  localStorage.setItem("theme", theme);
+  document.body.classList.toggle("dark-theme");
+  
+  localStorage.setItem("spider-theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
  });
 
  const aside = cEl('aside', { class: 'bg-main fixed top-0 -left-full md:static h-screen md:col-span-1 w-9/12 md:w-auto max-w-sm md:max-w-xl z-20 flex flex-col justify-between overflow-auto scroll-bar', ariaHidden: true },
@@ -186,7 +173,7 @@ function asideLeft() {
 
 function main() {
  const hamburger = cEl('div', { class: 'hamburger inline-block md:hidden mr-3', id: 'hamburger' }, cEl('span'), cEl('span'), cEl('span'));
- const profile = cEl('span', { class: 'mr-2 inline-block hover:bg-gray-500 p-2 text-blue-200 bg-gray-700 rounded-full transition duration-700' }, svg(icons.user));
+ const profile = cEl('span', { class: 'mr-2 inline-block hover:bg-gray-500 p-2 text-blue-200 bg-gray-700 rounded-full transition duration-700', id: 'profileIcon' }, svg(icons.user));
 
  const div = cEl('div', { class: 'md:col-span-4 bg-custom-main-bg overflow-auto' },
   cEl('header', { class: 'fixed top-0 w-full md:static z-10 trans' },
@@ -235,6 +222,8 @@ function asideRight(uid) {
    aside.empty();
    const data = res.data();
    sessionStorage.setItem('user', JSON.stringify(data));
+   
+   //profileIcon.innerHTML = data.n;
 
    if (data.role.includes('vendor')) {
     const mainNav = elId('mainNav');
@@ -266,7 +255,7 @@ function asideRight(uid) {
      ),
      cEl('div', { class: 'text-center p-4' },
       cEl('h2', { class: 'text-lg', textContent: `${data.firstName || 'SwiftEarn' } ${data.lastName || 'user' }` }),
-      cEl('p', { class: 'text-sm text-gray-400', textContent: data.title || 'Affiliate Marketer' })
+      cEl('p', { class: 'text-sm text-gray-400', textContent: data.businessName || 'Affiliate Marketer' })
      ),
      cEl('div', { class: 'text-center mb-6' },
       cEl('a', { class: 'inline-block underline text-green-600', href: urlPrefix + 'profile.html', textContent: 'Edit profile' })

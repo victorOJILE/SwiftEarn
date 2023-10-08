@@ -92,12 +92,9 @@ function handleSubmit(e) {
 
   signInWithEmailAndPassword(auth, email.value, password.value)
    .then(result => {
-    let params = new URL(location.href).searchParams;
-    let page = params.get('page');
-    
     document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
      
-    location.href = page || './overview.html';
+    location.href = new URL(location.href).searchParams.get('page') || './overview.html';
    })
    .catch((error) => {
     cover.remove();

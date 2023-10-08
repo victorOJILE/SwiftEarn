@@ -18,7 +18,9 @@ function callSignout() {
 }
 
 const unsubscribe = {};
+setTimeout(() => unsubscribe.authenticate('f'), 3000)
 
+/*
 onAuthStateChanged(auth, user => {
  try {
   if (user) {
@@ -51,6 +53,8 @@ onAuthStateChanged(auth, user => {
 
    document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
    
+   // TODO: getAdditionalUserInfo and save to session storage then use to set profileIcon name (e.g OJ) in header.js
+   
    console.log(user);
    // User is authenticated
    return unsubscribe.authenticate(user.uid);
@@ -65,5 +69,5 @@ onAuthStateChanged(auth, user => {
   console.error(e)
  }
 });
-
+*/
 export { firebase_app, callSignout, auth, unsubscribe, updateProfile, updateEmail, updatePassword };

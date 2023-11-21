@@ -18,9 +18,9 @@ function callSignout() {
 }
 
 const unsubscribe = {};
-setTimeout(() => unsubscribe.authenticate('f'), 3000)
+//setTimeout(() => unsubscribe.authenticate('f'), 3000)
 
-/*
+
 onAuthStateChanged(auth, user => {
  try {
   if (user) {
@@ -45,7 +45,7 @@ onAuthStateChanged(auth, user => {
      .then(() => {
       alert('Your session has expired! Please Login.');
       
-      location.href = '/login.html?page=' + new URL(location.href).pathname;
+      location.href = '/SwiftEarn/login.html?page=' + new URL(location.href).pathname;
      })
      .catch(e => console.error(e));
      return;
@@ -61,7 +61,7 @@ onAuthStateChanged(auth, user => {
   } else {
    // User is not authenticated
    
-   location.href = '/login.html?page=' + new URL(location.href).pathname;
+   location.href = '/SwiftEarn/login.html?page=' + new URL(location.href).pathname;
   }
  } catch (e) {
   document.body.innerHTML = '';
@@ -69,5 +69,5 @@ onAuthStateChanged(auth, user => {
   console.error(e)
  }
 });
-*/
+
 export { firebase_app, callSignout, auth, unsubscribe, updateProfile, updateEmail, updatePassword };

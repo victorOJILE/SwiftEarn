@@ -336,7 +336,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
    cEl('div', { class: 'w-10 pl-2 border-r-2' },
     svg(envelope)
    ),
-   cEl('input', { type: 'email', name: 'email', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'email', placeholder: 'name@yahoo.com', pattern: '\S+@\S+\.\S+', required: true })
+   cEl('input', { type: 'email', name: 'email', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'email', placeholder: 'name@yahoo.com', required: true })
   ), emailInUse
  ),
  cEl('div', { class: 'mb-6' },

@@ -12,7 +12,7 @@ function VendorsComp(uid) {
     const data = res.data();
     if(!data.role.includes('vendor')) {
      becomeVendor.append(cEl('div', { class: 'mt-4 mb-12' },
-       cEl('button', { class: 'text-lg py-3 px-8 rounded-lg border-2 border font-bold font-special', textContent: 'Become a vendor!', event: { click: () => location.href = './vendors/signup.html' } })
+       cEl('button', { class: 'text-lg py-3 px-8 rounded-lg border-2 border font-bold font-special', textContent: 'Become a vendor!', event: { click: () => location.href = '/SwiftEarn/vendors/signup.html' } })
       ));
     }
    });

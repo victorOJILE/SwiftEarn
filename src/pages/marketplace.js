@@ -83,7 +83,7 @@ function Marketplace() {
 
      for (; linkCount <= count && linkCount < looplen; linkCount++) {
       let text = linkCount == Math.floor(looplen) ? count : linkCount;
-      let url = linkCount > 1 ? './marketplace.html?page=' + text : './marketplace.html';
+      let url = linkCount > 1 ? '/SwiftEarn/marketplace.html?page=' + text : '/SwiftEarn/marketplace.html';
 
       let link = cEl('a', { href: url, textContent: text, className: 'border-2 border mr-1 w-8 h-8 flex justify-center items-center' });
       pagination.append(link);

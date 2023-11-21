@@ -209,13 +209,13 @@ function Profile(uid) {
           }
          }
 
-         this.innerHTML = `<img class="w-5" src="./static/images/faEdit.svg" />`;
+         this.innerHTML = `<img class="w-5" src="/SwiftEarn/static/images/faEdit.svg" />`;
          this.previousElementSibling.firstElementChild.disabled = true;
         }
        }
       }
      },
-     cEl('img', { class: 'w-5', src: './static/images/faEdit.svg' })
+     cEl('img', { class: 'w-5', src: '/SwiftEarn/static/images/faEdit.svg' })
     )
    )
   )

@@ -20,10 +20,10 @@ export default function options(auth, sig, FacebookAuthProvider, GoogleAuthProvi
 
     if (setD) {
      setD(user.uid)
-      .then(() => location.href = redirect ? params.get('page') : './overview.html');
+      .then(() => location.href = redirect ? params.get('page') : '/SwiftEarn/overview.html');
     }
 
-    location.href = redirect ? params.get('page') : './overview.html';
+    location.href = redirect ? params.get('page') : '/SwiftEarn/overview.html';
    })
    .catch((error) => {
     console.error(error);
@@ -39,7 +39,7 @@ export default function options(auth, sig, FacebookAuthProvider, GoogleAuthProvi
     document.createTextNode('Continue with Google')
    ),
    cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: () => useOtherMeth(facebook, FacebookAuthProvider) } },
-    cEl('img', { class: 'w-7 mr-2 ml-1', src: './static/images/facebook.png' }),
+    cEl('img', { class: 'w-7 mr-2 ml-1', src: '/SwiftEarn/static/images/facebook.png' }),
     cEl('span', { textContent: 'Continue with Facebook' })
    )
   );

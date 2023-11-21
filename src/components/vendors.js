@@ -26,7 +26,7 @@ export default function Vendors(config) {
      ) : cEl('div', { class: 'p-3 mt-4 mx-auto border text-center text-sm', textContent: 'Sorry, we currently have no vendors!' })
     ),
     (config.addMore && data && data.length > 5) && cEl('div', { class: 'text-center border-2 border' },
-     cEl('a', { href: urlPrefix + '/vendors.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
+     cEl('a', { href: '/SwiftEarn/vendors.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
     ) || '');/*
   })
   .catch(e => console.error(e));
@@ -43,9 +43,9 @@ export default function Vendors(config) {
 
 function generateVendor(vendor) {
  return cEl('li', {},
-  cEl('a', { href: urlPrefix + 'vendors/info.html?vendor_id=' + encodeURIComponent(vendor.vendor_id) },
+  cEl('a', { href: '/SwiftEarn/vendors/info.html?vendor_id=' + encodeURIComponent(vendor.vendor_id) },
    cEl('div', { className: 'w-24 h-24 mx-auto rounded-full overflow-hidden' },
-    cEl('img', { src: vendor.businessImageUrl || urlPrefix + 'static/images/username-icon.svg', alt: 'Vendor picture' })
+    cEl('img', { src: vendor.businessImageUrl || '/SwiftEarn/static/images/username-icon.svg', alt: 'Vendor picture' })
    ),
    cEl('small', { textContent: vendor.vendor_name || '' })
   )

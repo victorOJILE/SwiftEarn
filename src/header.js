@@ -53,32 +53,32 @@ function asideLeft() {
 
  const firstNavLists = [
   {
-   link: 'overview.html',
+   link: '/SwiftEarn/overview.html',
    icon: icons.dashboard,
    text: 'Overview'
 		},
   {
-   link: 'marketplace.html',
+   link: '/SwiftEarn/marketplace.html',
    icon: icons.marketplace,
    text: 'Marketplace'
 		},
   {
-   link: 'vendors.html',
+   link: '/SwiftEarn/vendors.html',
    icon: icons.vendors,
    text: 'Vendors'
 		},
   {
-   link: 'withdrawal.html',
+   link: '/SwiftEarn/withdrawal.html',
    icon: icons.withdrawal,
    text: 'Withdrawal'
 		},
   {
-   link: 'analytics.html',
+   link: '/SwiftEarn/analytics.html',
    icon: icons.analytics,
    text: 'Analytics'
 		},
   {
-   link: '',
+   link: '/SwiftEarn/',
    icon: icons.contests,
    text: 'Contests'
 		}
@@ -86,12 +86,12 @@ function asideLeft() {
 
  const secondNavLists = [
   {
-   link: 'profile.html',
+   link: '/SwiftEarn/profile.html',
    icon: icons.settings,
    text: 'Settings'
 		},
   {
-   link: 'help.html',
+   link: '/SwiftEarn/help.html',
    icon: icons.help,
    text: 'Help'
 		}
@@ -121,8 +121,8 @@ function asideLeft() {
  const aside = cEl('aside', { class: 'bg-main fixed top-0 -left-full md:static h-screen md:col-span-1 w-9/12 md:w-auto max-w-sm md:max-w-xl z-20 flex flex-col justify-between overflow-auto scroll-bar', ariaHidden: true },
   cEl('div', {}, cEl('div', { class: 'flex items-center p-3 md:pt-10' },
     cEl('div', { class: 'flex-grow md:text-center' },
-     cEl('a', { href: urlPrefix },
-      cEl('img', { src: urlPrefix + 'static/images/Logo.png' })
+     cEl('a', { href: '/SwiftEarn/' },
+      cEl('img', { src: '/SwiftEarn/static/images/Logo.png' })
      )
     ),
     cEl('div', {}, closeSidebarIcon)
@@ -142,7 +142,7 @@ function asideLeft() {
  function generateLists(lists, parent) {
   iter(lists, list => {
    const li = cEl('li', { data: { text: list.text }, class: 'mb-2' },
-    cEl('a', { href: urlPrefix + list.link, class: 'p-3 pr-1 flex items-center trans ' + (pageName == list.text ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-900') },
+    cEl('a', { href: list.link, class: 'p-3 pr-1 flex items-center trans ' + (pageName == list.text ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-900') },
      cEl('div', { class: 'flex-grow flex items-center' },
       svg(list.icon),
       document.createTextNode(list.text)
@@ -179,8 +179,8 @@ function main() {
   cEl('header', { class: 'fixed top-0 w-full md:static z-10 trans' },
    cEl('div', { class: 'p-3 flex items-center justify-between container mx-auto' },
     hamburger,
-    cEl('a', { href: urlPrefix, class: 'inline-block md:hidden' },
-     cEl('img', { src: urlPrefix + 'static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
+    cEl('a', { href: '/SwiftEarn/', class: 'inline-block md:hidden' },
+     cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
     ),
     cEl('div'),
     cEl('div', {},
@@ -229,14 +229,14 @@ function asideRight(uid) {
     const mainNav = elId('mainNav');
 
     const addProduct = cEl('div', { class: "mb-6 text-center" },
-     cEl('a', { href: urlPrefix + "product/addProduct.html", class: "py-3 pl-6 mx-3 flex rounded-full bg-yellow-700 hover:bg-yellow-900 text-white" }, svg(icons.cartPlus), document.createTextNode('Add Product'))
+     cEl('a', { href: "/SwiftEarn/product/addProduct.html", class: "py-3 pl-6 mx-3 flex rounded-full bg-yellow-700 hover:bg-yellow-900 text-white" }, svg(icons.cartPlus), document.createTextNode('Add Product'))
     );
 
     mainNav.insertAdjacentElement('beforebegin', addProduct);
 
     const vendors = Array.from(mainNav.children).find(li => li.dataset.text === 'Vendors');
     const products = cEl('li', { data: { text: 'My Products' }, class: 'mb-2' },
-     cEl('a', { href: urlPrefix + 'product/products.html', class: 'p-3 pr-1 flex items-center trans ' + (pageName == 'My Products' ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-900') },
+     cEl('a', { href: '/SwiftEarn/product/products.html', class: 'p-3 pr-1 flex items-center trans ' + (pageName == 'My Products' ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-900') },
       cEl('div', { class: 'flex-grow flex items-center' },
        svg(icons.cart),
        document.createTextNode('My Products')
@@ -250,7 +250,7 @@ function asideRight(uid) {
     cEl('section', { class: 'mt-6' },
      cEl('div', { class: 'mb-6' },
       cEl('div', { class: 'w-24 h-24 border-2 border rounded-full mx-auto overflow-hidden' },
-       cEl('img', { src: /*data.photoUrl || */ urlPrefix + 'static/images/username-icon.svg', alt: 'Profile picture' })
+       cEl('img', { src: /*data.photoUrl || */ '/SwiftEarn/static/images/username-icon.svg', alt: 'Profile picture' })
       )
      ),
      cEl('div', { class: 'text-center p-4' },
@@ -258,7 +258,7 @@ function asideRight(uid) {
       cEl('p', { class: 'text-sm text-gray-400', textContent: data.businessName || 'Affiliate Marketer' })
      ),
      cEl('div', { class: 'text-center mb-6' },
-      cEl('a', { class: 'inline-block underline text-green-600', href: urlPrefix + 'profile.html', textContent: 'Edit profile' })
+      cEl('a', { class: 'inline-block underline text-green-600', href: '/SwiftEarn/profile.html', textContent: 'Edit profile' })
      )
     ));
   })

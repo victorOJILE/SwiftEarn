@@ -21,10 +21,10 @@ function authWrapper() {
 
  const header = cEl('header', {},
   cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
-   cEl('a', { href: urlPrefix },
-    cEl('img', { src: urlPrefix + 'static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
+   cEl('a', { href: '/SwiftEarn/' },
+    cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
    ),
-   cEl('a', { href: urlPrefix + 'blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
+   cEl('a', { href: '/SwiftEarn/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
   ),
   cEl('section', { class: 'container mx-auto pt-12 pb-20 md:pr-8 md:pt-24 md:pb-32 grid md:grid-cols-2 items-center' },
    cEl('div', { class: 'hidden md:block px-4 py-8 md:pr-6 color2' },
@@ -94,7 +94,7 @@ function handleSubmit(e) {
    .then(result => {
     document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
      
-    location.href = new URL(location.href).searchParams.get('page') || './overview.html';
+    location.href = new URL(location.href).searchParams.get('page') || '/SwiftEarn/overview.html';
    })
    .catch((error) => {
     cover.remove();
@@ -133,7 +133,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
    cEl('div', { class: 'w-10 pl-2 border-r-2' },
     svg(lockIcon)
    ),
-   cEl('input', { class: 'bg-white w-3/4 p-3 text-sm', type: 'password', name: 'password', id: 'password', pattern: '.[A-Za-z0-9#$&@%]{8,35}', placeholder: 'abcABC123#$&', required: true }),
+   cEl('input', { class: 'bg-white w-3/4 p-3 text-sm', type: 'password', name: 'password', id: 'password', pattern: '.[A-Za-z0-9]{8,35}', placeholder: 'abcABC123#$&', required: true }),
    eyes
   ),
   wrongPassword
@@ -145,7 +145,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
   submitBtn,
   cEl('p', { class: "py-2", style: { fontSize: "0.75rem" } },
    document.createTextNode('You do not have an account.'),
-   cEl('a', { href: urlPrefix + "signup.html", class: "text-green-500 font-bold underline", textContent: 'Sign up' })
+   cEl('a', { href: "/SwiftEarn/signup.html", class: "text-green-500 font-bold underline", textContent: 'Sign up' })
   )
  ),
  cEl('div', { class: 'mt-8 mb-4 text-center font-special text-md' },

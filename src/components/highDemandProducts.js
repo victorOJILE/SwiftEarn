@@ -51,7 +51,7 @@ export default function highDemandProducts() {
   comp = cEl('section', { class: 'py-8 bg-custom-main-bg relative' },
    carousel, buttonLeft, buttonRight, carousel_dots,
    cEl('div', { class: 'text-center border' },
-    cEl('a', { href: urlPrefix + 'marketplace.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
+    cEl('a', { href: '/SwiftEarn/marketplace.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
    )
   );
 
@@ -70,9 +70,9 @@ export default function highDemandProducts() {
 function generateHighDemandProducts(product) {
  return cEl('li', { className: 'm-2' },
   cEl('div', { className: 'mb-2 overflow-hidden' },
-   cEl('img', { src: urlPrefix + 'static/images/' + product.imgsrc })
+   cEl('img', { src: '/SwiftEarn/static/images/' + product.imgsrc })
   ),
-  cEl('a', { href: product.href || '' },
+  cEl('a', { href: product.href },
    cEl('h3', { className: 'line-clamp', textContent: product.title || '' }),
    cEl('p', { className: 'text-sm text-gray-400', textContent: product.vendor || '' }),
    cEl('span', { className: 'font-bold', textContent: product.currentPrice || '' }),

@@ -72,7 +72,7 @@ export default function activities(data) {
 		comp
 		),
 		(data && data.length && data.length > 5) && cEl('div', { class: 'text-center border-2 border' },
-			cEl('a', { href: urlPrefix + '/analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more'})
+			cEl('a', { href: '/SwiftEarn/analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more'})
 		) || ''
 	);
 

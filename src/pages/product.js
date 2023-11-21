@@ -30,14 +30,14 @@ function ProductComp(uid) {
       cEl('section', { class: 'px-2' },
        cEl('div', { class: 'grid md:grid-cols-2 md:gap-6' },
         cEl('div', { class: 'mb-4 max-w-2xl mx-auto' },
-         cEl('img', { class: 'img-placeholder', src: data.productImageUrl || '../static/images/krakenimages-376KN_ISplE-unsplash.jpg', event: { load: function() { this.classList.remove('img-placeholder') }  } })
+         cEl('img', { class: 'img-placeholder', src: data.productImageUrl || '/SwiftEarn/static/images/krakenimages-376KN_ISplE-unsplash.jpg', event: { load: function() { this.classList.remove('img-placeholder') }  } })
         ),
         cEl('div', 
          {},
          cEl('h2', { class: 'text-xl mb-2 md:text-3xl', textContent: data.name }),
          cEl('p', { class: 'color4 mb-2', textContent: data.description }),
          cEl('small', { class: 'text-gray-400', textContent: 'Created by: ' },
-          cEl('a', { href: '../vendors/info.html?vendor_id=' + encodeURIComponent(data.vendor_id), class: 'text-blue-400 font-normal underline', textContent: data.vendor_name })
+          cEl('a', { href: '/SwiftEarn/vendors/info.html?vendor_id=' + encodeURIComponent(data.vendor_id), class: 'text-blue-400 font-normal underline', textContent: data.vendor_name })
          ),
          cEl('div', { class: 'my-2 flex items-center' },
           cEl('span', { class: 'mr-3 font-bold text-2xl', textContent: (data.currency || '$') + data.price }),
@@ -63,8 +63,8 @@ function ProductComp(uid) {
        cEl('div', { class: 'my-12' },
         cEl('h3', { class: 'text-xl my-4', textContent: 'Get affiliate link' }),
         uid ? cEl('div', { class: 'p-4 text-gray-300 relative', style: { backgroundColor: "rgba(13%, 47%, 50%, 0.63)" } },
-         cEl('div', { class: 'overflow-auto', textContent: `${urlPrefix}product.html?aff_id=${uid}&prd_id=${product_id}` }),
-         cEl('span', { class: 'absolute top-0 right-0 cursor-pointer copyAffilliate', data: { link: `${urlPrefix}product.html?aff_id=${uid}&prdid=${product_id}` }, style: { backgroundColor: "rgba(13%, 47%, 50%, 0.63)" }, event: { click: function() { copyToClipboard(this.dataset.link) } } }, svg(copy))
+         cEl('div', { class: 'overflow-auto', textContent: `/SwiftEarn/product/product.html?aff_id=${uid}&prd_id=${product_id}` }),
+         cEl('span', { class: 'absolute top-0 right-0 cursor-pointer copyAffilliate', data: { link: `/SwiftEarn/product/product.html?aff_id=${uid}&prdid=${product_id}` }, style: { backgroundColor: "rgba(13%, 47%, 50%, 0.63)" }, event: { click: function() { copyToClipboard(this.dataset.link) } } }, svg(copy))
         ) : cEl('div', { class: 'p-4 text-gray-300 text-center', style: { backgroundColor: "rgba(13%, 47%, 50%, 0.63)" }, textContent: 'Login to get your affiliate link.' })
        )
       ),
@@ -77,7 +77,7 @@ function ProductComp(uid) {
     }
    });
  } else {
-  location.href = '../marketplace.html';
+  location.href = '/SwiftEarn/marketplace.html';
  }
 
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },

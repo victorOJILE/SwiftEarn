@@ -34,7 +34,7 @@ export default function AddProduct(uid, productData) {
  }
  
  const oldImage = edit && productData.productImageUrl;
- const img = cEl('img', { src: oldImage || '../static/images/background.jpg', alt: 'Product image' });
+ const img = cEl('img', { src: oldImage || '/SwiftEarn/static/images/background.jpg', alt: 'Product image' });
 
  const submit = cEl('button', {
   type: 'submit',
@@ -102,7 +102,7 @@ export default function AddProduct(uid, productData) {
        }
       }
       
-      location.href = './products.html';
+      location.href = '/SwiftEarn/products.html';
      }
     }
    },

@@ -170,5 +170,3 @@ function observeElem(elem, parent, config) {
 }
 
 const pathname = new URL(location.href).pathname;
-
-const urlPrefix = '.'.repeat(pathname.match(/\//g).length) + '/';

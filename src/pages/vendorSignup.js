@@ -32,7 +32,7 @@ function VendorSignup(uid) {
       iter(formData, key => data[key[0]] = key[1]);
       
       setDoc(doc(db, 'users', uid), data, { merge: true })
-      .then(res => location.href = '../product/products.html');
+      .then(res => location.href = '/SwiftEarn/product/products.html');
      }
     }
    },

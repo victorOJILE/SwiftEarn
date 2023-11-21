@@ -206,7 +206,7 @@ const loader = '<svg class="spin" stroke="currentColor" fill="currentColor" stro
  document.body.innerHTML = '';
  document.body.append(
   cEl('header', { style: { background: 'transparent' } },
-   cEl('img', { src: './static/images/Logo.png', class: 'w-48 py-2 mx-auto' })
+   cEl('img', { src: '/SwiftEarn/static/images/Logo.png', class: 'w-48 py-2 mx-auto' })
   ),
   main
  );

@@ -23,10 +23,10 @@ function authWrapper() {
 
  const header = cEl('header', {},
   cEl('nav', { class: 'container mx-auto flex items-center justify-between p-3' },
-   cEl('a', { href: './' },
-    cEl('img', { src: './static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
+   cEl('a', { href: '/SwiftEarn/' },
+    cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn official logo', class: 'w-32' })
    ),
-   cEl('a', { href: './blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
+   cEl('a', { href: '/SwiftEarn/blog.html', textContent: 'Blog', class: 'py-2 mx-4 px-4 text-gray-300 hover:text-green-500' })
   ),
   cEl('section', { class: 'container mx-auto pt-12 pb-20 md:pr-8 md:pt-24 md:pb-32 grid md:grid-cols-2 items-center' },
    cEl('div', { class: 'hidden md:block px-4 py-8 md:pr-6 color2' },
@@ -164,7 +164,7 @@ function handleSubmit(e) {
     })
    );
 
-   location.href = './overview.html';
+   location.href = '/SwiftEarn/overview.html';
   } catch (error) {
    cover.remove();
    if (error.code == 'auth/email-already-in-use') {
@@ -245,11 +245,10 @@ function handleSubmit(e) {
          }
         }
        },
-       cEl('img', { src: './static/images/inbox1.png', class: 'w-3/5 mx-auto' }),
+       cEl('img', { src: '/SwiftEarn/static/images/inbox1.png', class: 'w-3/5 mx-auto' }),
        cEl('div', { class: 'mt-2' },
-        cEl('h1', { textContent: verificationCode }),
         cEl('h2', { textContent: 'OTP Verification', class: 'text-xl mb-1' }),
-        cEl('p', { class: 'text-gray-600 leading-relaxed', innerHTML: "We've sent a verification code to: <b>" + 'ojilevictor11@gmail.com' + '</b>' })
+        cEl('p', { class: 'text-gray-600 leading-relaxed', innerHTML: "We've sent a verification code to: <b>" + email + '</b>' })
        ),
        cEl('div', {
          class: 'p-3 mt-4 flex justify-between text-lg',
@@ -357,7 +356,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
    cEl('div', { class: 'w-10 pl-2 border-r-2' },
     svg(lockIcon)
    ),
-   cEl('input', { class: 'bg-white w-3/4 p-3 text-sm', type: 'password', name: 'password', id: 'password', pattern: '[A-Za-z0-9#$&@%]{8,35}', placeholder: 'abcABC123#$&', required: true }),
+   cEl('input', { class: 'bg-white w-3/4 p-3 text-sm', type: 'password', name: 'password', id: 'password', pattern: '[A-Za-z0-9]{8,35}', placeholder: 'abcABC123#$&', required: true }),
    eyes
   ),
   cEl('small', { class: 'hidden info text-yellow-400 py-1 email-info' },
@@ -369,7 +368,7 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
   submitButton,
   cEl('p', { class: "py-2", style: { fontSize: "0.7rem" } },
    document.createTextNode('Already have an account.'),
-   cEl('a', { href: "./login.html", class: "text-green-500 font-bold underline", textContent: 'Login' })
+   cEl('a', { href: "/SwiftEarn/login.html", class: "text-green-500 font-bold underline", textContent: 'Login' })
   )
  ),
  cEl('div', { class: 'mt-8 mb-4 text-center font-special text-md' },

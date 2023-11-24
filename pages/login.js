@@ -54,14 +54,12 @@ const eyeClose = `<svg class="w-5" focusable="false" viewBox="64 64 896 896" tit
 
 const myForm = authWrapper();
 
-let emailNotRecognized = cEl('small', { class: 'hidden info text-yellow-500 py-1' },
- svg(infoIcon),
- document.createTextNode('Email address does not exist!')
+let emailNotRecognized = cEl('small', { class: 'hidden info text-yellow-500 py-1' }, svg(infoIcon),
+ 'Email address does not exist!'
 );
 
-let wrongPassword = cEl('small', { class: 'hidden info text-yellow-400 py-1 email-info' },
- svg(infoIcon),
- document.createTextNode('Wrong password!')
+let wrongPassword = cEl('small', { class: 'hidden info text-yellow-400 py-1 email-info' }, svg(infoIcon),
+ 'Wrong password!'
 );
 
 let eyes = cEl('span', { class: 'flex items-center px-4 eyeicon' },
@@ -114,7 +112,8 @@ function handleSubmit(e) {
    });
 }
 
-const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-11/12 max-w-sm mx-auto', event: { submit: handleSubmit } },
+const form = cEl('form',
+ { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-11/12 max-w-sm mx-auto', event: { submit: handleSubmit } },
  cEl('h1', { class: 'text-2xl md:text-4xl font-bold mb-8 leading-normal text-center', textContent: 'LOGIN' }),
  cEl('div', { class: 'mb-6' },
   cEl('label', { class: 'font-bold text-sm', htmlFor: 'email', textContent: 'Email address:' }),
@@ -143,8 +142,8 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
  ),
  cEl('div', { class: 'text-center' },
   submitBtn,
-  cEl('p', { class: "py-2", style: { fontSize: "0.75rem" } },
-   document.createTextNode('You do not have an account.'),
+  cEl('p', { class: "py-2 text-xs" },
+   'You do not have an account.',
    cEl('a', { href: "/SwiftEarn/signup.html", class: "text-green-500 font-bold underline", textContent: 'Sign up' })
   )
  ),

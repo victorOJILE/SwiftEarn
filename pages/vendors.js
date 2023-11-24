@@ -1,22 +1,17 @@
-import { unsubscribe } from '../auth.js';
-import Header, { db, getDoc, doc } from '../header.js';
+import { db, getDoc, doc } from '../src/header.js';
 import Vendors from '../components/vendors.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 
-function VendorsComp(uid) {
+export default function VendorsComp() {
  const becomeVendor = cEl('div');
  
- if(uid) {
-  getDoc(doc(db, 'user', uid))
-   .then(res => {
-    const data = res.data();
-    if(!data.role.includes('vendor')) {
-     becomeVendor.append(cEl('div', { class: 'mt-4 mb-12' },
-       cEl('button', { class: 'text-lg py-3 px-8 rounded-lg border-2 border font-bold font-special', textContent: 'Become a vendor!', event: { click: () => location.href = '/SwiftEarn/vendors/signup.html' } })
-      ));
-    }
-   });
- }
+ EventBus.subscribe('loaded-data', function(data) {
+  if (!data.role.includes('vendor')) {
+   becomeVendor.appendChild(cEl('div', { class: 'mt-4 mb-12' },
+    cEl('button', { class: 'text-lg py-3 px-8 rounded-lg border-2 border font-bold font-special', textContent: 'Become a vendor!', event: { click: () => location.href = '/SwiftEarn/vendors/signup.html' } })
+   ));
+  }
+ });
  
 	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
 		cEl('div', { class: 'px-2 mb-4 max-w-xl' },
@@ -29,8 +24,4 @@ function VendorsComp(uid) {
 		HighDemandProducts()
 	);
 	return main;
-}
-
-unsubscribe.authenticate = function(uid) {
- Header('Vendors', uid).append(VendorsComp(uid));
 }

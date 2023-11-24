@@ -7,9 +7,9 @@
 	<title>SwiftEarn - Product page</title>
 	<meta name="description" content="SwiftEarn product information" />
 	<script>
-	 +(function() {
+	 +(function() {return;
 	  const productInfo = {};
-	  const params = new URL(location.href).searchParams;
+	  const params = new URL(window.location.href).searchParams;
 	  const aff_id = params.get('aff_id');
 	  if (aff_id) {
 	   let jvpage = new URL(productInfo.jvpage).searchParams;
@@ -18,7 +18,7 @@
 	   location.href = jvpage;
 	  }
 	 })()
-	 console.log('fhh')
+	 
 	</script>
 	<!--
 	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.17/dist/tailwind.min.css" rel="stylesheet" />-->
@@ -33,6 +33,11 @@
 	</div>
 </body>
 <script src="../static/swiftearn.js"></script>
-<script type="module" src="../src/pages/product.js"></script>
-
+<script>
+ const loadPage = {
+  path: '../pages/product.js',
+  name: 'Marketplace'
+ }
+</script>
+<script type="module" src="../src/auth.js"></script>
 </html>

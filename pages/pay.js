@@ -277,7 +277,7 @@ function confirmPayment(product = {}, data, paystackScript) {
  paystackScript.onload = function() {
   loaded = true;
  };
-   
+ 
  return [
   cEl('h1', { textContent: 'Payment confirmation', class: 'text-2xl py-4' }),
   cEl('hr'),

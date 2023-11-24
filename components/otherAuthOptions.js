@@ -36,11 +36,11 @@ export default function options(auth, sig, FacebookAuthProvider, GoogleAuthProvi
   cEl('div', { class: 'py-5 font-semibold text-sm text-gray-500' },
    cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: () => useOtherMeth(google, GoogleAuthProvider) } },
     svg(googleIcon),
-    document.createTextNode('Continue with Google')
+    'Continue with Google'
    ),
    cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: () => useOtherMeth(facebook, FacebookAuthProvider) } },
     cEl('img', { class: 'w-7 mr-2 ml-1', src: '/SwiftEarn/static/images/facebook.png' }),
-    cEl('span', { textContent: 'Continue with Facebook' })
+    'Continue with Facebook'
    )
   );
 }

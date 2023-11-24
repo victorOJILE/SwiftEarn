@@ -17,10 +17,6 @@ function callSignout() {
  return signOut(auth);
 }
 
-const unsubscribe = {};
-//setTimeout(() => unsubscribe.authenticate('f'), 3000)
-
-
 onAuthStateChanged(auth, user => {
  try {
   if (user) {
@@ -33,9 +29,7 @@ onAuthStateChanged(auth, user => {
    
    if (cookie) {
     cookie = Object.fromEntries(cookie.split(';').map(e => e.split('=')));
-    if(!cookie.lastRefresh) {
-     expired = true;
-    }
+    if(!cookie.lastRefresh) expired = true;
    } else {
     expired = true;
    }
@@ -50,14 +44,22 @@ onAuthStateChanged(auth, user => {
      .catch(e => console.error(e));
      return;
    }
-
+   
+   // User is authenticated
+   
    document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
    
-   // TODO: getAdditionalUserInfo and save to session storage then use to set profileIcon name (e.g OJ) in header.js
-   
-   console.log(user);
-   // User is authenticated
-   return unsubscribe.authenticate(user.uid);
+   import('./header.js')
+   .then(header => {
+    try {
+     let dom = header.default(loadPage.name, user.uid);
+     
+     import(loadPage.path)
+     .then(page => dom.appendChild(page.default(user.uid)));
+    } catch(e) {
+     console.log(e);
+    }
+   });
   } else {
    // User is not authenticated
    
@@ -70,4 +72,4 @@ onAuthStateChanged(auth, user => {
  }
 });
 
-export { firebase_app, callSignout, auth, unsubscribe, updateProfile, updateEmail, updatePassword };
+export { firebase_app, callSignout, auth, updateProfile, updateEmail, updatePassword };

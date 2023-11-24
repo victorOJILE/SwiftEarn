@@ -94,7 +94,7 @@ const userData = {
  bankName: '',
  bankAccName: '',
  bankAccNo: '',
- affiliateEarning: '0',
+ totalEarning: '0',
  currency: 'USD'
 };
 
@@ -134,25 +134,25 @@ function handleSubmit(e) {
  submitButton.innerHTML = '<span class="loader"></span>';
  let cover = cEl('div', { class: 'form-cover rounded-lg' });
  form.append(cover);
- 
+
  let done = {};
- 
+
  async function addUser() {
   try {
    let result;
-   
-   if(!done.createdAccount) {
+
+   if (!done.createdAccount) {
     result = await createUserWithEmailAndPassword(auth, email, password);
     done.createdAccount = true;
    }
-   
+
    document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
-   
-   if(!done.updatedProfile) {
+
+   if (!done.updatedProfile) {
     await updateProfile(auth.currentUser, { displayName: `${names[0]} ${names.slice(1).join(' ')}` });
     done.updatedProfile = true;
    }
-   
+
    await setDoc(doc(db, 'users', result.user.uid),
     Object.assign(userData, {
      user_id: result.user.uid,
@@ -172,8 +172,8 @@ function handleSubmit(e) {
     emailInUse.classList.remove('hidden');
     let emailInUseInput = emailInUse.previousElementSibling.lastElementChild;
     emailInUseInput.addEventListener('blur', () => emailInUse.classList.add('hidden'), { once: true })
-   } else if(error.code == 'auth/network-request-failed') {
-    setTimeout(addUser, 1000);
+   } else if (error.code == 'auth/network-request-failed') {
+    setTimeout(addUser, 5000);
    }
    console.log(error);
   }
@@ -181,8 +181,7 @@ function handleSubmit(e) {
 
  // If verifiedEmail is truthy, email has been verified successfully but there was an error creating the user
  if (verifiedEmail !== email) { // if email changes from the input, re-verify email, else createUser
-  const modal = cEl('dialog');
-
+  
   function sendEmail() {
    const verificationCode = String(Math.floor(Math.random() * 9999) + 1000).slice(0, 4);
 
@@ -191,124 +190,8 @@ function handleSubmit(e) {
      user_fullname: fullName || '',
      code: verificationCode
     })
-    .then(function(response) {
-     // Verification code timeout countdown timer
-     const timeout = Date.now() + (60 * 60 * 1000);
-     let minutes = cEl('span', { textContent: '59' }),
-      seconds = cEl('span', { textContent: '59' });
-
-     let countdown = setInterval(function() {
-      let remainingTime = timeout - Date.now();
-
-      if (remainingTime <= 0) {
-       clearInterval(countdown);
-       modal.remove();
-       cover.remove();
-      }
-
-      // Display the remaining time
-      minutes.textContent = String(Math.floor((remainingTime / (1000 * 60)) % 60)).padStart(0, 2);
-      seconds.textContent = String(Math.floor((remainingTime / 1000) % 60)).padStart(0, 3);
-     }, 1000);
-
-     // open a dialogue to collect verification code from the user
-
-     let focusIsBackspaceTriggered = false;
-
-     function inputValidation(e) {
-      if (e.target.value) {
-       e.target.value = e.target.value[0];
-       if (e.target.nextElementSibling) e.target.nextElementSibling.focus();
-      } else if (e.key === 'Backspace') {
-       if (e.target.previousElementSibling) {
-        focusIsBackspaceTriggered = true;
-        e.target.previousElementSibling.focus();
-       }
-      }
-     }
-
-     modal.empty();
-     modal.append(
-      cEl('form', {
-        class: 'p-4 bg-white text-sm text-center relative',
-        event: {
-         submit: function(e) {
-          e.preventDefault();
-          let data = '';
-          iter(new FormData(this), key => data += key[1]);
-          if (data == verificationCode) {
-           // In case of user creation error, save the verified email, which indicates that the user has verified the email
-           verifiedEmail = email;
-           modal.close()
-           addUser();
-          }
-         }
-        }
-       },
-       cEl('img', { src: '/SwiftEarn/static/images/inbox1.png', class: 'w-3/5 mx-auto' }),
-       cEl('div', { class: 'mt-2' },
-        cEl('h2', { textContent: 'OTP Verification', class: 'text-xl mb-1' }),
-        cEl('p', { class: 'text-gray-600 leading-relaxed', innerHTML: "We've sent a verification code to: <b>" + email + '</b>' })
-       ),
-       cEl('div', {
-         class: 'p-3 mt-4 flex justify-between text-lg',
-         event: {
-          focusin: function(e) {
-           if (focusIsBackspaceTriggered) {
-            focusIsBackspaceTriggered = false;
-            e.target.focus();
-            return;
-           }
-
-           let inputs = this.children;
-           for (let input of inputs) {
-            if (!input.value) {
-             input.focus();
-             break;
-            }
-           }
-          }
-         }
-        },
-        cEl('input', { type: 'number', class: 'border rounded-lg p-2 text-center w-12', name: 'num1', event: { keyup: inputValidation } }),
-        cEl('input', { type: 'number', name: 'num2', class: 'border rounded-lg p-2 w-12 text-center', event: { keyup: inputValidation } }),
-        cEl('input', { type: 'number', name: 'num3', class: 'border rounded-lg p-2 w-12 text-center', event: { keyup: inputValidation } }),
-        cEl('input', { type: 'number', name: 'num4', class: 'border rounded-lg p-2 w-12 text-center', event: { keyup: inputValidation } })
-       ),
-       cEl('center', {},
-        cEl('p', { class: 'mt-2 text-gray-600' },
-         text("Didn't get the OTP? "),
-         cEl('b', {
-          class: "text-green-500 hover:bg-gray-200",
-          textContent: 'RESEND OTP',
-          event: {
-           click: function() {
-            clearInterval(countdown);
-            sendEmail();
-           }
-          }
-         })
-        )
-       ),
-       cEl('button', { class: 'mt-6 mb-3 w-full p-3 rounded-md bg-blue-700 text-gray-50 text-sm font-bold', textContent: 'Verify code' }),
-       cEl('p', { class: 'text-gray-600' },
-        text('OTP expires in '),
-        cEl('b', {},
-         text('00:'),
-         minutes,
-         text(':'),
-         seconds
-        )
-       )
-      )
-     );
-
-     modal.open || document.body.append(modal);
-     modal.open || modal.showModal();
-    })
-    .catch(function(err) {
-     cover.remove();
-    });
+    .then(() => verifyOTP(addUser, sendEmail, email, cover))
+    .catch(() => cover.remove());
   }
 
   sendEmail();
@@ -317,7 +200,8 @@ function handleSubmit(e) {
  }
 }
 
-const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-11/12 max-w-sm mx-auto', event: { submit: handleSubmit } },
+const form = cEl('form', 
+{ class: 'relative bg-gray-100 rounded-md py-6 px-8 w-11/12 max-w-sm mx-auto', event: { submit: handleSubmit } },
  cEl('h1', { class: 'text-2xl md:text-4xl font-bold mb-8 leading-normal text-center', textContent: 'GET STARTED' }),
  cEl('div', { class: 'mb-6' },
   cEl('label', { class: 'font-bold text-sm', htmlFor: 'fullName', textContent: 'Enter full name:' }),
@@ -361,13 +245,13 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
   ),
   cEl('small', { class: 'hidden info text-yellow-400 py-1 email-info' },
    svg(infoIcon),
-   document.createTextNode('Invalid password!')
+   'Invalid password!'
   )
  ),
  cEl('div', { class: 'text-center' },
   submitButton,
-  cEl('p', { class: "py-2", style: { fontSize: "0.7rem" } },
-   document.createTextNode('Already have an account.'),
+  cEl('p', { class: "py-2 text-xs" },
+   'Already have an account.',
    cEl('a', { href: "/SwiftEarn/login.html", class: "text-green-500 font-bold underline", textContent: 'Login' })
   )
  ),
@@ -381,8 +265,122 @@ const form = cEl('form', { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-1
 myForm.append(form);
 
 const emailService = document.createElement('script');
+emailService.async = true;
 emailService.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
 emailService.addEventListener('load', function(e) {
  emailjs.init("uFRTU9gjM5PBsekhn");
 })
 document.body.append(emailService);
+
+function verifyOTP(addUser, sendEmail, email, cover) {
+ const modal = cEl('dialog');
+
+ // Verification code timeout countdown timer
+ const timeout = Date.now() + (60 * 60 * 1000);
+ let minutes = cEl('span', { textContent: '59' }),
+  seconds = cEl('span', { textContent: '59' });
+
+ let countdown = setInterval(function() {
+  let remainingTime = timeout - Date.now();
+
+  if (remainingTime <= 0) {
+   clearInterval(countdown);
+   modal.remove();
+   cover.remove();
+  }
+
+  // Display the remaining time
+  minutes.textContent = String(Math.floor((remainingTime / (1000 * 60)) % 60)).padStart(0, 2);
+  seconds.textContent = String(Math.floor((remainingTime / 1000) % 60)).padStart(0, 3);
+ }, 1000);
+
+ // open a dialogue to collect verification code from the user
+
+ let focusIsBackspaceTriggered = false;
+
+ function inputValidation(e) {
+  if (e.target.value) {
+   e.target.value = e.target.value[0];
+   if (e.target.nextElementSibling) e.target.nextElementSibling.focus();
+  } else if (e.key === 'Backspace') {
+   if (e.target.previousElementSibling) {
+    focusIsBackspaceTriggered = true;
+    e.target.previousElementSibling.focus();
+   }
+  }
+ }
+
+ modal.empty();
+ modal.append(
+  cEl('form', {
+    class: 'p-4 bg-white text-sm text-center relative',
+    event: {
+     submit(e) {
+      e.preventDefault();
+      let data = '';
+      iter(new FormData(this), key => data += key[1]);
+      if (data == verificationCode) {
+       // In case of user creation error, save the verified email, which indicates that the user has verified the email
+       verifiedEmail = email;
+       modal.close()
+       addUser();
+      }
+     }
+    }
+   },
+   cEl('img', { src: '/SwiftEarn/static/images/inbox1.png', class: 'w-3/5 mx-auto' }),
+   cEl('div', { class: 'mt-2' },
+    cEl('h2', { textContent: 'OTP Verification', class: 'text-xl mb-1' }),
+    cEl('p', { class: 'text-gray-600 leading-relaxed', innerHTML: "We've sent a verification code to: <b>" + email + '</b>' })
+   ),
+   cEl('div', {
+     class: 'p-3 mt-4 flex justify-between text-lg',
+     event: {
+      focusin(e) {
+       if (focusIsBackspaceTriggered) {
+        focusIsBackspaceTriggered = false;
+        e.target.focus();
+        return;
+       }
+
+       let inputs = this.children;
+       for (let input of inputs) {
+        if (!input.value) {
+         input.focus();
+         break;
+        }
+       }
+      }
+     }
+    },
+    cEl('input', { type: 'number', class: 'border rounded-lg p-2 text-center w-12', name: 'num1', event: { keyup: inputValidation } }),
+    cEl('input', { type: 'number', name: 'num2', class: 'border rounded-lg p-2 w-12 text-center', event: { keyup: inputValidation } }),
+    cEl('input', { type: 'number', name: 'num3', class: 'border rounded-lg p-2 w-12 text-center', event: { keyup: inputValidation } }),
+    cEl('input', { type: 'number', name: 'num4', class: 'border rounded-lg p-2 w-12 text-center', event: { keyup: inputValidation } })
+   ),
+   cEl('center', {},
+    cEl('p', { class: 'mt-2 text-gray-600' },
+     text("Didn't get the OTP? "),
+     cEl('b', {
+      class: "text-green-500 hover:bg-gray-200",
+      textContent: 'RESEND OTP',
+      event: {
+       click: function() {
+        clearInterval(countdown);
+        sendEmail();
+       }
+      }
+     })
+    )
+   ),
+   cEl('button', { class: 'mt-6 mb-3 w-full p-3 rounded-md bg-blue-700 text-gray-50 text-sm font-bold', textContent: 'Verify code' }),
+   cEl('p', { class: 'text-gray-600' },
+    text('OTP expires in '),
+    cEl('b', {}, '00:', minutes, ':', seconds)
+   )
+  )
+ );
+
+ modal.open || document.body.append(modal);
+ modal.open || modal.showModal();
+}

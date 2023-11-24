@@ -1,7 +1,7 @@
 import loader from './loader.js';
 
-export default function chartComp(data) {
-	data = [
+export default function chartComp(uid) {
+	let data = [
 		{ day: 'Mon', count: 120 },
 		{ day: 'Tue', count: 90 },
 		{ day: 'Wed', count: 150 },
@@ -10,25 +10,30 @@ export default function chartComp(data) {
 		{ day: 'Sat', count: 110 },
 		{ day: 'Sun', count: 80 }
 	];
+	
 	if (!data || !data.length) {
 		return loader();
 	}
-	const chart = cEl('div', { class: 'border-2 border bg-8' });
-
-	const comp = cEl('div', {}, chart,
-		cEl('div', { class: 'text-center border-2 border' },
-			cEl('a', { href: '/SwiftEarn/analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
-		));
-
-	setTimeout(() => renderWeeklyDataChart(chart, data), 500);
-	window.addEventListener('resize', () => renderWeeklyDataChart(chart, data));
-
-	return comp;
+	
+	const chart = cEl('div', { class: 'border-2 border bg-8' }, loader());
+	
+	try {
+ 	setTimeout(() => renderWeeklyDataChart(chart, data), 500);
+ 	window.addEventListener('resize', () => renderWeeklyDataChart(chart, data));
+	} catch(e) {
+	 console.log(e.stack);
+	}
+ 
+	return cEl('div', {}, chart,
+	 cEl('div', { class: 'text-center border-2 border' },
+	  cEl('a', { href: '/SwiftEarn/analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
+	 )
+	);
 }
 
 function renderWeeklyDataChart(mainElem, data) {
-	mainElem.innerHTML = '';
-	const width = mainElem.clientWidth;
+	mainElem.empty();
+	const width = mainElem.clientWidth || 340;
 	const height = Math.min(Math.max(window.innerWidth / 2, 400), 300);
 
 	const canvas = cEl('canvas');
@@ -130,5 +135,6 @@ function renderWeeklyDataChart(mainElem, data) {
 		if (candleIndex - 1 < 0) return showTooltip(0);
 		showTooltip(candleIndex - 1);
 	});
+	
 	render();
 }

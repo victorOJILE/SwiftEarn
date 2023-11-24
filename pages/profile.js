@@ -1,13 +1,13 @@
-import { auth, unsubscribe, updateProfile, updateEmail, updatePassword } from '../auth.js';
-import Header, { db, setDoc, getDoc, doc } from '../header.js';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
+import { auth, updateProfile, updateEmail, updatePassword } from '../src/auth.js';
+import { db, setDoc, getDoc, doc } from '../src/header.js';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
+import Img from '../components/mediaUpload.js';
 
 const checkMark = '<svg stroke="green" fill="green" stroke-width="0" viewBox="0 0 512 512" width="1.6em" height="1.6em" xmlns="http://www.w3.org/2000/svg"> <path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" /></svg>';
 
 const loadingIcon = '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.6em" height="1.6em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>';
 
-function Profile(uid) {
- const countries = [
+const countries = [
 		"",
 		"Åland Islands", "Albania", "Algeria",
 		"American Samoa", "Andorra",
@@ -108,7 +108,7 @@ function Profile(uid) {
 		"Vietnam", "Wallis &amp; Futuna",
 		"Yemen", "Zambia", "Zimbabwe"
 	];
- const banks = [
+const banks = [
     "",
 		  "Access Bank",
 		  "Access Money",
@@ -159,18 +159,27 @@ function Profile(uid) {
 		  "ZenithMobile"
 		 ];
 
+const spinIcon = (
+ '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.4em" height="1.4em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>');
+
+const storage = getStorage();
+
+export default function Profile(uid) {
  function updateRequest(data) {
   return setDoc(doc(db, 'users', uid), data, { merge: true });
  }
 
- const storage = getStorage();
-
  function field({ label, type, name, useDatalist, id, arr }) {
-  // Save a state to keep track of 
+  let state = 0;
+
+  let input = cEl('input', { ariaLabel: label, class: 'w-full p-3 bg-7 color2', type, disabled: true, name: id || name, placeholder: label });
+
+  input.setAttribute('list', id);
+
   return cEl('div', { class: 'py-2 px-3 bg-8 rounded-lg' },
    cEl('div', { class: 'bg-9 flex justify-between items-center' },
     cEl('div', { class: 'p-3 flex-grow' },
-     cEl('input', { ariaLabel: label, class: 'w-full p-3 bg-7 color2', type, disabled: true, list: id, name: id || name, placeholder: label }),
+     input,
      useDatalist ? cEl('datalist', { id: id },
       ...arr.map(each => cEl('option', { value: each, textContent: each }))
      ) : ''
@@ -180,14 +189,15 @@ function Profile(uid) {
       class: 'p-2 color4',
       event: {
        click: async function() {
-        if (this.firstElementChild.nodeName.toLowerCase() == 'img') {
+        if (!state) {
          // Enable its input field
-         this.previousElementSibling.firstElementChild.disabled = false;
+         input.disabled = false;
          // Change icon to a check mark
          this.innerHTML = checkMark;
-        } else if (!this.firstElementChild.classList.contains('spin')) {
+         state = 1;
+        } else {
          // send update request data
-         let value = this.previousElementSibling.firstElementChild.value;
+         let value = input.value;
          if (!value) return;
 
          let data = {};
@@ -210,7 +220,8 @@ function Profile(uid) {
          }
 
          this.innerHTML = `<img class="w-5" src="/SwiftEarn/static/images/faEdit.svg" />`;
-         this.previousElementSibling.firstElementChild.disabled = true;
+         input.disabled = true;
+         state = 0;
         }
        }
       }
@@ -221,51 +232,80 @@ function Profile(uid) {
   )
  }
 
- let oldUserImage;
+ let oldUserImage, imgLoadState = {};
+ const { imageUpload, renderImage } = Img(function(canvas, uploadBtn) {
+  canvas.toBlob(async (blob) => {
+   try {
+    uploadBtn.innerHTML = spinIcon;
+    
+    // Create a reference to firebase storage 'users/imageName.jpg'
+    const imageRef = ref(storage, 'users/' + uid);
 
- const width = 280,
-  height = width; //(width / 3) * 2;
- const canvas = cEl('canvas');
- canvas.width = width;
- canvas.height = height;
-
- const ctx = canvas.getContext("2d");
-
- let originalWidth, originalHeight, imageHeight, y1, y2, move;
-
- canvas.addEventListener('pointerdown', function(ev) {
-  y1 = ev.clientY;
- });
-
- async function getData() {
-  try {
-   const res = await getDoc(doc(db, 'users', uid));
-   const data = res.data();
-   const form = document.forms.setting;
-
-   for (let key in data) {
-    if (key == 'photoUrl') {
-     if (data[key]) {
-      oldUserImage = data[key];
-
-      const imageObj = new Image();
-
-      imageObj.src = data[key];
-
-      imageObj.addEventListener('load', function() {
-       ctx.clearRect(0, 0, width, height);
-       ctx.drawImage(imageObj, 0, 0, width, imageHeight);
-      });
-     }
-    } else if (form[key]) {
-     form[key].value = data[key];
+    // upload image
+    if(!imgLoadState.uploadBytes) {
+     await uploadBytes(imageRef, blob);
+     imgLoadState.uploadBytes = true;
     }
+    
+    if(oldUserImage) {
+     // photoUrl will always be the same since we are using uid
+     // We simply overwrite the file in storage but url remains the same 
+     // TODO:
+     // Consider checking if uid may change by any chance e.g forgot password or ...
+     // If yes, then we need to perform oldUserImage comparison with the new getDownloadURL
+     imgLoadState = {};
+    
+     uploadBtn.innerHTML = 'Upload';
+     this.style.display = 'block';
+     return;
+    }
+    
+    const photoUrl = await getDownloadURL(imageRef);
+    
+    if(!imgLoadState.updateRequest) {
+     await updateRequest({
+      // Add photoUrl to user data
+      photoUrl
+     });
+     imgLoadState.updateRequest = true;
+    }
+
+    await updateProfile(auth.currentUser, { photoUrl });
+    
+    imgLoadState = {};
+
+    uploadBtn.innerHTML = 'Upload';
+    this.style.display = 'block';
+   } catch (e) {
+    if (e.name == 'TypeError') return;
+
+    uploadBtn.innerHTML = 'Try again!';
+    this.style.display = 'block';
+
+    alert('Error uploading image');
+    console.error(e.stack);
    }
-  } catch (e) {
-   setTimeout(getData, 3000);
+  }, 'image/jpeg');
+ });
+ 
+ // TODO:
+ // If by any means we subscribe lately after publish,
+ // EventBus should smartly reload data and publish again automatically
+ 
+ EventBus.subscribe('loaded-data', function(data) {
+  const form = document.forms.setting;
+
+  for (let key in data) {
+   if (key == 'photoUrl') {
+    if (data[key]) {
+     oldUserImage = data[key];
+     renderImage(data[key]);
+    }
+   } else if (form[key]) {
+    form[key].value = data[key];
+   }
   }
- }
- getData();
+ });
 
  const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },
@@ -275,101 +315,7 @@ function Profile(uid) {
   cEl('section', {},
    cEl('form', { name: 'setting', class: 'text-sm' },
     cEl('div', { class: 'my-12' },
-     cEl('div', { class: 'flex flex-col items-center' },
-      cEl('div', { class: 'mt-6 mx-auto rounded-full bg-7 overflow-hidden' },
-       canvas
-      ),
-      cEl('button', { class: 'relative p-1 px-3 text-sm font-bold bg-gray-700 text-gray-100 rounded-lg mt-2 overflow-hidden', type: 'button' },
-       cEl('span', { textContent: 'Upload' }),
-       cEl('input',
-       {
-        class: 'absolute top-0 left-0 h-full opacity-0',
-        type: 'file',
-        name: 'photoUrl',
-        event: {
-         change: async function() {
-          function stop() {
-           this.previousElementSibling.innerHTML = 'Upload';
-          }
-
-          try {
-           const files = this.files;
-           const file = files[0];
-
-           if (!file.type.match(/image.{3,}/) || !file.type(/jpg|png|gif|webp/i)) return alert('Please upload an image file of these formats: .jpg .png .gif .webp');
-
-           const reader = new FileReader();
-
-           reader.onload = function(event) {
-            const imageObj = new Image();
-            imageObj.src = event.target.result;
-
-            imageObj.addEventListener('load', function() {
-             originalWidth = imageObj.width;
-             originalHeight = imageObj.height;
-
-             imageHeight = originalHeight * (width / originalWidth);
-
-             y2 = width > imageHeight ? 0 : -((width / 3) * 2) / 2;
-
-             function callback(e) {
-              y2 += Math.min(2, -(y1 - e.clientY));
-
-              ctx.clearRect(0, 0, width, height);
-              ctx.drawImage(imageObj, 0, y2, width, imageHeight);
-             }
-
-             canvas.addEventListener('pointermove', callback);
-
-             move = callback;
-
-             ctx.clearRect(0, 0, width, height);
-             ctx.drawImage(imageObj, 0, y2, width, imageHeight);
-            });
-           }
-
-           move && canvas.removeEventListener('pointermove', move);
-
-           reader.readAsDataURL(new Blob(files));
-
-           this.disabled = true;
-           this.previousElementSibling.innerHTML = (
-            '<svg class="spin" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.4em" height="1.4em"  xmlns="http://www.w3.org/2000/svg"> <path d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" /></svg>');
-
-           if (oldUserImage) {
-            // Delete old user image from firebase
-            await deleteObject(ref(storage, oldUserImage));
-           }
-
-           // Create a reference to firebase storage 'users/imageName.jpg'
-           const imageRef = ref(storage, 'users/' + file.name);
-
-           // upload image
-           await uploadBytes(imageRef, file);
-
-           const photoUrl = await getDownloadURL(imageRef);
-
-           // To be used to get reference to this image in case we change the image again, so we can delete this one
-           oldUserImage = photoUrl;
-
-           await updateRequest({
-            // Add photoUrl to user data
-            photoUrl
-           });
-
-           await updateProfile(auth.currentUser, { photoUrl });
-           stop.call(this);
-          } catch (e) {
-           if (e.name == 'TypeError') return;
-           stop.call(this);
-           alert('Error uploading image');
-           console.error(e.stack);
-          }
-         }
-        }
-       })
-      )
-     )
+     imageUpload
     ),
     cEl('h2', { class: 'text-lg mb-2', textContent: 'Basic Information' }),
     cEl('div', { class: 'grid md:grid-cols-2 md:gap-4' },
@@ -396,8 +342,4 @@ function Profile(uid) {
  );
 
  return main;
-}
-
-unsubscribe.authenticate = function(uid) {
- Header('Settings', uid).append(Profile(uid));
 }

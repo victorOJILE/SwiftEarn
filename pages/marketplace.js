@@ -1,12 +1,10 @@
-import { unsubscribe } from '../auth.js';
-import Header, { db, getDocs, where, collection, query } from '../header.js';
-
+import { db, getDocs, where, collection, query } from '../src/header.js';
 import loader from '../components/loader.js';
-import { search, marketplace } from '../icons.js';
+import { search, marketplace } from '../src/icons.js';
 import generateList from '../components/productList.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
 
-function Marketplace() {
+export default function Marketplace() {
  let productPage = new URL(location.href);
  let currentPage = productPage.searchParams.get('page');
 
@@ -67,12 +65,16 @@ function Marketplace() {
        match.push(result);
       }
      }
-     match = match.sort((a, b) => a.count - b.count).reverse();
+     
+     match.sort((a, b) => a.count - b.count);
+     map.reverse();
      match = match.map(a => a.product);
 
      match.length ? rerender(match) : rerender(data);
     });
-    setTimeout(function() { // Marketplace pagination
+    
+    // setTimeout, so we can read Element.clientWidth
+    function marketplacePagination() { // Marketplace pagination
      if (len < 15) return;
      pagination.innerHTML = '';
      // 15 is the maximum number of allowed products on a page
@@ -80,21 +82,22 @@ function Marketplace() {
      // 35 is the custom client width for the link element below
      let looplen = pagination.clientWidth / 35;
      let linkCount = 1;
-
+    
      for (; linkCount <= count && linkCount < looplen; linkCount++) {
       let text = linkCount == Math.floor(looplen) ? count : linkCount;
       let url = linkCount > 1 ? '/SwiftEarn/marketplace.html?page=' + text : '/SwiftEarn/marketplace.html';
-
-      let link = cEl('a', { href: url, textContent: text, className: 'border-2 border mr-1 w-8 h-8 flex justify-center items-center' });
-      pagination.append(link);
+    
+      pagination.append(cEl('a', { href: url, textContent: text, className: 'border-2 border mr-1 w-8 h-8 flex justify-center items-center' }));
      }
-
+    
      if (linkCount > Math.floor(looplen)) {
       pagination.insertBefore(cEl('span', { textContent: '...', className: 'mr-1' }), pagination.lastElementChild);
      }
-
-     window.addEventListener('resize', () => marketplacePagination(len));
-    }, 500);
+    
+     window.addEventListener('resize', marketplacePagination);
+    }
+    
+    setTimeout(marketplacePagination, 500);
   });
  };
  getData();
@@ -104,22 +107,14 @@ function Marketplace() {
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'SwiftEarn Marketplace' }),
    cEl('p', { class: 'text-sm md:text-lg color4 md:py-4', textContent: 'Welcome to our vibrant and dynamic marketplace, where endless possibilities and extraordinary deals await you!' })
   ),
-  cEl('section', {},
-   form
-  ),
+  cEl('section', {}, form),
   cEl('section', { class: 'my-12' },
    cEl('h2', { class: 'text-xl my-2 flex items-center' },
     cEl('span', { class: 'color4' }, svg(marketplace)),
-    document.createTextNode('Available Products')
-   ),
-   comp, pagination
-  ),
+    'Available Products'
+   ), comp, pagination),
   HighDemandProducts()
  );
 
  return main;
-}
-
-unsubscribe.authenticate = function(uid) {
- Header('Marketplace', uid).append(Marketplace());
 }

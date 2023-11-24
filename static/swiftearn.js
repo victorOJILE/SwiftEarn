@@ -169,4 +169,17 @@ function observeElem(elem, parent, config) {
 	}
 }
 
-const pathname = new URL(location.href).pathname;
+const EventBus = {
+  events: {
+   'loaded-data': []
+  },
+  subscribe(eventName, callback) {
+   this.events[eventName].push(callback);
+  },
+  publish(eventName, data) {
+   const eventCallbacks = this.events[eventName];
+   if (!eventCallbacks) return;
+   
+   iter(eventCallbacks, callback => callback(data));
+  }
+ }

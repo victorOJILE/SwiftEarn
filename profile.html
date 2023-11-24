@@ -4,7 +4,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>SwiftEarn - Profile settings</title><!--
+	<title>SwiftEarn - Profile settings</title>
+	<meta name="description" content="Update your profile. Manage contact details, payment info, and preferences for enhanced performance.">
+	<!--
 	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.17/dist/tailwind.min.css" rel="stylesheet" />-->
 	<link rel="stylesheet" href="./static/tailwind.min.css" />
 	<link rel="stylesheet" href="./static/style.css" />
@@ -22,5 +24,11 @@
 	</div>
 </body>
 <script src="./static/swiftearn.js"></script>
-<script type="module" src="./src/pages/profile.js"></script>
+<script>
+	const loadPage = {
+  path: '../pages/profile.js',
+  name: 'Settings'
+ }
+</script>
+<script type="module" src="./src/auth.js"></script>
 </html>

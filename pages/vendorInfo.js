@@ -6,7 +6,7 @@ import loader from '../components/loader.js';
 
 export default function VendorComp(uid) {
  let vendorPage = new URL(location.href);
- let vendor_id = vendorPage.searchParams.get('vendor_id');
+ let vendor_id = vendorPage.searchParams.get('vdid');
 
  const comp = cEl('div', {}, loader());
 

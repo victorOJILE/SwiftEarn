@@ -7,7 +7,7 @@ import moreProductsFromVendor from '../components/moreProductFromVendor.js';
 export default function ProductComp(uid) {
  let comp = cEl('section', { class: 'px-2' }, loader());
 
- let product_id = new URL(location.href).searchParams.get('product_id');
+ let product_id = new URL(location.href).searchParams.get('prdid');
  
  if (product_id) {
   product_id = decodeURIComponent(product_id);
@@ -21,7 +21,7 @@ export default function ProductComp(uid) {
     const data = res.data();
     
     comp.empty();
-    if (!data.name) {
+    if (!data || !data.name) {
      comp.append(
       cEl('div', { class: 'h-24 flex items-center justify-center' }, cEl('span', { textContent: 'No product data!', class: 'block p-3 border text-sm' }))
      )
@@ -43,7 +43,7 @@ export default function ProductComp(uid) {
         cEl('h2', { class: 'text-xl mb-2 md:text-3xl', textContent: data.name }),
         cEl('p', { class: 'color4 mb-2', textContent: data.description }),
         cEl('small', { class: 'text-gray-400', textContent: 'Created by: ' },
-         cEl('a', { href: '/SwiftEarn/vendors/info.html?vendor_id=' + encodeURIComponent(data.vendor_id), class: 'text-blue-400 font-normal underline', textContent: data.vendor_name })
+         cEl('a', { href: '/SwiftEarn/vendors/info.html?vdid=' + encodeURIComponent(data.vendor_id), class: 'text-blue-400 font-normal underline', textContent: data.vendor_name })
         ),
         cEl('div', { class: 'my-2 flex items-center' },
          cEl('span', { class: 'mr-3 font-bold text-2xl', textContent: (data.currency || '$') + data.price }),
@@ -69,7 +69,7 @@ export default function ProductComp(uid) {
       cEl('div', { class: 'my-12' },
        cEl('h3', { class: 'text-xl my-4', textContent: 'Get affiliate link' }),
        cEl('div', { class: 'p-4 text-gray-300 relative', style: { backgroundColor: "rgba(13%, 47%, 50%, 0.63)" } },
-        cEl('div', { class: 'overflow-auto', textContent: location.origin + location.pathname + `?aff_id=${uid}&prd_id=${product_id}&jv=${ encodeURIComponent(data.jvPageUrl)}` }),
+        cEl('div', { class: 'overflow-auto', textContent: location.origin + location.pathname + `?aff_id=${uid}&prdid=${product_id}&jv=${ encodeURIComponent(data.jvPageUrl)}` }),
         cEl('span', { class: 'absolute top-0 right-0 cursor-pointer copyAffilliate', data: { link: location.origin + location.pathname + `?aff_id=${uid}&prdid=${product_id}&jv=${ encodeURIComponent(data.jvPageUrl)}` }, style: { backgroundColor: "rgba(13%, 47%, 50%, 0.63)" }, event: { click() { copyToClipboard(this.dataset.link) } } }, svg(copy))
        )
       ),

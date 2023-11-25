@@ -60,7 +60,7 @@ function generateHighDemandProducts(product) {
   cEl('div', { className: 'mb-2 overflow-hidden' },
    cEl('img', { src: product.productImageUrl || '/SwiftEarn/static/images/krakenimages-376KN_ISplE-unsplash.jpg' })
   ),
-  cEl('a', { href: '/SwiftEarn/product/product.html?product_id=' + encodeURIComponent(product.product_id) },
+  cEl('a', { href: '/SwiftEarn/product/product.html?prdid=' + encodeURIComponent(product.product_id) },
    cEl('h3', { className: 'line-clamp', textContent: product.name }),
    cEl('p', { className: 'text-sm text-gray-400', textContent: `Created by: ${product.vendor_name}` }),
    cEl('span', { className: 'font-bold', textContent: `${product.currency}${product.price}` }),

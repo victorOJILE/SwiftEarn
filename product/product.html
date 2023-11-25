@@ -14,7 +14,7 @@
 	  if (aff_id) {
 	   let jvpage = new URL(productInfo.jvpage).searchParams;
 	   jvpage.append('aff_id', aff_id);
-	   jvpage.append('prd_id', params.get('prd_id'));
+	   jvpage.append('prdid', params.get('prdid'));
 	   location.href = jvpage;
 	  }
 	 })()

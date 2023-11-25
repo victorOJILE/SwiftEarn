@@ -108,7 +108,7 @@ const loader = '<svg class="spin" stroke="currentColor" fill="currentColor" stro
 +(function Payment() {
  const params = new URL(location.href).searchParams;
  const aff_id = params.get('aff_id');
- const prd_id = params.get('prd_id');
+ const prd_id = params.get('prdid');
  
  //if(!aff_id || !prd_id) return alert('Error: Invalid URL.\nPlease check your URL and try again!');
  
@@ -120,7 +120,7 @@ const loader = '<svg class="spin" stroke="currentColor" fill="currentColor" stro
    product = await getDoc(doc(db, 'products', prd_id));
    productName.textContent = product.name;
   } catch (e) {
-   // TODO: Check type of error, if empty response (no product with id "prd_id", manipulated url)
+   // TODO: Check type of error, if empty response (no product with id "prdid", manipulated url)
  
    // alert('Invalid product id. Please check for url validity.');
   }
@@ -129,7 +129,7 @@ const loader = '<svg class="spin" stroke="currentColor" fill="currentColor" stro
  
  function sendTransactionInfo(formData) {
   const data = {
-   prd_id,
+   prdid,
    timeCreated: Date.now(),
    status: 'Pending',
    code: 0

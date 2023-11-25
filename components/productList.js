@@ -5,7 +5,7 @@ export default function generateList(product) {
 			cEl('img', { src: product.productImageUrl || '/SwiftEarn/static/images/krakenimages-376KN_ISplE-unsplash.jpg' })
 		),
 		cEl('div', { class: 'col-span-5 py-2 pr-2' },
-			cEl('a', { class: 'pr-1', href: '/SwiftEarn/product/product.html?product_id=' + encodeURIComponent(product.product_id) },
+			cEl('a', { class: 'pr-1', href: '/SwiftEarn/product/product.html?prdid=' + encodeURIComponent(product.product_id) },
 				cEl('h3', { class: 'font-bold line-clamp text-xs sm:text-sm', textContent: product.name || 'Check for more information' }),
 				cEl('p', { class: 'text-gray-400 text-xs sm:text-sm', textContent: product.vendor_name || '' }),
 				cEl('div', { class: 'text-xs' },

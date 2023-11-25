@@ -190,7 +190,7 @@ function handleSubmit(e) {
      user_fullname: fullName || '',
      code: verificationCode
     })
-    .then(() => verifyOTP(addUser, sendEmail, email, cover))
+    .then(() => verifyOTP(addUser, sendEmail, email, cover, verificationCode))
     .catch(() => cover.remove());
   }
 
@@ -272,7 +272,7 @@ emailService.addEventListener('load', function(e) {
 })
 document.body.append(emailService);
 
-function verifyOTP(addUser, sendEmail, email, cover) {
+function verifyOTP(addUser, sendEmail, email, cover, verificationCode) {
  const modal = cEl('dialog');
 
  // Verification code timeout countdown timer

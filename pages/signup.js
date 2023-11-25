@@ -370,6 +370,7 @@ function verifyOTP(addUser, sendEmail, email, cover, verificationCode) {
       event: {
        click: function() {
         clearInterval(countdown);
+        modal.remove();
         sendEmail();
        }
       }
@@ -384,6 +385,6 @@ function verifyOTP(addUser, sendEmail, email, cover, verificationCode) {
   )
  );
 
- modal.open || document.body.append(modal);
- modal.open || modal.showModal();
+ document.body.append(modal);
+ modal.showModal();
 }

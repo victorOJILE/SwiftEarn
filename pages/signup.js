@@ -191,7 +191,10 @@ function handleSubmit(e) {
      code: verificationCode
     })
     .then(() => verifyOTP(addUser, sendEmail, email, cover, verificationCode))
-    .catch(() => cover.remove());
+    .catch(() => {
+     cover.remove();
+     submitButton.innerHTML = 'Create account';
+    });
   }
 
   sendEmail();

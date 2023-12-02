@@ -101,10 +101,6 @@ header {
 	margin: 3px 0
 }
 
-.hamburger > span:nth-child(2) {
-	width: 15px
-}
-
 .profileBar::before {
   display: inline-block;
   position: absolute;
@@ -174,28 +170,40 @@ table tbody tr:nth-child(odd) {
 	background-color: var(--bg-9);
 }
 
-table tr:nth-child(even) {
+table tbody tr:nth-child(even) {
 	background-color: var(--bg-8);
 }
 
-table tbody td:first-child {
-	font-weight: bold;
-	padding: 0.5rem;
-	width: 2rem;
-	background-color: var(--custom-main-bg)
+table td:first-child {
+	padding: 0.75rem;
 }
 
-table tbody td:nth-child(2) {
-	text-align: left;
+table td:nth-child(2) {
 	padding-left: 0.75rem
 }
 
-table tbody td:nth-child(3) {
-	color: var(--text-color4);
+table td:last-child {
+	font-weight: bold;
 }
 
-table tbody td:last-child {
-	font-weight: bold;
+.approved, .pending, .declined {
+ width: 100%;
+ display: block
+}
+
+.approved {
+ background-color: #2F9B76C7;
+ color: #E3ECE4F7
+}
+
+.pending {
+ background-color: #B8B251DB;
+ color: #EBECE3F7
+}
+
+.declined {
+ background-color: #7A2E2EC9;
+ color: #ECE3E3F7
 }
 
 .line-clamp {

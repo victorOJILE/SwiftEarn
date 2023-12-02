@@ -3,11 +3,9 @@ export default function Img(callback, forProduct) {
  
  const height = forProduct && forProduct.height || width;
  
- let canvas = cEl('canvas'), ctx;
- canvas.width = width;
- canvas.height = height;
+ let canvas = cEl('canvas', { width, height }), ctx;
  
- let originalWidth, originalHeight, imageHeight, y1, y2;
+ let imageHeight, y1, y2;
 
  function renderOnCanvas(e) {
   /**
@@ -16,18 +14,15 @@ export default function Img(callback, forProduct) {
 
    * In this case, if I try to use toBlob on a canvas that has been tainted, the operation would not be allowed.
   */
-  let canv = cEl('canvas');
-  canv.width = width;
-  canv.height = height;
+  let canv = cEl('canvas', { width, height });
+  
   ctx = canv.getContext("2d");
   
   canv.addEventListener('pointerdown', function(ev) {
     y1 = ev.clientY;
    });
 
-  if(canvas) {
-   canvas.parentElement.replaceChild(canv, canvas);
-  }
+  canvas.parentElement.replaceChild(canv, canvas);
   
   canvas = canv;
   const img = new Image();
@@ -35,10 +30,7 @@ export default function Img(callback, forProduct) {
   img.src = typeof e === 'string' ? e : e.target.result;
  
   img.addEventListener('load', function() {
-   originalWidth = img.width;
-   originalHeight = img.height;
- 
-   imageHeight = originalHeight * (width / originalWidth);
+   imageHeight = img.height * (width / img.width);
  
    y2 = 0; //width > imageHeight ? 0 : -((width / 3) * 2) / 2;
    
@@ -105,7 +97,7 @@ export default function Img(callback, forProduct) {
   }
  });
  
- const button = cEl('span', { textContent: 'Upload' });
+ const button = cEl('span', { textContent: 'Upload image' });
  
  const imageUpload = cEl('div', { class: 'flex flex-col items-center' },
   cEl('div', { class: 'mt-6 mx-auto bg-7 overflow-hidden' + (forProduct ? '' : ' rounded-full') },

@@ -181,7 +181,7 @@ export default function Profile(uid) {
     cEl('div', { class: 'p-3 flex-grow' },
      input,
      useDatalist ? cEl('datalist', { id: id },
-      ...arr.map(each => cEl('option', { value: each, textContent: each }))
+      ...arr.map(each => new Option(each))
      ) : ''
     ),
     cEl('button', {
@@ -288,10 +288,6 @@ export default function Profile(uid) {
   }, 'image/jpeg');
  });
  
- // TODO:
- // If by any means we subscribe lately after publish,
- // EventBus should smartly reload data and publish again automatically
- 
  EventBus.subscribe('loaded-data', function(data) {
   const form = document.forms.setting;
 
@@ -307,7 +303,7 @@ export default function Profile(uid) {
   }
  });
 
- const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
+ const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Profile settings' }),
    cEl('p', { textContent: 'Update your profile. Manage contact details, payment info, and preferences for enhanced performance.', class: "color4 pr-2 text-sm" }),

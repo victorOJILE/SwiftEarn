@@ -178,7 +178,7 @@ navigateCarousel();
 			<svg class="hidden" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" width="1.2em" height="1.2em"  xmlns="http://www.w3.org/2000/svg"> <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zM124 296c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h264c6.6 0 12 5.4 12 12v56c0 6.6-5.4 12-12 12H124z" /></svg>` });
 	}
 
-	function generateFaq(data) {
+	function generateFaq(data, ind) {
 		let togglers = getTogglers();
 		let toggler = cEl('div', { className: 'flex items-center justify-between p-3' },
 			cEl('h2', { textContent: data.question, className: 'mr-3 text-sm' }), togglers
@@ -194,14 +194,13 @@ navigateCarousel();
 			}
 			answer.classList.toggle('hidden');
 		});
+		
+		if(!ind) toggler.click();
 		return li;
 	}
 
 	let faqs = [
-		{
-			question: 'What is SwiftEarn in particular?',
-			answers: ['SwiftEarn is an innovative online platform where you get to learn and earn, simplifying the process of starting an online business.', 'We have an online marketplace for vendors, affiliates and massive buyers, providing you with the necessary tools, products, and training to sell services and digital products without the usual complexities.', 'By partnering with top course creators and vendors, we offer you an opportunity to earn a share of their profits as an affiliate.']
-			}, {
+	 {
 			question: 'How do I become an affiliate on SwiftEarn?',
 			answers: ["Getting started with SwiftEarn is simple. Just sign up for free on our website, and upon registration, explore our marketplace's offerings, select the products you wish to promote, and start earning commissions.", "Signing up as an affiliate on SwiftEarn is absolutely <b>free</b>, because we earn only if you earn.", ""]
 			}, {
@@ -210,9 +209,6 @@ navigateCarousel();
 			}, {
 			question: 'How does SwiftEarn help me track my sales and performance?',
 			answers: ['SwiftEarn offers a robust analytics system integrated into your personalized dashboard, ensuring you have a clear understanding of your sales performance, earnings, and payment schedules.']
-			}, {
-			question: 'Who are the vendors and affiliates?',
-			answers: ['The vendor refers to the person who owns the product that is been sold.', 'Affiliates are marketers who recommend the products on the platform to people and when any of the people they refer buys, they get a commission.', 'Customers are simply those who purchase the products being sold on SwiftEarn.']
 			},
 			{
 			question: 'How often are payments made to affiliates?',
@@ -229,7 +225,7 @@ navigateCarousel();
 			}
 		];
 	let faqDomUl = document.getElementsByClassName('faqs')[0];
-	faqs.forEach(each => faqDomUl.append(generateFaq(each)));
+	faqs.forEach((each, ind) => faqDomUl.append(generateFaq(each, ind)));
 })()
 
 /* Scroll to top */

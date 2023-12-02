@@ -1,35 +1,29 @@
-import { firebase_app, callSignout } from './auth.js';
-import { getFirestore, doc, setDoc, getDoc, getDocs, where, collection, query, orderBy, limit, deleteDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { firebase_app, callSignout, passwordReset, Link } from './auth.js';
+import { getFirestore, doc, collection, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, query, where, increment, startAt, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import * as icons from './icons.js';
 import loader from '../components/loader.js';
 
 const db = getFirestore(firebase_app);
-
-export { db, doc, setDoc, getDoc, getDocs, where, collection, query, orderBy, limit, deleteDoc, updateDoc, arrayUnion };
-
-function signout() {
- callSignout()
-  .then(() => location.reload());
- alert('Call to sign out!');
-}
 
 const currentTheme = localStorage.getItem("swf-theme");
 if (currentTheme == "dark") {
  document.body.classList.toggle("dark-theme");
 }
 
+export { db, getFirestore, doc, collection, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, query, where, increment, startAt, orderBy, limit };
+
 export default function app(name, uid) {
  const body = document.body;
- const asideL = asideLeft(name);
+ const asideL = asideLeft(name, uid);
  const [mainComp, hamburger, userIcon] = main();
- const asideR = asideRight(uid, name);
+ const asideR = asideRight();
 
  hamburger.ae('click', function() {
   asideL.classList.toggle("-left-full");
   asideL.ariaHidden = false;
   document.body.style.overflow = 'hidden';
  });
- 
+
  userIcon.ae('click', function() {
   asideR.classList.toggle('hidden');
   setTimeout(() => {
@@ -37,129 +31,172 @@ export default function app(name, uid) {
    asideR.classList.toggle('top-20')
   }, 0);
  });
- 
+
  body.innerHTML = '';
  body.append(asideL, mainComp, asideR);
+ 
  return mainComp;
 }
 
-function asideLeft(pageName) {
+let userRole, loadedData;
+
+function asideLeft(pageName, uid) {
  const closeSidebarIcon = svg(icons.closeSidebar);
 
- const firstNavUl = cEl('ul', { id: 'mainNav' });
- const secondNavUl = cEl('ul', { class: 'border-t-2 pt-2 mt-6 border-gray-600' });
- const thirdNavUl = cEl('ul', { class: 'border-t-2 pt-2 border-gray-600' });
-
- const firstNavLists = [
-  {
-   link: '/SwiftEarn/overview.html',
-   icon: icons.dashboard,
-   text: 'Overview'
-		},
-  {
-   link: '/SwiftEarn/marketplace.html',
-   icon: icons.marketplace,
-   text: 'Marketplace'
-		},
-  {
-   link: '/SwiftEarn/vendors.html',
-   icon: icons.vendors,
-   text: 'Vendors'
-		},
-  {
-   link: '/SwiftEarn/withdrawal.html',
-   icon: icons.withdrawal,
-   text: 'Withdrawal'
-		},
-  {
-   link: '/SwiftEarn/analytics.html',
-   icon: icons.analytics,
-   text: 'Analytics'
-		},
-  {
-   link: '/SwiftEarn/',
-   icon: icons.contests,
-   text: 'Contests'
-		}
-	];
-
- const secondNavLists = [
-  {
-   link: '/SwiftEarn/profile.html',
-   icon: icons.settings,
-   text: 'Settings'
-		},
-  {
-   link: '/SwiftEarn/help.html',
-   icon: icons.help,
-   text: 'Help'
-		}
-	];
-
- const thirdNavUlLists = [
-  {
-   link: 'javascript:(void)',
-   icon: icons.logout,
-   text: 'Sign out',
-   click: signout
-		}
-	];
-
- const themeToggle = cEl('input', { class: 'switch-input', type: 'checkbox', id: 'switch' });
-
- if (currentTheme == 'dark') {
-  themeToggle.checked = true;
- }
-
- themeToggle.addEventListener("change", function() {
-  document.body.classList.toggle("dark-theme");
-  
-  localStorage.setItem("swf-theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
- });
-
- const aside = cEl('aside', { class: 'bg-main fixed top-0 -left-full md:static h-screen md:col-span-1 w-9/12 md:w-auto max-w-sm md:max-w-xl z-20 flex flex-col justify-between overflow-auto scroll-bar', ariaHidden: true },
-  cEl('div', {}, cEl('div', { class: 'flex items-center p-3 md:pt-10' },
-    cEl('div', { class: 'flex-grow md:text-center' },
-     cEl('a', { href: '/SwiftEarn/' },
-      cEl('img', { src: '/SwiftEarn/static/images/Logo.png' })
-     )
-    ),
-    cEl('div', {}, closeSidebarIcon)
+ const aside = cEl('aside', { class: 'bg-main fixed top-0 -left-full md:static h-screen md:col-span-1 w-9/12 md:w-auto max-w-sm z-20 overflow-auto scroll-bar text-blue-200 text-md', ariaHidden: true },
+  cEl('div', { class: 'flex items-center p-3 md:pt-10' },
+   cEl('a', { href: '/SwiftEarn/', class: 'flex-grow md:mx-auto' },
+    cEl('img', { src: '/SwiftEarn/static/images/Logo.png' })
    ),
-   cEl('nav', { class: 'border-t-2 border-gray-600 p-3 py-4 text-blue-200 overflow-auto' },
-    firstNavUl
-   )
-  ),
-  cEl('div', {},
-   cEl('nav', { class: 'text-blue-200 p-3' },
-    secondNavUl
-   ),
-   cEl('nav', { class: 'text-blue-200 p-3' }, thirdNavUl)
+   cEl('div', {}, closeSidebarIcon)
   )
  );
 
- function generateLists(lists, parent) {
-  iter(lists, list => {
-   const li = cEl('li', { data: { text: list.text }, class: 'mb-2' },
-    cEl('a', { href: list.link, class: 'p-3 pr-1 flex items-center trans ' + (pageName == list.text ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-900') },
-     cEl('div', { class: 'flex-grow flex items-center' },
-      svg(list.icon),
-      document.createTextNode(list.text)
-     )
-    )
-   );
-   list.click && li.ae('click', list.click);
+ const lists = [
+  [
+   {
+    link: '/SwiftEarn/overview.html',
+    icon: icons.dashboard,
+    text: 'Overview',
+    path: '../pages/overview.js',
+    pathname: 'overview.html'
+		},
+   {
+    link: '/SwiftEarn/marketplace.html',
+    icon: icons.marketplace,
+    text: 'Marketplace'
+		},
+   {
+    link: '/SwiftEarn/vendors.html',
+    icon: icons.vendors,
+    text: 'Vendors',
+    path: '../pages/vendors.js',
+    pathname: 'vendors.html'
+		},
+   {
+    link: '/SwiftEarn/overview.html',
+    icon: icons.contests,
+    text: 'Contests',
+    path: '../pages/overview.js',
+    pathname: 'overview.html'
+		},
+   {
+    link: '/SwiftEarn/transactions.html',
+    icon: icons.transaction,
+    text: 'Transactions',
+    path: '../pages/transactions.js',
+    pathname: 'transactions.html'
+		},
+   {
+    link: '/SwiftEarn/withdrawal.html',
+    icon: icons.withdrawal,
+    text: 'Withdrawal',
+    path: '../pages/withdrawal.js',
+    pathname: 'withdrawal.html'
+		}
+	],
+	 [
+   {
+    link: '/SwiftEarn/profile.html',
+    icon: icons.gear,
+    text: 'Settings'
+		},
+   {
+    link: '/SwiftEarn/help.html',
+    icon: icons.help,
+    text: 'Help'
+		}
+	],
+	 [
+   {
+    link: 'javascript:(void)',
+    icon: icons.logout,
+    text: 'Log out',
+    // click: callSignout
+		}
+	 ]
+ ];
+ 
+ let vendorNavs = [{
+       link: '/SwiftEarn/product/addProduct.html',
+       icon: icons.cartPlus,
+       text: 'Add Product',
+       path: '../pages/product/addProduct.js',
+       pathname: 'product/addProduct.html'
+      },
+      {
+       link: '/SwiftEarn/product/products.html',
+       icon: icons.products,
+       text: 'My Products',
+       path: '../pages/product/products.js',
+       pathname: 'product/products.html'
+      },
+      {
+       link: '/SwiftEarn/vendors/signup.html',
+       icon: icons.personGear,
+       text: 'Vendor Profile',
+       path: '../pages/vendors/signup.js',
+       pathname: 'vendors/signup.html'
+      },
+      {
+       link: '/SwiftEarn/vendors/signup.html',
+       icon: icons.contests,
+       text: 'Set Up Contest',
+       path: '../pages/vendors/signup.js',
+       pathname: 'vendors/signup.html'
+      }];
+      
+ loadedData && userRole && lists.splice(1, 0, vendorNavs);
 
-   parent.append(li);
+ iter(lists, list => generateNav(aside, list, pageName));
+
+ const themeToggle = cEl('input',
+ {
+  class: 'switch-input',
+  type: 'checkbox',
+  id: 'switch',
+  checked: currentTheme == 'dark',
+  event: {
+   change() {
+    document.body.classList.toggle("dark-theme");
+
+    localStorage.setItem("swf-theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
+   }
+  }
+ });
+
+ aside.append(cEl('div', { class: 'flex items-center justify-between px-4 mt-4 mb-12' }, 'Theme', cEl('span', { class: 'flex justify-between items-center ml-2' }, svg(icons.sun), themeToggle,
+  cEl('label', { class: 'switch-label cursor-pointer', htmlFor: 'switch' }), svg(icons.moon))));
+ 
+ function getUserData() {
+  getDoc(doc(db, 'users', uid))
+  .then(res => {
+   loadedData = true;
+   const data = res.data();
+
+   EventBus.publish('loaded-data', data);
+
+   userRole = data.role.includes('vendor');
+
+   let nav = document.querySelectorAll('aside nav')[0];
+   const ul = cEl('ul');
+
+   nav.insertAdjacentElement('afterend', cEl('nav', { class: 'border-b-2 border-gray-600 py-3' }, ul));
+
+   generateLists(vendorNavs, ul, pageName);
+  })
+  .catch(e => {
+   if(!loadedData) {
+    if(navigator.onLine) {
+     setTimeout(getData, 5000);
+    } else {
+     // Add to event queue, to run when navigator.onLine === true
+    }
+   }
   });
  }
- generateLists(firstNavLists, firstNavUl);
- generateLists(secondNavLists, secondNavUl);
- generateLists(thirdNavUlLists, thirdNavUl);
-
- thirdNavUl.append(cEl('li', { class: 'flex items-center justify-between px-4 mt-4 mb-12' }, cEl('a', { class: 'md:hidden flex' }, svg(icons.moon), text('Dark mode')), themeToggle,
-  cEl('label', { class: 'switch-label cursor-pointer', htmlFor: 'switch' })
- ));
+ 
+ !userRole && !loadedData && getUserData();
 
  closeSidebarIcon.ae('click', function() {
   aside.classList.add("-left-full");
@@ -172,18 +209,15 @@ function asideLeft(pageName) {
 
 function main() {
  const hamburger = cEl('div', { class: 'hamburger inline-block md:hidden mr-3', id: 'hamburger' }, cEl('span'), cEl('span'), cEl('span'));
- const profile = cEl('span', { class: 'mr-2 inline-block hover:bg-gray-500 p-2 text-blue-200 bg-gray-700 rounded-full transition duration-700', id: 'profileIcon' }, svg(icons.user));
+ const profile = cEl('span', { class: 'inline-block hover:bg-gray-500 p-2 text-blue-200 rounded-full transition duration-700', id: 'profileIcon' }, svg(icons.user));
 
  const div = cEl('div', { class: 'md:col-span-4 bg-custom-main-bg overflow-auto' },
-  cEl('header', { class: 'fixed top-0 w-full md:static z-10 trans' },
-   cEl('div', { class: 'p-3 flex items-center justify-between container mx-auto' },
+  cEl('header', {},
+   cEl('div', { class: 'p-2 md:p-3 flex items-center justify-between container mx-auto' },
     hamburger,
-    cEl('a', { href: '/SwiftEarn/', class: 'inline-block md:hidden' },
-     cEl('img', { src: '/SwiftEarn/static/images/Logo.png', alt: 'SwiftEarn Logo', class: 'w-32' })
-    ),
     cEl('div'),
     cEl('div', {},
-     cEl('span', { class: 'mr-2 inline-block hover:bg-gray-500 p-2 bg-gray-700 text-blue-200 rounded-full transition duration-700 relative' },
+     cEl('span', { class: 'mr-2 inline-block hover:bg-gray-500 p-2 text-blue-200 rounded-full transition duration-700 relative' },
       cEl('span', { class: 'p-1 absolute top-0 right-0 bg-green-500 rounded-full font-bold', style: { fontSize: '0.65rem' } }),
       svg(icons.notification)
      ), profile)
@@ -191,94 +225,65 @@ function main() {
   )
  );
 
- function displayHeader() {
-  let header = document.getElementsByTagName('header')[0];
-  if (!header || !header.classList.contains('fixed')) {
-   setTimeout(displayHeader, 1000);
-   return;
-  }
-  
-  let tgg = false;
-  
-  window.addEventListener('scroll', function(e) {
-   if(tgg) return;
-   tgg = true;
-   
-   if (this.oldScroll > this.scrollY) {
-    header.classList.add('top-0');
-    header.classList.remove('-top-full');
-   } else if (this.scrollY > window.innerHeight / 2) {
-    header.classList.remove('top-0');
-    header.classList.add('-top-full');
-   }
-   this.oldScroll = this.scrollY;
-   
-   setTimeout(() => tgg = false, 200);
-  });
- }
-
- setTimeout(displayHeader, 1000);
  return [div, hamburger, profile];
 }
 
-function asideRight(uid, pageName) {
- const aside = cEl('aside', { class: 'bg-custom-main-bg border-2 border fixed -top-full hidden right-4 w-56 z-10 color2 trans profileBar' }, loader());
- 
- let loaded = false;
- 
- function getData() {
-  getDoc(doc(db, 'users', uid))
-   .then(res => {
-    loaded = true;
-    aside.empty();
-    const data = res.data();
-  
-    EventBus.publish('loaded-data', data);
-  
-    if (data.role.includes('vendor')) {
-     const mainNav = elId('mainNav');
-  
-     const addProduct = cEl('div', { class: "mb-6 text-center" },
-      cEl('a', { href: "/SwiftEarn/product/addProduct.html", class: "py-3 pl-6 mx-3 flex rounded-full bg-yellow-700 hover:bg-yellow-900 text-white" }, svg(icons.cartPlus), 'Add Product')
-     );
-  
-     mainNav.insertAdjacentElement('beforebegin', addProduct);
-  
-     const vendors = Array.from(mainNav.children).find(li => li.dataset.text === 'Vendors');
-     const products = cEl('li', { data: { text: 'My Products' }, class: 'mb-2' },
-      cEl('a', { href: '/SwiftEarn/product/products.html', class: 'p-3 pr-1 flex items-center trans ' + (pageName == 'My Products' ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-900') },
-       cEl('div', { class: 'flex-grow flex items-center' },
-        svg(icons.cart),
-        'My Products'
-       )
-      )
-     );
-  
-     vendors.insertAdjacentElement('afterend', products);
+function asideRight() {
+ return cEl('aside', { class: 'bg-gray-900 border-2 border fixed -top-full hidden right-2 w-48 z-10 p-1 color2 trans profileBar text-sm font-light' },
+  cEl('ul', { class: 'text-blue-200' },
+   cEl('li', {
+    class: 'p-2 pr-1 flex items-center trans mb-1 hover:bg-gray-800',
+    event: {
+     click(e) {
+      location.href = '/SwiftEarn/profile.html';
+     }
     }
-    aside.append(
-     cEl('section', { class: 'mt-6' },
-      cEl('div', { class: 'mb-2' },
-       cEl('div', { class: 'w-24 h-24 border-2 border rounded-full mx-auto overflow-hidden' },
-        cEl('img', { src: data.photoUrl || '/SwiftEarn/static/images/username-icon.svg', alt: 'Profile picture' })
-       )
-      ),
-      cEl('div', { class: 'text-center p-4' },
-       cEl('h2', { class: 'text-lg', textContent: `${data.firstName || 'SwiftEarn' } ${data.lastName || 'user' }` }),
-       cEl('p', { class: 'text-sm text-gray-400', textContent: data.businessName || 'Affiliate Marketer' })
-      ),
-      cEl('div', { class: 'text-center mb-6' },
-       cEl('a', { class: 'inline-block underline text-green-600', href: '/SwiftEarn/profile.html', textContent: 'Edit profile' })
-      )
-     ));
-   })
-   .catch(e => {
-    console.log('Header error' + '' + e.name);
-    return;
-    !loaded && setTimeout(getData, 5000);
-   });
- }
- getData();
- 
- return aside;
+   }, svg(icons.settings), 'Profile'),
+   cEl('li', {
+    event: {
+     click: passwordReset
+    },
+    class: 'p-2 pr-1 flex items-center trans mb-1 hover:bg-gray-800'
+   }, svg(icons.lockIcon), 'Reset password'),
+   cEl('li', {
+    event: {
+     click: callSignout
+    },
+    class: 'p-2 pr-1 flex items-center trans mb-1 hover:bg-gray-800'
+   }, svg(icons.logout), 'Log out'),
+   cEl('li', { class: 'p-2 pr-1 flex items-center trans hover:bg-gray-800' }, svg(icons.help), 'Help')
+  )
+ );
+}
+
+function generateNav(aside, list, pageName) {
+ const ul = cEl('ul');
+
+ aside.appendChild(cEl('nav', { class: 'border-b-2 border-gray-600 py-3' }, ul));
+
+ generateLists(list, ul, pageName);
+}
+
+function generateLists(lists, parent, pageName) {
+ iter(lists, list => {
+  const li = cEl('li', { data: { text: list.text } },
+   cEl('a', {
+     event: {
+      click(e) {
+       Link(e, { name: list.text, path: list.path, pathname: list.pathname })
+      }
+     },
+     href: list.link,
+     class: 'p-3 pr-1 flex items-center trans ' + (pageName == list.text ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-800')
+    },
+    cEl('div', { class: 'flex-grow flex items-center' },
+     svg(list.icon),
+     list.text
+    )
+   )
+  );
+  list.click && li.ae('click', list.click);
+
+  parent.append(li);
+ });
 }

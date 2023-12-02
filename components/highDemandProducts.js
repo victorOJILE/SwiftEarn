@@ -1,4 +1,5 @@
-import { db, getDocs, where, collection, query } from '../src/header.js';
+import { Link } from '../src/auth.js';
+import { db, getDocs, where, collection, query, orderBy, limit } from '../src/header.js';
 import { chevronLeft, chevronRight, marketplace } from '../src/icons.js';
 import loader from './loader.js';
 
@@ -7,13 +8,12 @@ export default function highDemandProducts() {
  let loaded = false;
  
  function getData() {
-  getDocs(query(collection(db, "products"), where('status', '==', 'Approved')))
+  getDocs(query(collection(db, "products"), where('status', '==', 'Approved'), orderBy('sales', 'desc'), limit(5)))
   .then(doc => {
    loaded = true;
    let data = [];
    doc.forEach(d => data.push(d.data()));
    
-   data = data.slice(0, 5);
    if (!data.length) {
     comp.empty();
     comp.append(
@@ -22,11 +22,11 @@ export default function highDemandProducts() {
     return;
    }
    
-   const carousel = cEl('ul', { class: 'flex overflow-auto color2 mb-4 carousel' }, ...data.map(each => generateHighDemandProducts(each)));
+   const carousel = cEl('ul', { class: 'flex overflow-auto color2 mb-4 carousel' }, ...data.map(generateHighDemandProducts));
    const buttonLeft = cEl('button', { class: 'absolute top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-white bg-opacity-50 text-black text-2xl outline-none cursor-pointer left-0' }, svg(chevronLeft));
    const buttonRight = cEl('button', { class: 'absolute top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-white bg-opacity-50 text-black text-2xl outline-none cursor-pointer right-0' }, svg(chevronRight));
    const carousel_dots = cEl('div', { class: 'text-center py-2 carousel-dots' },
-    ...data.map(each => cEl('span', { class: 'inline-block w-3 h-3 rounded-full border-2 border mx-1 bg-gray-400 transition-colors duration-900' }))
+    ...data.map(() => cEl('span', { class: 'inline-block w-3 h-3 rounded-full border-2 border mx-1 bg-gray-400 transition-colors duration-900' }))
    );
    
    comp.empty();
@@ -42,7 +42,6 @@ export default function highDemandProducts() {
   })
   .catch(e => !loaded && setTimeout(getData, 5000));
  }
- getData();
  
  const div = cEl('section', {},
   cEl('h2', { class: 'text-xl mt-12 mb-2 flex items-center' },
@@ -51,19 +50,32 @@ export default function highDemandProducts() {
   ),
   comp
  );
-
+ 
+ window.addEventListener('scroll', function load() {
+  if(isVisible(div)) {
+   window.removeEventListener('scroll', load);
+   getData();
+  }
+ });
+ 
  return div;
 }
 
 function generateHighDemandProducts(product) {
  return cEl('li', { className: 'm-2' },
-  cEl('div', { className: 'mb-2 overflow-hidden' },
+  cEl('div', { className: 'mb-2', style: { height: '200px' } },
    cEl('img', { src: product.productImageUrl || '/SwiftEarn/static/images/krakenimages-376KN_ISplE-unsplash.jpg' })
   ),
-  cEl('a', { href: '/SwiftEarn/product/product.html?prdid=' + encodeURIComponent(product.product_id) },
+  cEl('a', { event: {
+   click(e) {
+    Link(e, paths.product, { prdid: encodeURIComponent(product.product_id) })
+   }
+  }, href: '/SwiftEarn/product/product.html?prdid=' + encodeURIComponent(product.product_id) },
    cEl('h3', { className: 'line-clamp', textContent: product.name }),
-   cEl('p', { className: 'text-sm text-gray-400', textContent: `Created by: ${product.vendor_name}` }),
-   cEl('span', { className: 'font-bold', textContent: `${product.currency}${product.price}` }),
+   cEl('p', { className: 'font-light text-sm text-gray-400', textContent: `By ${product.vendor_name}` }),
+   cEl('span', { className: 'font-bold', textContent: new Intl.NumberFormat('en', { 
+     style: 'currency', currency: 'USD' 
+    }).format(product.price) }),
    cEl('span', { className: 'px-2 text-gray-400' },
     cEl('span', { textContent: '|' })
    ),

@@ -1,18 +1,21 @@
-//import { db, getDocs, collection, where, query, orderBy, limit } from '../src/header.js';
+import { Link } from '../src/auth.js';
+import { db, getDocs, collection, where, query, orderBy, limit } from '../src/header.js';
 import { vendors } from '../src/icons.js';
 import loader from './loader.js';
 
 export default function Vendors(config) {
  const section = cEl('section', { class: 'mt-12' }, loader());
 
- /*const q = query(collection(db, "users"), where('role', '==', 'affiliate-vendor'), orderBy("total_sales"), limit(config.addMore ? 6 : 5));
-  
- getDocs(query(collection(db, "users"), where('role', '==', 'affiliate-vendor') ))
-  .then(doc => {*/
+ const q = query(collection(db, "users"), where('role', '==', 'affiliate-vendor'), orderBy("sales", 'desc'), limit(config.addMore ? 6 : 5));
+ 
+ let loadedData = false;
+ function getData() {
+  getDocs(q)
+  .then(doc => {
+   loadedData = true;
    const data = [];
-   //doc.forEach((d) => data.push(d.data()));
-
-   const len = data.length;
+   doc.forEach(d => data.push(d.data()));
+   
    section.empty();
 
    section.append(
@@ -22,32 +25,40 @@ export default function Vendors(config) {
       config.title
      ),
      data.length ? cEl('ul', { class: config.listCls || 'my-6 px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 text-center color4 font-bold vendors' },
-      ...data.map(each => generateVendor(each))
+      ...data.map(generateVendor)
      ) : cEl('div', { class: 'h-24 flex items-center justify-center' }, cEl('span', { textContent: 'Sorry, we currently have no vendors!', class: 'block p-3 border text-sm' }))
     ),
-    (config.addMore && data && data.length > 5) && cEl('div', { class: 'text-center border-2 border' },
+    config.addMore && data.length > 5 && cEl('div', { class: 'text-center border-2 border' },
      cEl('a', { href: '/SwiftEarn/vendors.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
-    ) || '');/*
+    ) || ''
+   );
   })
-  .catch(e => console.error(e));
+  .catch(e => !loadedData && setTimeout(getData, 5000));
+ }
  
-		{
-  "total_sales": 10000,
-  "conversion_rate": 0.05,
-  "total_commission": 5000,
-}
-	*/
-
+ window.addEventListener('scroll', function load() {
+  if(isVisible(section)) {
+   window.removeEventListener('scroll', load);
+   getData();
+  }
+ });
+ 
+ 
  return section;
 }
 
 function generateVendor(vendor) {
+ 
  return cEl('li', {},
-  cEl('a', { href: '/SwiftEarn/vendors/info.html?vdid=' + encodeURIComponent(vendor.vendor_id) },
+  cEl('a', { event: {
+   click(e) {
+    Link(e, paths.vendorInfo, { vdid: encodeURIComponent(vendor.user_id) })
+   }
+  }, href: '/SwiftEarn/vendors/info.html?vdid=' + encodeURIComponent(vendor.user_id) },
    cEl('div', { className: 'w-24 h-24 mx-auto rounded-full overflow-hidden' },
-    cEl('img', { src: vendor.businessImageUrl || '/SwiftEarn/static/images/username-icon.svg', alt: 'Vendor picture' })
+    cEl('img', { src: vendor.photoUrl || '/SwiftEarn/static/images/username-icon.svg', alt: vendor.fullName || '' })
    ),
-   cEl('small', { textContent: vendor.vendor_name || '' })
+   cEl('small', { textContent: vendor.fullName || '' })
   )
  );
 }

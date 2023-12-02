@@ -1,11 +1,10 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
-import { getAuth, updateProfile, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
+import { getAuth, updateProfile, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
-import otherAuthOptions from '../components/otherAuthOptions.js';
 
 const firebaseConfig = {
  apiKey: "AIzaSyCF-PBbVOapUFD52kVTwWaLWg5Rbzh5E88",
- authDomain: "swiftearn-e35b4.firebaseapp.com",
+ authDomain: "victorojile.github.io",
  projectId: "swiftearn-e35b4",
  storageBucket: "swiftearn-e35b4.appspot.com",
  messagingSenderId: "25885277320",
@@ -17,6 +16,9 @@ const firebase_app = initializeApp(firebaseConfig);
 const db = getFirestore(firebase_app);
 
 const auth = getAuth(firebase_app);
+
+const google = new GoogleAuthProvider();
+const params = new URL(location.href).searchParams;
 
 function authWrapper() {
  const formDiv = cEl('div');
@@ -56,6 +58,171 @@ const eyeOpen = `<svg class="w-5 hidden" focusable="false" viewBox="64 64 896 89
 const eyeClose = `<svg class="w-5" focusable="false" viewBox="64 64 896 896" title="View password">
 <path d="M942.2 486.2Q889.47 375.11 816.7 305l-50.88 50.88C807.31 395.53 843.45 447.4 874.7 512 791.5 684.2 673.4 766 512 766q-72.67 0-133.87-22.38L323 798.75Q408 838 512 838q288.3 0 430.2-300.3a60.29 60.29 0 000-51.5zm-63.57-320.64L836 122.88a8 8 0 00-11.32 0L715.31 232.2Q624.86 186 512 186q-288.3 0-430.2 300.3a60.3 60.3 0 000 51.5q56.69 119.4 136.5 191.41L112.48 835a8 8 0 000 11.31L155.17 889a8 8 0 0011.31 0l712.15-712.12a8 8 0 000-11.32zM149.3 512C232.6 339.8 350.7 258 512 258c54.54 0 104.13 9.36 149.12 28.39l-70.3 70.3a176 176 0 00-238.13 238.13l-83.42 83.42C223.1 637.49 183.3 582.28 149.3 512zm246.7 0a112.11 112.11 0 01146.2-106.69L401.31 546.2A112 112 0 01396 512z" /><path d="M508 624c-3.46 0-6.87-.16-10.25-.47l-52.82 52.82a176.09 176.09 0 00227.42-227.42l-52.82 52.82c.31 3.38.47 6.79.47 10.25a111.94 111.94 0 01-112 112z" /></svg>`;
 
+const googleIcon = (
+ `<svg class="mr-2" width="2.2em" height="2.2em" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Capa_1" style="enable-background:new 0 0 150 150;" version="1.1" viewBox="10 5 120 120" xml:space="preserve"><style type="text/css">.st0 {fill: #1A73E8}.st1 {fill: #EA4335}.st2 {fill: #4285F4}.st3 {fill: #FBBC04}.st4 {fill: #34A853}.st5 {fill: #4CAF50}.st6 {fill: #1E88E5}.st7 {fill: #E53935}.st8 {fill: #C62828}
+
+									.st9 {
+										fill: #FBC02D;
+									}
+
+									.st10 {
+										fill: #1565C0;
+									}
+
+									.st11 {
+										fill: #2E7D32;
+									}
+
+									.st12 {
+										fill: #F6B704;
+									}
+
+									.st13 {
+										fill: #E54335;
+									}
+
+									.st14 {
+										fill: #4280EF;
+									}
+
+									.st15 {
+										fill: #34A353;
+									}
+
+									.st16 {
+										clip-path: url(#SVGID_2_);
+									}
+
+									.st17 {
+										fill: #188038;
+									}
+
+									.st18 {
+										opacity: 0.2;
+										fill: #FFFFFF;
+										enable-background: new;
+									}
+
+									.st19 {
+										opacity: 0.3;
+										fill: #0D652D;
+										enable-background: new;
+									}
+
+									.st20 {
+										clip-path: url(#SVGID_4_);
+									}
+
+									.st21 {
+										opacity: 0.3;
+										fill: url(#_45_shadow_1_);
+										enable-background: new;
+									}
+
+									.st22 {
+										clip-path: url(#SVGID_6_);
+									}
+
+									.st23 {
+										fill: #FA7B17;
+									}
+
+									.st24 {
+										opacity: 0.3;
+										fill: #174EA6;
+										enable-background: new;
+									}
+
+									.st25 {
+										opacity: 0.3;
+										fill: #A50E0E;
+										enable-background: new;
+									}
+
+									.st26 {
+										opacity: 0.3;
+										fill: #E37400;
+										enable-background: new;
+									}
+
+									.st27 {
+										fill: url(#Finish_mask_1_);
+									}
+
+									.st28 {
+										fill: #FFFFFF;
+									}
+
+									.st29 {
+										fill: #0C9D58;
+									}
+
+									.st30 {
+										opacity: 0.2;
+										fill: #004D40;
+										enable-background: new;
+									}
+
+									.st31 {
+										opacity: 0.2;
+										fill: #3E2723;
+										enable-background: new;
+									}
+
+									.st32 {
+										fill: #FFC107;
+									}
+
+									.st33 {
+										opacity: 0.2;
+										fill: #1A237E;
+										enable-background: new;
+									}
+
+									.st34 {
+										opacity: 0.2;
+									}
+
+									.st35 {
+										fill: #1A237E;
+									}
+
+									.st36 {
+										fill: url(#SVGID_7_);
+									}
+
+									.st37 {
+										fill: #FBBC05;
+									}
+
+									.st38 {
+										clip-path: url(#SVGID_9_);
+										fill: #E53935;
+									}
+
+									.st39 {
+										clip-path: url(#SVGID_11_);
+										fill: #FBC02D;
+									}
+
+									.st40 {
+										clip-path: url(#SVGID_13_);
+										fill: #E53935;
+									}
+
+									.st41 {
+										clip-path: url(#SVGID_15_);
+										fill: #FBC02D;
+									}
+								</style>
+								<g>
+									<path class="st14" d="M120,76.1c0-3.1-0.3-6.3-0.8-9.3H75.9v17.7h24.8c-1,5.7-4.3,10.7-9.2,13.9l14.8,11.5   C115,101.8,120,90,120,76.1L120,76.1z" />
+									<path class="st15" d="M75.9,120.9c12.4,0,22.8-4.1,30.4-11.1L91.5,98.4c-4.1,2.8-9.4,4.4-15.6,4.4c-12,0-22.1-8.1-25.8-18.9   L34.9,95.6C42.7,111.1,58.5,120.9,75.9,120.9z" />
+									<path class="st12" d="M50.1,83.8c-1.9-5.7-1.9-11.9,0-17.6L34.9,54.4c-6.5,13-6.5,28.3,0,41.2L50.1,83.8z" />
+									<path class="st13" d="M75.9,47.3c6.5-0.1,12.9,2.4,17.6,6.9L106.6,41C98.3,33.2,87.3,29,75.9,29.1c-17.4,0-33.2,9.8-41,25.3   l15.2,11.8C53.8,55.3,63.9,47.3,75.9,47.3z" />
+								</g>
+							</svg>`);
+
 const myForm = authWrapper();
 
 let emailInUse = cEl('small', { class: 'hidden info text-yellow-500 py-1' },
@@ -86,30 +253,9 @@ eyesChildren[1].onclick = () => eyes.previousElementSibling.type = 'text';
 let submitButton = cEl('button', { type: 'submit', class: 'py-3 px-8 bg-blue-900 color2 rounded-lg font-bold', textContent: 'Create account' });
 
 const userData = {
- phoneNumber: '',
- country: '',
  role: "affiliate",
- vendor_id: "",
- photoUrl: "",
- bankName: '',
- bankAccName: '',
- bankAccNo: '',
- totalEarning: '0',
  currency: 'USD'
 };
-
-function setDocuments(uid) {
- return setDoc(doc(db, 'users', uid),
-  Object.assign(userData, {
-   _id: user.uid,
-   email,
-   password,
-   firstName: names[0],
-   lastName: names.slice(1).join(' '),
-   registration_date: Date.now()
-  })
- );
-}
 
 let verifiedEmail;
 
@@ -120,17 +266,18 @@ function handleSubmit(e) {
  email = email.value;
  password = password.value;
  fullName = fullName.value;
-
- let names = fullName.split(' ');
- if (names.length < 2) return alert('Invalid Full name');
-
+ 
+ if (fullName.split(' ') < 2) return alert('Invalid Full name');
+ 
  if (email !== confEmail.value) {
   emailNotMatch.classList.remove('hidden');
   let emailNotMatchInput = emailNotMatch.previousElementSibling.lastElementChild;
   emailNotMatchInput.addEventListener('blur', () => emailNotMatch.classList.add('hidden'), { once: true });
   return;
  }
-
+ 
+ let [firstName, ...rest] = fullName.split(' ');
+ 
  submitButton.innerHTML = '<span class="loader"></span>';
  let cover = cEl('div', { class: 'form-cover rounded-lg' });
  form.append(cover);
@@ -149,18 +296,18 @@ function handleSubmit(e) {
    document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
 
    if (!done.updatedProfile) {
-    await updateProfile(auth.currentUser, { displayName: `${names[0]} ${names.slice(1).join(' ')}` });
+    await updateProfile(auth.currentUser, { displayName: fullName });
     done.updatedProfile = true;
    }
 
    await setDoc(doc(db, 'users', result.user.uid),
     Object.assign(userData, {
      user_id: result.user.uid,
-     firstName: names[0],
-     lastName: names.slice(1).join(' '),
+     firstName,
+     lastName: rest.join(' '),
+     fullName,
      registration_date: Date.now(),
      email,
-     aff_id: ''
     })
    );
 
@@ -203,6 +350,31 @@ function handleSubmit(e) {
  }
 }
 
+function signUpWithGoogle() {
+ signInWithPopup(auth, google)
+ .then(result => {
+ // The signed-in user info.
+   const user = result.user;
+   alert(JSON.stringify(user));
+    
+   let [firstName, ...rest] = user.displayName.split(' ');
+   setDoc(doc(db, 'users', uid),
+    Object.assign(userData, {
+     user_id: user.uid,
+     email: user.email,
+     firstName,
+     lastName: rest.join(' '),
+     fullName: user.displayName,
+     registration_date: Date.now()
+    })
+   )
+   .then(() => location.href = params.get('redirect') ? params.get('page') : '/SwiftEarn/overview.html');
+
+   document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
+  })
+  .catch(e => console.error(e));
+}
+
 const form = cEl('form', 
 { class: 'relative bg-gray-100 rounded-md py-6 px-8 w-11/12 max-w-sm mx-auto', event: { submit: handleSubmit } },
  cEl('h1', { class: 'text-2xl md:text-4xl font-bold mb-8 leading-normal text-center', textContent: 'GET STARTED' }),
@@ -236,7 +408,7 @@ const form = cEl('form',
    cEl('input', { type: 'email', name: 'confEmail', class: 'border-0 text-sm bg-white outline-0 flex-grow p-3', id: 'confEmail', placeholder: 'name@yahoo.com', required: true })
   ), emailNotMatch
  ),
- cEl('div', { class: 'mb-12' },
+ cEl('div', { class: 'mb-6' },
   cEl('label', { class: 'font-bold text-sm', htmlFor: 'password', textContent: 'Password:' }),
   cEl('br'),
   cEl('div', { class: 'flex items-center bg-white mt-1' },
@@ -251,18 +423,27 @@ const form = cEl('form',
    'Invalid password!'
   )
  ),
+ cEl('div', { class: 'mb-4 text-center text-xs' },
+  'By clicking on sign-up, you agree to the ',
+  cEl('a', { textContent: 'SwiftEarn Terms and Conditions', href: './tos.html', class: "text-green-500 font-bold underline leading-relaxed" }), ' and ',
+  cEl('a', { textContent: 'Privacy Policy.', href: './', class: "text-green-500 font-bold underline" })
+ ),
  cEl('div', { class: 'text-center' },
   submitButton,
   cEl('p', { class: "py-2 text-xs" },
-   'Already have an account.',
+   'Already have an account. ',
    cEl('a', { href: "/SwiftEarn/login.html", class: "text-green-500 font-bold underline", textContent: 'Login' })
   )
  ),
- cEl('div', { class: 'mt-8 mb-4 text-center font-special text-md' },
+ cEl('div', { class: 'mt-8 text-center font-special text-md' },
   cEl('hr'),
   cEl('span', { class: 'inline-block px-3 bg-gray-100', style: { transform: 'translateY(-50%)' }, textContent: 'OR' })
  ),
- otherAuthOptions(auth, signInWithPopup, FacebookAuthProvider, GoogleAuthProvider, setDocuments)
+ cEl('div', { class: 'py-5 font-semibold text-md text-gray-500' },
+  cEl('a', { href: 'javascript:(void)', class: 'flex items-center py-2 px-3 mb-5 w-full rounded-xl border-2 border-gray-300', event: { click: signUpWithGoogle } },
+   svg(googleIcon), 'Continue with Google'
+  )
+ )
 );
 
 myForm.append(form);

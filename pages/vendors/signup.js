@@ -1,13 +1,28 @@
-import { db, setDoc, doc } from '../src/header.js';
+import { db, setDoc, getDoc, doc } from '../../src/header.js';
 
-export default function VendorSignup(uid) {
- const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
+export default function VendorSignup(uid, loadData) {
+ 
+ function getData() {
+  getDoc(doc(db, 'user', uid))
+  .then(res => {
+   let data = res.data();
+   let form = document.forms.myForm;
+   
+   iter(data, key => {
+    if(form[key]) form[key].value = data[key];
+   });
+  })
+ }
+ loadData && getData();
+ 
+ const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Join our vibrant marketplace as a vendor and unlock new opportunities for growth.' }),
    cEl('p', { textContent: "Expand your brand's presence, boost your sales, and establish valuable connections in our vibrant community of buyers and sellers.", class: "color4 pr-2 text-sm" }),
   ),
   cEl('form', 
    {
+    name: 'myForm',
     class: 'text-sm',
     event: {
      submit(e) {
@@ -21,10 +36,6 @@ export default function VendorSignup(uid) {
       
       let data = {
        createdVendorAcctAt: Date.now(),
-       vendorEarning: '$0',
-       conversions: '0%',
-       interactions: 0,
-       total_sales: 0,
        role: 'affiliate-vendor'
       };
       

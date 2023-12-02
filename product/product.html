@@ -7,15 +7,16 @@
 	<title>SwiftEarn - Product page</title>
 	<meta name="description" content="SwiftEarn product information" />
 	<script>
-	 +(function() {return;
-	  const productInfo = {};
+	 +(function() {
 	  const params = new URL(window.location.href).searchParams;
 	  const aff_id = params.get('aff_id');
 	  if (aff_id) {
-	   let jvpage = new URL(productInfo.jvpage).searchParams;
-	   jvpage.append('aff_id', aff_id);
-	   jvpage.append('prdid', params.get('prdid'));
-	   location.href = jvpage;
+	   let productPage = params.get('prdpg');
+	   if(productPage) {
+	    location.href = decodeURIComponent(productPage);
+	   } else {
+	    location.href = '/SwiftEarn/marketplace.html';
+	   }
 	  }
 	 })()
 	 
@@ -34,10 +35,7 @@
 </body>
 <script src="../static/swiftearn.js"></script>
 <script>
- const loadPage = {
-  path: '../pages/product.js',
-  name: 'Marketplace'
- }
+ const loadPage = 'Marketplace';
 </script>
 <script type="module" src="../src/auth.js"></script>
 </html>

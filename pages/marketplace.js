@@ -1,4 +1,4 @@
-import { db, getDocs, where, collection, query } from '../src/header.js';
+import { db, getDocs, where, collection, query, startAt, limit, orderBy } from '../src/header.js';
 import loader from '../components/loader.js';
 import { search, marketplace } from '../src/icons.js';
 import generateList from '../components/productList.js';
@@ -16,19 +16,21 @@ export default function Marketplace() {
  );
 
  const pagination = cEl('div', { class: 'container flex items-center justify-center text-gray-400 mt-4' });
-
+ 
+ let slicedPage = currentPage ? (currentPage * 15) - 15 : 0;
+ 
  function getData() {
-  getDocs(query(collection(db, "products"), where('status', '==', 'Approved')))
+  let q = query(collection(db, "products"), where('status', '==', 'Approved'), orderBy('sales', 'desc'), startAt(slicedPage), limit(15));
+  
+  getDocs(q)
    .then(doc => {
     let data = [];
     doc.forEach(d => data.push(d.data()));
     
  	  let len = data.length;
-    let slicedPage = currentPage ? (currentPage * 15) - 15 : 0;
-    data = data.slice(slicedPage, 15);
+    comp.empty();
     
     if(!len) {
-     comp.empty();
      comp.append(
       cEl('section', { class: 'px-2' },
        cEl('div', { class: 'h-24 flex items-center justify-center' }, cEl('span', { textContent: 'No products at the moment!', class: 'block p-3 border text-sm' }))
@@ -38,10 +40,8 @@ export default function Marketplace() {
     }
     
     function rerender(data) {
-     comp.empty();
-     
      comp.append(cEl('ul', { class: 'color2 bg-custom-main-bg grid md:grid-cols-2 md:gap-12' },
-      ...data.map(product => (product.vendor_id && generateList(product)) || '')
+      ...data.map(generateList)
      ));
     }
     
@@ -49,6 +49,10 @@ export default function Marketplace() {
 
     form.ae('submit', function(e) {
      e.preventDefault();
+     // TODO:
+     // Query database for this
+     
+     
      let q = form.q.value;
      if (!q) rerender(data);
      let qSplit = q.split(' ');
@@ -102,7 +106,7 @@ export default function Marketplace() {
  };
  getData();
 
- const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
+ const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
   cEl('section', { class: 'mb-4' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'SwiftEarn Marketplace' }),
    cEl('p', { class: 'text-sm md:text-lg color4 md:py-4', textContent: 'Welcome to our vibrant and dynamic marketplace, where endless possibilities and extraordinary deals await you!' })

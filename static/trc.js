@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
  // Add a click event listener to all links with class "_swiftearn_aff_"
  document.addEventListener('DOMContentLoaded', function() {
 
-  const affiliateLinks = Array.from(document.querySelectorAll('a')).filter(link => link.classList.contains('_swiftearn_aff_'));
-
+  const affiliateLinks = document.querySelectorAll('._swiftearn_aff_');
+  
   affiliateLinks.forEach(link => {
    link.addEventListener('click', function(event) {
     event.preventDefault();

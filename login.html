@@ -4,20 +4,32 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="robots" content="index, follow" />
+	<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
 	<title>SwiftEarn - Login</title>
 	<meta name="description" content="Login to your SwiftEarn account" />
-	<!--<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.17/dist/tailwind.min.css" rel="stylesheet" />-->
-	<link rel="stylesheet" href="./static/tailwind.min.css"><!--
-	<link rel="icon" href="./favicon.ico" />
-	<link rel="icon" href="./icon.svg" type="image/svg+xml" />
+ <meta name="twitter:card" content="">
+ <meta name="twitter:site" content="@SwiftEarn">
+ <meta name="twitter:title" content="SwiftEarn - Login">
+ <meta name="twitter:description" content="Login to your SwiftEarn account">
+ <meta property="og:site_name" content="SwiftEarn">
+ <meta property="og:title" content="SwiftEarn - Login">
+ <meta property="og:description" content="Login to your SwiftEarn account"><!--
+	<link rel="icon" href="https://www.skysports.com/favicon.ico?bypass-service-worker" />
+	<link rel="icon" href="https://www.skysports.com/icon.svg?bypass-service-worker" type="image/svg+xml">
 	<link rel="apple-touch-icon" href="logo192.png" />
-	-->
-	<link rel="stylesheet" href="./static/style.css" />
+	<link rel="canonical" href="http://localhost:3000" />
+	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.17/dist/tailwind.min.css" rel="stylesheet" />-->
+ <link rel="stylesheet" href="./static/tailwind.min.css" type="text/css" />
+ <link rel="stylesheet" href="./static/style.css" />
 </head>
 
 <body class="bg-gray-900">
+	<div class="h-screen flex items-center justify-center">
+	 <span class="loader"></span>
+	</div>
 </body>
+<!-- Preload Firebase SDKs -->
 <script src="./static/swiftearn.js"></script>
 <script type="module" src="./pages/login.js"></script>
+
 </html>

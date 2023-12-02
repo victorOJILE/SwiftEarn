@@ -169,17 +169,57 @@ function observeElem(elem, parent, config) {
 	}
 }
 
+const paths = {
+ overview: {
+  name: 'Overview',
+  path: '../pages/overview.js',
+  pathname: 'overview.html'
+ },
+ product: {
+  name: 'Marketplace',
+  path: '../pages/product/product.js',
+  pathname: 'product/product.html'
+ },
+ addProduct: {
+  name: 'My Products',
+  path: '../pages/product/addProduct.js',
+  pathname: 'product/addProduct.html'
+ },
+ manageProducts: {
+  name: 'My Products',
+  path: '../pages/product/products.js',
+  pathname: 'product/products.html'
+ },
+ vendors: {
+  name: 'Vendors',
+  path: '../pages/vendors.js',
+  pathname: 'vendors.html'
+ },
+ vendorInfo: {
+  name: 'Vendors',
+  path: '../pages/vendors/info.js',
+  pathname: 'vendors/info.html'
+ },
+ vendorSignup: {
+  name: 'Vendors',
+  path: '../pages/vendors/signup.js',
+  pathname: 'vendors/signup.html'
+ }
+}
+
 const EventBus = {
   events: {
    'loaded-data': []
   },
   subscribe(eventName, callback) {
    this.events[eventName].push(callback);
+   this[eventName] && callback(this[eventName]);
   },
   publish(eventName, data) {
    const eventCallbacks = this.events[eventName];
    if (!eventCallbacks) return;
    
+   this[eventName] = data;
    iter(eventCallbacks, callback => callback(data));
   }
  }

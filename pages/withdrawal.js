@@ -1,5 +1,4 @@
 import Transactions from '../components/transactions.js';
-import HighDemandProducts from '../components/highDemandProducts.js';
 
 let moneybag = (
 `<svg class="mx-auto" width="5rem" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 394 511.98"><path fill="#3E7D52" d="M158.912 88.115c-7.903-23.315-15.02-46.892-21.026-70.838 22.398-24.583 108.964-21.316 133.86-.384l-23.05 54.803c12.396-16.286 16.563-22.97 23.958-32.043a71.446 71.446 0 018.787 6.814c6.557 5.936 12.412 12.495 13.597 21.638.768 5.929-.927 11.952-6.203 18.111l-52.884 61.595c-6.807-1.116-13.459-2.75-19.914-5.044 2.999-7.058 6.616-14.823 9.615-21.882l-19.253 20.795c-20.058-4.232-36.188-1.707-51.219 6.242l-53.632-64.366c-3.186-3.839-4.636-7.678-4.624-11.517.051-15.559 23.218-28.987 35.396-34.07l26.592 50.146z" />
@@ -12,15 +11,13 @@ let moneybag = (
 							<path fill="#fff" fill-rule="nonzero" d="M181.858 385.337c-1.38-.098-2.224-.238-3.239-.401l-5.68-.815-3.506-.588a81.372 81.372 0 01-3.392-.68 75.17 75.17 0 01-3.277-.797l-1.335-.359v-21.939l6.204.505 4.555.27 4.78.212 4.841.151 4.706.091 4.372.021a39.76 39.76 0 003.49-.135 21.221 21.221 0 002.761-.416 9.117 9.117 0 001.938-.654 4.238 4.238 0 001.169-.805c.259-.258.457-.564.582-.91.146-.404.221-.887.221-1.441v-1.45c0-1.157-.372-2.001-1.113-2.526a5.122 5.122 0 00-1.511-.736c-.554-.172-1.176-.255-1.859-.255h-6.402c-4.822 0-9.099-.541-12.82-1.619-3.793-1.1-6.994-2.76-9.6-4.972-2.664-2.273-4.655-5.28-5.966-9.022-1.278-3.643-1.919-7.979-1.919-13.001v-3.986c0-4.651.711-8.745 2.127-12.279 3.296-8.22 11.275-13.864 19.873-15.301v-9.732h20.232v9.339c3.347.268 5.941.735 9.216 1.327l1.7.297c1.42.25 2.836.524 4.237.815 1.313.27 2.579.552 3.78.843l1.377.335v21.968l-1.953-.172a235.784 235.784 0 00-5.853-.437c-2.138-.134-4.33-.253-6.569-.348-2.34-.1-4.541-.178-6.576-.225a250.158 250.158 0 00-5.971-.068c-1.104 0-2.127.038-3.061.113-.978.076-1.87.188-2.663.333a7.684 7.684 0 00-1.908.586 4.397 4.397 0 00-1.244.857 2.806 2.806 0 00-.66 1.091c-.174.512-.264 1.136-.264 1.866v1.207c0 .777.113 1.435.336 1.962.206.488.518.902.929 1.237.442.359 1.036.639 1.773.834.823.217 1.831.329 3.016.329h7.972c2.929 0 5.646.287 8.14.851 2.522.573 4.797 1.44 6.818 2.59 4.056 2.311 7.114 5.459 9.165 9.435a26.366 26.366 0 012.281 6.301c.506 2.231.762 4.574.762 7.022v3.986c0 3.933-.352 7.439-1.048 10.506-.711 3.129-1.796 5.795-3.243 7.991-1.45 2.199-3.216 4.046-5.283 5.532-2.066 1.483-4.43 2.609-7.075 3.366l-.677.189c-2.581.743-4.448 1.282-7.454 1.611v10.532h-20.232v-10.432z" /></svg>`);
 
 export default function Withdrawal(uid) {
-	const main = cEl('main', { class: 'p-3 pt-20 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
+	const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
 		cEl('div', {},
 			cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Fund Withdrawal' }),
 			cEl('p', { class: 'text-sm color4', textContent: 'Enjoy a seamless withdrawal experience on our platform. Request withdrawals, keep track of your financial activities, and conveniently manage your funds.' })
 		),
-		cEl('section', 
-			{ class: 'pt-2' },
-			cEl('div', 
-				{ class: 'select-none text-center my-4 relative' },
+		cEl('section',	{ class: 'pt-2' },
+			cEl('div',	{ class: 'select-none text-center my-4 relative' },
 				cEl('span', { class: 'absolute top-0 right-4 text-sm color4 p-1', textContent: '12/04/2023 12:45AM' }),
 				cEl('a', { href: '', class: 'block p-4 bg-green-900 rounded-lg border-2 border-green-700 text-green-100 font-bold' },
 					svg(moneybag),
@@ -28,8 +25,7 @@ export default function Withdrawal(uid) {
 				)
 			)
 		),
-		Transactions(uid),
-		HighDemandProducts()
+		Transactions(uid)
 	);
 	return main;
 }

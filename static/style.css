@@ -435,20 +435,6 @@ header {
 	animation: flash 0.5s ease-out infinite alternate
 }
 
-/*
-background-color: #FFF2;
-		box-shadow: 22px 0 #FFF2, -22px 0 #FFF
-	}
-
-	50% {
-		background-color: #FFF;
-		box-shadow: 22px 0 #FFF2, -22px 0 #FFF2
-	}
-
-	100% {
-		background-color: #FFF2;
-		box-shadow: 22px 0 #FFF, -
-		*/
 @keyframes flash {
 	0% {
 		background-color: azure;

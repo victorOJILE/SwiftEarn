@@ -24,11 +24,7 @@ export default function chartComp(uid) {
 	 console.log(e.stack);
 	}
  
-	return cEl('div', {}, chart,
-	 cEl('div', { class: 'text-center border-2 border' },
-	  cEl('a', { href: '/SwiftEarn/analytics.html', class: 'block p-2 text-green-500 text-sm', textContent: 'View more' })
-	 )
-	);
+	return chart;
 }
 
 function renderWeeklyDataChart(mainElem, data) {

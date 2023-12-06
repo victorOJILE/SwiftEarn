@@ -1,5 +1,6 @@
 import { db, getDocs, where, collection, query, startAt, limit, orderBy } from '../src/header.js';
 import loader from '../components/loader.js';
+import { request } from '../src/auth.js';
 import { search, marketplace } from '../src/icons.js';
 import generateList from '../components/productList.js';
 import HighDemandProducts from '../components/highDemandProducts.js';
@@ -19,13 +20,11 @@ export default function Marketplace() {
  
  let slicedPage = currentPage ? (currentPage * 15) - 15 : 0;
  
- function getData() {
-  let q = query(collection(db, "products"), where('status', '==', 'Approved'), orderBy('sales', 'desc'), startAt(slicedPage), limit(15));
-  
-  getDocs(q)
-   .then(doc => {
+ request(
+  getDocs(query(collection(db, "products"), where('status', '==', 'Approved'), orderBy('sales', 'desc'), startAt(slicedPage), limit(15))),
+  function(res) {
     let data = [];
-    doc.forEach(d => data.push(d.data()));
+    res.forEach(d => data.push(d.data()));
     
  	  let len = data.length;
     comp.empty();
@@ -102,9 +101,8 @@ export default function Marketplace() {
     }
     
     setTimeout(marketplacePagination, 500);
-  });
- };
- getData();
+  }
+ );
 
  const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
   cEl('section', { class: 'mb-4' },

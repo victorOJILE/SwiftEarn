@@ -6,11 +6,11 @@ export default function VendorsComp() {
  const becomeVendor = cEl('div');
  
  EventBus.subscribe('loaded-data', function(data) {
-  if (!data.role.includes('vendor')) {
+  if (!data.role === 'vendor') {
    becomeVendor.appendChild(cEl('div', { class: 'mt-4 mb-12' },
     cEl('button', { class: 'text-lg py-3 px-8 rounded-lg border-2 border font-bold font-special', textContent: 'Become a vendor!', event: {
       click() {
-       Link(undefined, paths.vendorSignup, true);
+       Link(undefined, paths.vendorSignup);
       }
      } })
    ));

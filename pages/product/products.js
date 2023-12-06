@@ -1,5 +1,6 @@
-import { db, getDocs, where, collection, query, doc, orderBy, deleteDoc, updateDoc } from '../../src/header.js';
+import { db, getDocs, where, collection, query, doc, orderBy, deleteDoc } from '../../src/header.js';
 import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
+import { request } from '../../src/auth.js';
 import EditProduct from '../../components/addProductComp.js';
 import { products } from '../../src/icons.js';
 import loader from '../../components/loader.js';
@@ -81,7 +82,7 @@ function createCard(data, uid) {
      click: async function() {
       this.innerHTML = loaderIcon;
       try {
-       await deleteObject(ref(storage, data.productImageUrl));
+       data.productImageUrl && await deleteObject(ref(storage, data.productImageUrl));
 
        await deleteDoc(doc(db, 'products', data.product_id));
 
@@ -99,53 +100,11 @@ function createCard(data, uid) {
 }
 
 function renderData(uid) {
- getDocs(query(collection(db, "products"), where('vendor_id', '==', uid), orderBy('addedAt', 'desc')))
-  .then(doc => {
-   /*
-    let data = [
-     {
-      name: 'New product for affiliate marketing website',
-      addedAt: 1701176872415,
-      status: 'Approved',
-      commission: '35',
-      price: '50',
-      currency: 'USD'
-     },
-     {
-      name: 'New product for affiliate marketing website',
-      addedAt: 1701176872415,
-      status: 'Pending',
-      commission: '35',
-      price: '50',
-      currency: 'USD'
-     },
-     {
-      name: 'New product for affiliate marketing website',
-      addedAt: 1701176872415,
-      status: 'Pending',
-      commission: '35',
-      price: '50',
-      currency: 'USD'
-     },
-     {
-      name: 'New product for affiliate marketing website',
-      addedAt: 1701176872415,
-      status: 'Declined',
-      commission: '35',
-      price: '50',
-      currency: 'USD'
-     },
-     {
-      name: 'New product for affiliate marketing website',
-      addedAt: 1701176872415,
-      status: 'Approved',
-      commission: '35',
-      price: '50',
-      currency: 'USD'
-     }
-    ];*/
+ request(
+  getDocs(query(collection(db, "products"), where('vendor_id', '==', uid), orderBy('addedAt', 'desc'))),
+  function(res) {
    let data = [];
-   doc.forEach(d => data.push(d.data()));
+   res.forEach(d => data.push(d.data()));
 
    tableData.empty();
 
@@ -158,8 +117,7 @@ function renderData(uid) {
      cEl('div', { class: 'border p-3 text-center', textContent: 'No products' })
     );
    }
-  })
-  .catch(e => console.log(e));
+  });
 }
 
 export default function ManageProducts(uid) {

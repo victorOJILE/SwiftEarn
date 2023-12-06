@@ -34,7 +34,7 @@ onAuthStateChanged(auth, user => {
    }
 
    if (expired) {
-    callSignout(undefined, true, '/SwiftEarn/login.html?page=' + new URL(location.href).pathname);
+    callSignout(undefined, true, '/SwiftEarn/login.html?page=' + encodeURIComponent(new URL(location.href).pathname));
     
     return;
    }
@@ -53,11 +53,18 @@ onAuthStateChanged(auth, user => {
   } else {
    // User is not authenticated
 
-   location.href = '/SwiftEarn/login.html?page=' + new URL(location.href).pathname;
+   location.href = '/SwiftEarn/login.html?page=' + encodeURIComponent(new URL(location.href).pathname);
   }
  } catch (e) {
   document.body.innerHTML = '';
-  document.body.append(cEl('div', { class: 'py-64 px-12 text-center text-red-700', textContent: 'Error loading page.' }));
+  document.body.append(
+   cEl('div', { class: 'px-12 text-center text-gray-200 flex items-center justify-center', style: { height: '80vh' } },
+   cEl('div', {},
+    cEl('p', { textContent: 'There was an error while loading this page!' }),
+    cEl('a', { href: location.href, textContent: 'Try again', class: 'inline-block p-3 border bg-gray-300 text-gray-700 my-6 rounded-md' })
+    )
+   )
+  );
   console.error(e)
  }
 });
@@ -104,19 +111,43 @@ window.addEventListener("popstate", (e) => {
  }
 });
 
-function callSignout(e, callAlert, url = '/SwiftEarn/login.html') {
+let requestQueue = [];
+
+window.addEventListener('online', function() {
+ if(requestQueue.length) {
+  Promise.all(requestQueue)
+  .then(() => requestQueue = []);
+ }
+});
+
+export function request(query, callback) {
+ let loadedData;
+
+ async function getData() {
+  try {
+   const res = await query;
+   loadedData = true;
+
+   callback(res);
+  } catch (e) {
+   !loadedData && (navigator.onLine && setTimeout(getData, 5000) || requestQueue.push(getData));
+  }
+ }
+ getData();
+}
+
+export function callSignout(e, callAlert, url = '/SwiftEarn/login.html') {
  signOut(auth).then(() => {
   callAlert && alert('Your session has expired! Please Login.');
   location.href = url;
  });
 }
 
-function passwordReset() {
+export function passwordReset() {
  sendPasswordResetEmail(auth, auth.currentUser.email)
  .then(() => {
-  alert('A password reset url has been sent to your email.');
-  location.href = '/SwiftEarn/login.html';
+  alert('A password reset link has been sent to your email.\n\nPlease follow that link to reset your account password!');
  });
 }
 
-export { firebase_app, callSignout, auth, passwordReset, updateProfile, updateEmail, updatePassword, Link };
+export { firebase_app, auth, updateProfile, updateEmail, updatePassword, Link };

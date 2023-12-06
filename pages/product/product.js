@@ -1,4 +1,4 @@
-import { Link } from '../../src/auth.js';
+import { Link, request } from '../../src/auth.js';
 import { db, getDoc, updateDoc, doc, setDoc, increment } from '../../src/header.js';
 import HighDemandProducts from '../../components/highDemandProducts.js';
 import { clock, longArrowRight, copy } from '../../src/icons.js';
@@ -13,34 +13,29 @@ export default function ProductComp(uid, searchParams) {
  if (product_id) {
   product_id = decodeURIComponent(product_id);
 
-  let loaded = false;
-
-  function getData() {
-   getDoc(doc(db, 'products', product_id))
-    .then(res => {
-     loaded = true;
-     comp.empty();
-     
-     if (res.exists()) {
-      const data = res.data();
-      
-      document.title = `${data.name} - ${data.vendor_name}`;
-      let description = Array.from(document.head.getElementsByTagName('meta')).find(e => e.name === 'description');
-      
-      if (description) {
-       description.content = data.description;
-      }
-      
-      productComp(data, comp);
-     } else {
-      comp.append(
-       cEl('div', { class: 'h-24 flex items-center justify-center' }, cEl('span', { textContent: 'No product data!', class: 'block p-3 border text-sm' }))
-      );
+  request(
+   getDoc(doc(db, 'products', product_id)),
+   function(res) {
+    comp.empty();
+    
+    if (res.exists()) {
+     const data = res.data();
+ 
+     document.title = `${data.name} - ${data.vendor_name}`;
+     let description = Array.from(document.head.getElementsByTagName('meta')).find(e => e.name === 'description');
+ 
+     if (description) {
+      description.content = data.description;
      }
-    })
-    .catch(e => !loaded && setTimeout(getData, 5000));
-  }
-  getData();
+ 
+     productComp(data, comp, uid);
+    } else {
+     comp.append(
+      cEl('div', { class: 'h-24 flex items-center justify-center' }, cEl('span', { textContent: 'No product data!', class: 'block p-3 border text-sm' }))
+     );
+    }
+   }
+  );
  } else {
   location.href = '/SwiftEarn/marketplace.html';
  }
@@ -51,7 +46,7 @@ export default function ProductComp(uid, searchParams) {
  return main;
 }
 
-function productComp(data, comp) {
+function productComp(data, comp, uid) {
  comp.append(
   cEl('div', { class: 'grid md:grid-cols-2 md:gap-6' },
    cEl('div', { class: 'mb-4 max-w-2xl mx-auto' },
@@ -105,9 +100,10 @@ function productComp(data, comp) {
     cEl('span', { class: 'absolute top-0 right-0 cursor-pointer copyAffilliate', data: { link: location.origin + location.pathname + `?aff_id=${uid}&prdid=${data.product_id}&prdpg=${ encodeURIComponent(data.productPageUrl)}` }, style: { backgroundColor: "rgba(13%, 47%, 50%, 0.63)" }, event: { click() { copyToClipboard(this.dataset.link) } } }, svg(copy))
    )
   ),
-  trackVisitors(data.product_id),
+  //trackVisitors(data.product_id),
   moreProductsFromVendor(data.vendor_id, data.vendor_name),
-  HighDemandProducts());
+  HighDemandProducts()
+ );
 }
 
 function trackVisitors(product_id) {

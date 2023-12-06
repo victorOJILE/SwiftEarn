@@ -1,6 +1,3 @@
-let script = `<script>
-  window.aff_id = '';
-	</script>`;
 
 document.addEventListener('DOMContentLoaded', function() {
  const aff_id = Array.from(document.querySelectorAll('a')).find(link => link.classList.contains('_swiftearn_aff_')).dataset.aff_id;
@@ -17,19 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
    })
   })
   .catch(e => null);
- /**
-  *
-  To calculate the conversion rate, you'll need the number of successful conversions (e.g., purchases) and the total number of interactions (e.g., clicks or visits) the vendor received during a specific time period.
- Conversion Rate = (Number of Conversions / Total Number of Interactions) * 100
-
-
- Conversion Rate:
-
- Number of Conversions (successful purchases): 100
- Total Number of Interactions (clicks/views): 2,000
- Conversion Rate = (100 / 2,000) * 100 = 5%
-
-  */
 
  function sendClickData(url, aff_id) {
   const data = JSON.stringify({

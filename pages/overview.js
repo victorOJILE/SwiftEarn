@@ -8,9 +8,7 @@ import Vendors from '../components/vendors.js';
 export default function Overview(uid) {
  const welcomeMsg = cEl('h4', { class: 'text-xs md:text-sm px-2 py-4', textContent: 'Hey! Welcome back.' });
 
- EventBus.subscribe('loaded-data', function(data) {
-  welcomeMsg.textContent = 'Welcome back, ' + data.firstName;
- });
+ EventBus.subscribe('loaded-data', data => welcomeMsg.textContent = 'Welcome back, ' + data.firstName);
  
 	const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
 		cEl('h1', { class: 'bg-8 text-2xl md:text-3xl p-2', textContent: 'Dashboard' }),

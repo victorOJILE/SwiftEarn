@@ -1,5 +1,5 @@
 import { db, doc, getDocs, where, collection, query, orderBy } from '../src/header.js';
-import { Link } from '../src/auth.js';
+import { Link, request } from '../src/auth.js';
 import loader from './loader.js';
 
 export default function Transactions(uid, showMore) {
@@ -17,13 +17,13 @@ export default function Transactions(uid, showMore) {
  function render(data) {
   tableData.empty();
   tableData.append(
-   cEl('table', { class: "text-sm", style: { width: '100%', minWidth: "35rem" } },
+   cEl('table', { class: "text-sm", style: { width: '100%', minWidth: "30rem" } },
     cEl('thead', {},
      cEl('tr', {},
       cEl('th', { textContent: 'No.' }),
+      cEl('th', { textContent: 'Detail s' }),
       cEl('th', { class: 'p-2', textContent: 'Date' }),
       cEl('th', { textContent: 'Status' }),
-      cEl('th', { textContent: 'Ref' }),
       cEl('th', { textContent: 'Amount' })
      )
     ),
@@ -34,74 +34,12 @@ export default function Transactions(uid, showMore) {
   );
  }
  
- let loadedData = false;
- function getData() {
-  getDocs(query(collection(db, "transactions"), where('aff_id', '==', uid), orderBy('timeCreated', 'desc')))
-  .then(doc => {
+ request(
+  getDocs(query(collection(db, "transactions"), where('aff_id', '==', uid), orderBy('timeCreated', 'desc'))),
+  function(res) {
    let data = [];
-   loadedData = true;
-   doc.forEach(d => data.push(d.data()));
+   res.forEach(d => data.push(d.data()));
    
-   /*
-  let data = [
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Successful',
-     amount: '350',
-     currency: 'USD'
-   		},
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Successful',
-     amount: '120',
-     currency: 'USD'
-   		},
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Declined',
-     amount: '-20000',
-     currency: 'NGN'
-   		},
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Successful',
-     amount: '-60000',
-     currency: 'NGN'
-   		},
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Successful',
-     amount: '350',
-     currency: 'USD'
-   	},
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Successful',
-     amount: '120',
-     currency: 'USD'
-   		},
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Declined',
-     amount: '-3500',
-     currency: 'NGN'
-   		},
-    {
-     reference: 'BU3FU2D5JID',
-     paid_at: '2022-08-09T14:21:32.000Z',
-     gateway_response: 'Successful',
-     amount: '60',
-     currency: 'USD'
-   		}
-   	];
-   	*/
    if(!data.length) {
     tableData.empty();
     tableData.append(
@@ -127,10 +65,8 @@ export default function Transactions(uid, showMore) {
      } })
     )
    );
-  })
-  .catch(e => !loadedData && setTimeout(getData, 5000));
- }
- getData();
+  }
+ );
  
  return section;
 }
@@ -148,10 +84,10 @@ function createRow(data, ind) {
   cEl('td', { textContent: ind }),
   cEl('td', { textContent: dtf.format(new Date(data.paid_at || data.timeCreated)) }
   ),
+  cEl('td', { textContent: data.detail }),
   cEl('td', {},
-   cEl('span', { textContent: data.gateway_response, style: { backgroundColor: data.gateway_response === 'Successful' ? '#2F9B76C7' : '#7A2E2EC9' }, class: 'inline-block p-1 w-full rounded-md' })
+   cEl('span', { textContent: data.gateway_response || data.status, style: { backgroundColor: data.gateway_response === 'Successful' ? '#2F9B76C7' : '#7A2E2EC9' }, class: 'inline-block p-1 w-full rounded-md' })
   ),
-  cEl('td', { textContent: data.reference, class: 'px-3' }),
   cEl('td', { textContent: new Intl.NumberFormat('en', { 
     style: 'currency', currency: data.currency
    }).format(data.amount), class: data.amount > 0 ? 'text-green-400' : 'text-red-400' })

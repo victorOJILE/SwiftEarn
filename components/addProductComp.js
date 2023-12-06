@@ -1,8 +1,8 @@
-/*import { db, addDoc, setDoc, doc, query, collection, where, updateDoc } from '../src/header.js';
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";*/
+import { db, addDoc, setDoc, doc, query, collection, where } from '../src/header.js';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js";
 import Img from './mediaUpload.js';
 
-//const storage = getStorage();
+const storage = getStorage();
 
 export default function AddProduct(uid, productData, vendor_name) {
  let edit = productData && productData.product_id;
@@ -10,27 +10,23 @@ export default function AddProduct(uid, productData, vendor_name) {
  // productData here means we are trying to edit an existing product using this UI component
  let product_id = edit;
  
- async function sendRequest(data, submit) {
-  try {
-   if(edit) {
-    await setDoc(doc(db, 'products', product_id), data, { merge: true });
-    submit.innerHTML = 'Continue';
-   } else {
-    let ref = doc(collection(db, 'products'));
-    let docRef = await addDoc(ref, data);
-    
-    await setDoc(ref, { product_id: docRef.id }, { merge: true });
-    
-    location.href = '/SwiftEarn/product/products.html';
-   }
-  } catch(e) {
-   submit.innerHTML = 'Continue';
+ async function sendRequest(data) {
+  if(edit) {
+   await setDoc(doc(db, 'products', product_id), data, { merge: true });
+   
+   return product_id;
+  } else {
+   let docRef = await addDoc(collection(db, 'products'), data);
+   
+   await setDoc(doc(db, 'products', docRef.id), { product_id: docRef.id }, { merge: true });
+   
+   return docRef.id;
   }
  }
  
  let username = edit && productData.vendor_name;
 
- EventBus.subscribe('loaded-data', data => username = data.fullName);
+ EventBus.subscribe('loaded-data', data => username = data.fullName || 'SwiftEarn vendor');
  
  let oldProductImage = edit && productData.productImageUrl, canvas;
  
@@ -59,29 +55,42 @@ export default function AddProduct(uid, productData, vendor_name) {
 
      iter(formData, key => data[key[0]] = key[1]);
      
-     for(let key in data) {
-      if(!data[key]) return alert('Incomplete data');
-     }
-     
      delete data.photoUrl;
 
+     for(let key in data) {
+      if(data[key] === '') return alert('Incomplete data');
+     }
+     
      submit.innerHTML = loader;
      
      try {
      if (canvas) { // Upload image
       canvas.toBlob(async (blob) => {
+       let docRefId;
+       try {
+       docRefId = await sendRequest(data);
+       } catch(e) {
+        submit.innerHTML = 'Continue';
+        return;
+       }
+       
+       product_id = product_id || docRefId;
+       
        const imageRef = ref(storage, 'products/' + uid + product_id);
        
        await uploadBytes(imageRef, blob);
        
        // Add productImageUrl to product data
-       data.productImageUrl = await getDownloadURL(imageRef);
+       let productImageUrl = await getDownloadURL(imageRef);
        
-       await sendRequest(data, submit);
+       await setDoc(doc(db, 'products', product_id), { productImageUrl }, { merge: true });
+       
+       location.href = '/SwiftEarn/product/products.html';
       });
      } else {
       if (oldProductImage || confirm('No product image! Do you want to continue?')) {
-       sendRequest(data, submit);
+       sendRequest(data, submit)
+       .then(() => location.href = '/SwiftEarn/product/products.html');
       } else {
        submit.innerHTML = 'Continue';
       }
@@ -132,11 +141,11 @@ export default function AddProduct(uid, productData, vendor_name) {
     )
    ),
    cEl('div', { class: 'grid md:grid-cols-2 gap-4' },
-    cEl('div', { class: 'mb-2' },
+    cEl('div', { class: 'mb-4' },
      cEl('label', { class: 'block mb-2 font-bold', textContent: 'JV Page URL:', htmlFor: 'jvPageUrl' }),
      cEl('input', { class: 'w-full p-3 bg-7 color2', id: 'jvPageUrl', name: 'jvPageUrl', value: edit && productData.jvPageUrl || '', placeholder: 'Enter your JV page URL' })
     ),
-    cEl('div', { class: 'mb-4' },
+    cEl('div', { class: 'mb-8' },
      cEl('label', { class: 'block mb-2 font-bold', textContent: 'Product Page URL:', htmlFor: 'productPageUrl' }),
      cEl('input', { class: 'w-full p-3 bg-7 color2', id: 'productPageUrl', name: 'productPageUrl', value: edit && productData.productPageUrl || '', placeholder: 'Enter your product page URL' }),
     )
@@ -148,7 +157,7 @@ export default function AddProduct(uid, productData, vendor_name) {
    cEl('button', {
     type: 'submit',
     textContent: 'Continue',
-    class: 'py-3 mb-4 mx-3 w-1/2 text-sm text-gray-100 bg-blue-700 rounded-sm font-bold text-center'
+    class: 'py-3 mb-4 w-1/2 text-sm text-gray-100 bg-blue-700 rounded-sm font-bold text-center'
    })
   )
  );
@@ -156,7 +165,7 @@ export default function AddProduct(uid, productData, vendor_name) {
  const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen container mx-auto' },
   cEl('div', { class: 'mb-4 max-w-xl' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Add New Product' }),
-   cEl('p', { textContent: 'Update your profile. Manage contact details, payment info, and preferences for enhanced performance.', class: "color4 pr-2 text-sm" }),
+   cEl('p', { textContent: 'Effortlessly add, update, and showcase your product with a few clicks. Elevate your online presence with hassle-free product management – your success starts here!', class: "color4 pr-2 text-sm" }),
   ),
   edit || section
  );

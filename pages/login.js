@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
 
 const firebaseConfig = {
  apiKey: "AIzaSyCF-PBbVOapUFD52kVTwWaLWg5Rbzh5E88",
@@ -246,6 +246,13 @@ eyesChildren[1].onclick = () => eyes.previousElementSibling.type = 'text';
 
 let submitBtn = cEl('button', { type: 'submit', class: 'py-3 px-8 bg-blue-900 color2 rounded-lg font-bold', textContent: 'Continue' });
 
+function passwordReset() {
+ sendPasswordResetEmail(auth, auth.currentUser.email)
+  .then(() => {
+   alert('A password reset link has been sent to your email.\n\nPlease follow that link to reset your account password!');
+  });
+}
+
 function handleSubmit(e) {
  e.preventDefault();
 
@@ -259,7 +266,7 @@ function handleSubmit(e) {
    .then(result => {
     document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
      
-    location.href = new URL(location.href).searchParams.get('page') || '/SwiftEarn/overview.html';
+    location.href = decodeURIComponent(new URL(location.href).searchParams.get('page')) || '/SwiftEarn/overview.html';
    })
    .catch((error) => {
     cover.remove();
@@ -267,12 +274,14 @@ function handleSubmit(e) {
 
     if (error.code == 'auth/user-not-found') {
      emailNotRecognized.classList.remove('hidden');
-     let emailInput = emailNotRecognized.previousElementSibling;
+     let emailInput = emailNotRecognized.previousElementSibling.lastElementChild;
      emailInput.addEventListener('blur', () => emailNotRecognized.classList.add('hidden'), { once: true })
     }
     if (error.code == "auth/wrong-password") {
      wrongPassword.classList.remove('hidden');
-     let passwordInput = wrongPassword.previousElementSibling.firstElementChild;
+     let passwordInput = wrongPassword.previousElementSibling.lastElementChild;
+     // TODO: 
+     // blur event not added to input
      passwordInput.addEventListener('blur', () => wrongPassword.classList.add('hidden'), { once: true })
     }
     console.log(error);
@@ -284,7 +293,7 @@ function loginWithGoogle() {
   .then(result => {
    document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
    
-   location.href = params.get('redirect') ? params.get('page') : '/SwiftEarn/overview.html';
+   location.href = params.get('redirect') ? decodeURIComponent(params.get('page')) : '/SwiftEarn/overview.html';
   })
   .catch(e => console.error(e));
 }
@@ -315,7 +324,7 @@ const form = cEl('form',
   wrongPassword
  ),
  cEl('div', { class: 'p-3 mb-2 text-right' },
-  cEl('a', { class: 'text-xs underline text-green-500', textContent: 'Forgot password' })
+  cEl('a', { event: { click: passwordReset }, class: 'text-xs underline text-green-500', textContent: 'Forgot password' })
  ),
  cEl('div', { class: 'text-center' },
   submitBtn,

@@ -1,53 +1,45 @@
-import { db, setDoc, getDoc, doc } from '../../src/header.js';
+import { db, setDoc, doc } from '../../src/header.js';
 
-export default function VendorSignup(uid, loadData) {
- 
- function getData() {
-  getDoc(doc(db, 'user', uid))
-  .then(res => {
-   let data = res.data();
-   let form = document.forms.myForm;
-   
-   iter(data, key => {
-    if(form[key]) form[key].value = data[key];
-   });
-  })
- }
- loadData && getData();
- 
+export default function VendorSignup(uid) {
+
+ EventBus.subscribe('loaded-data', function(data) {
+  iter(data, key => {
+   if (form[key]) form[key].value = data[key];
+  });
+ });
+
  const main = cEl('main', { class: 'p-3 md:p-6 bg-9 color2 overflow-auto md:h-screen' },
   cEl('div', { class: 'mb-4 max-w-xl' },
    cEl('h2', { class: 'text-2xl md:text-3xl mb-2', textContent: 'Join our vibrant marketplace as a vendor and unlock new opportunities for growth.' }),
    cEl('p', { textContent: "Expand your brand's presence, boost your sales, and establish valuable connections in our vibrant community of buyers and sellers.", class: "color4 pr-2 text-sm" }),
   ),
-  cEl('form', 
-   {
+  cEl('form', {
     name: 'myForm',
     class: 'text-sm',
     event: {
      submit(e) {
       e.preventDefault();
-      
+
       const submitBtn = this.getElementsByTagName('button')[0];
       submitBtn.disabled = true;
       submitBtn.innerHTML = loader;
-      
+
       let formData = new FormData(this);
-      
+
       let data = {
        createdVendorAcctAt: Date.now(),
-       role: 'affiliate-vendor'
+       role: 'vendor'
       };
-      
+
       iter(formData, key => data[key[0]] = key[1]);
-      
+
       setDoc(doc(db, 'users', uid), data, { merge: true })
-      .then(res => location.href = '/SwiftEarn/product/products.html')
-      .catch(e => {
-       submitBtn.disabled = true;
-       submitBtn.innerHTML = 'Continue';
-       console.error(e);
-      });
+       .then(res => location.href = '/SwiftEarn/product/products.html')
+       .catch(e => {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Continue';
+        console.error(e);
+       });
      }
     }
    },

@@ -1,248 +1,83 @@
-<!DOCTYPE html>
 <html>
 
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1">
- <title></title>
- <link rel="stylesheet" href="./static/tailwind.min.css" type="text/css" />
- <link rel="stylesheet" href="./static/style.css" />
- <link rel="stylesheet" href="../static/project64ar7r4.css" />
+
 </head>
 
-<body class="relative grid md:grid-cols-5 bg-main p-3">
- <script>
-  function elCls(cls) {
-   return document.getElementsByClassName(cls);
+<body>
+ <style type="text/css">
+  .swf_cta_btn {
+   margin: 1rem 0;
+   display: block;
+   text-decoration: none;
+   outline: none;
+   cursor: pointer;
+   
   }
-
-  function elId(id) {
-   return document.getElementById(id);
+  .swf_cta_btn > button {
+   display: block;
+   position: relative;
+   text-align: center;
+   border: none;
+   border-radius: 50px 50px 18px 18px /50px 50px 50px 50px !important;
+   color: #FFFFFF !important;
+   width: 80%;
+   max-width: 420px;
+   padding: 1.5rem 0rem !important;
+   font-size: 1.3rem;
+   font-weight: bold;
+   background: blue repeating-linear-gradient(19deg, #BA82A8 0px, #4C72EF 100%);
+   box-shadow: inset 0px -4px 7px 0px darkslateblue;
+   margin: 0px auto !important
   }
-
-  const isMobile = (function() {
-   try {
-    document.createEvent("TouchEvent");
-    return true;
-   } catch (e) {
-    return false;
-   }
-  })();
-
-  Element.prototype.addCss = function(val = {}) {
-   for (let i of Object.keys(val)) {
-    this.style[i] = val[i];
-   }
-  };
-
-  Element.prototype.empty = function() {
-   while (this.firstChild) {
-    this.removeChild(this.firstChild);
-   }
+  
+  .swf_cta_btn2 > button {
+   background: blue repeating-linear-gradient(19deg, #D9BC00 0px, #45A931 100%) !important;
   }
-
-  Element.prototype.ae = function(type, callback, props = {}) {
-   this.addEventListener(type, callback, props);
-  };
-
-  Element.prototype.re = function(type, callback, props = {}) {
-   this.removeEventListener(type, callback, props);
-  };
-
-  String.prototype.capitalize = function() {
-   return this.length > 1 ? this[0].toUpperCase() + this.slice(1) : this.toUpperCase();
-  };
-
-  const useIntersectionObserver = Boolean(IntersectionObserver);
-
-  /**
-   * Create html DOM elements
-   * @param {string} elem - Type of element
-   */
-  function cEl(elem, props = {}, ...children) {
-   let element = document.createElement(elem);
-   if (props && typeof props == 'object') {
-    for (let prop in props) {
-     switch (prop) {
-      case 'class':
-       if (props[prop].includes(' ')) {
-        let cls = props[prop].split(' ');
-        iter(cls, each => element.classList.add(each));
-       } else {
-        element.classList.add(props[prop]);
-       }
-       break;
-      case 'data':
-       for (let d in props[prop]) {
-        element.dataset[d] = props[prop][d];
-       }
-       break;
-      case 'style':
-       element.addCss(props[prop]);
-       break;
-      case 'event':
-       for (let ev in props[prop]) {
-        element.ae(ev, props[prop][ev]);
-       }
-       break;
-      default:
-       element[prop] = props[prop];
-     }
-    }
-   }
-
-   if (children) {
-    for (let child of children) element.append(child);
-   }
-   return element;
+  
+  .swf_cta_btn3 > button {
+   background: blue repeating-linear-gradient(19deg, #D925A3 0px, #E65831 100%) !important
   }
-
-  const text = (str) => document.createTextNode(str);
-
-  const iter = function(v, func) {
-   if (v == null || typeof v === undefined) return alert('Error: First parameter is not an iterable!');
-   if (v.constructor.name === 'Object') {
-    for (let key in v) {
-     func(key, v[key], v);
-    }
-    return;
-   }
-
-   let iterator = v[Symbol.iterator]();
-   let i = 0;
-   while (true) {
-    let result = iterator.next();
-    if (result.done) break;
-    func(result.value, i++, v);
-   }
+  
+  .swf_cta_btn > button:active {
+   box-shadow: inset 0px -4px 10px 5px #484F97
   }
-
-  function copyToClipboard(text) {
-   if (window.clipboardData && window.clipboardData.setData) {
-    return window.clipboardData.setData("Text", text);
-   } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-    let textarea = document.createElement("textarea");
-    textarea.textContent = text;
-    textarea.style.position = "fixed";
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-     return document.execCommand("copy");
-    } catch (ex) {
-     console.warn("Copy to clipboard failed.", ex);
-     return prompt("Copy to clipboard: Ctrl+C, Enter", text);
-    } finally {
-     document.body.removeChild(textarea);
-    }
-   }
+  
+  .swf_cta_btn > button > svg {
+   position: absolute;
+   right: 8%;
+   top: 50%;
+   transform: translateY(-50%);
+   padding: 9px;
+   background-color: whitesmoke;
+   border-radius: 50%
   }
+ </style>
+ <a class="swf_cta_btn" href="">
+  <button type="button">
+   <span>BUY NOW</span>
+   <svg stroke="#484F97" fill="#484F97" stroke-width="0" viewBox="0 0 448 512" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg">
+    <path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34zm192-34l-136-136c-9.4-9.4-24.6-9.4-33.9 0l-22.6 22.6c-9.4 9.4-9.4 24.6 0 33.9l96.4 96.4-96.4 96.4c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l136-136c9.4-9.2 9.4-24.4 0-33.8z" />
+   </svg>
+  </button>
+ </a>
+ <a class="swf_cta_btn swf_cta_btn2" href="">
+  <button type="button">
+   <span>BUY NOW</span>
+   <svg stroke="#45A931" fill="#45A931" stroke-width="0" viewBox="0 0 448 512" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg">
+    <path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34zm192-34l-136-136c-9.4-9.4-24.6-9.4-33.9 0l-22.6 22.6c-9.4 9.4-9.4 24.6 0 33.9l96.4 96.4-96.4 96.4c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l136-136c9.4-9.2 9.4-24.4 0-33.8z" />
+   </svg>
+  </button>
+ </a>
+ <a class="swf_cta_btn swf_cta_btn3" href="">
+  <button type="button">
+   <span>BUY NOW</span>
+   <svg stroke="#E65831" fill="#E65831" stroke-width="0" viewBox="0 0 448 512" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg">
+    <path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34zm192-34l-136-136c-9.4-9.4-24.6-9.4-33.9 0l-22.6 22.6c-9.4 9.4-9.4 24.6 0 33.9l96.4 96.4-96.4 96.4c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l136-136c9.4-9.2 9.4-24.4 0-33.8z" />
+   </svg>
+  </button>
+ </a>
 
-  function svg(str) {
-   return cEl('i', { innerHTML: str }).firstElementChild;
-  }
-
-  function isVisible(elem) {
-   let coords = elem.getBoundingClientRect();
-   let windowHeight = document.documentElement.clientHeight;
-   let topVisible = coords.top > 0 && coords.top < windowHeight;
-   let bottomVisible = coords.bottom < windowHeight && coords.bottom > 0;
-   return topVisible || bottomVisible;
-  }
-
-  /**
-   * @param {object} config
-   * @param {String} config.rootMargin
-   * @param {Function} config.isVisible
-   * @param {Function|Boolean} config.notVisible
-   */
-  function observeElem(elem, parent, config) {
-   let observer = new IntersectionObserver(
-    function(entries) {
-     iter(entries, entry => {
-      if (entry.isIntersecting) {
-       let el = entry.target;
-       if (entry.intersectionRatio >= (1.0)) {
-        config.isVisble(el);
-        typeof config.notVisible == 'boolean' && observer.unobserve(el);
-       }
-      } else {
-       typeof config.notVisible == 'function' && config.notVisible(entry.target);
-      }
-     });
-    }, {
-     root: parent,
-     rootMargin: config.rootMargin || "0px",
-     threshold: 1.0,
-    });
-   if (elem.length) {
-    for (let el of elem) {
-     observer.observe(el);
-    }
-   } else {
-    observer.observe(elem);
-   }
-  }
-
-  const paths = {
-   overview: {
-    name: 'Overview',
-    path: '../pages/overview.js',
-    pathname: 'overview.html'
-   },
-   product: {
-    name: 'Marketplace',
-    path: '../pages/product.js',
-    pathname: 'product/product.html'
-   },
-   addProduct: {
-    name: 'My Products',
-    path: '../pages/addProduct.js',
-    pathname: 'product/addProduct.html'
-   },
-   manageProducts: {
-    name: 'My Products',
-    path: '../pages/manageProducts.js',
-    pathname: 'product/products.html'
-   },
-   vendors: {
-    name: 'Vendors',
-    path: '../pages/vendors.js',
-    pathname: 'vendors.html'
-   },
-   vendorInfo: {
-    name: 'Vendors',
-    path: '../pages/vendorInfo.js',
-    pathname: 'vendors/info.html'
-   },
-   vendorSignup: {
-    name: 'Vendors',
-    path: '../pages/vendorSignup.js',
-    pathname: 'vendors/signup.html'
-   }
-  }
-
-  const EventBus = {
-   events: {
-    'loaded-data': []
-   },
-   subscribe(eventName, callback) {
-    this.events[eventName].push(callback);
-   },
-   publish(eventName, data) {
-    const eventCallbacks = this.events[eventName];
-    if (!eventCallbacks) return;
-
-    iter(eventCallbacks, callback => callback(data));
-   }
-  }
- </script>
- <script type="module">
-  //import Header from './src/header.js'
-  import managePro from './pages/product/addProduct.js';
-
-  //let dom = Header('Marketplace', 'uid');
-  document.body.append(managePro())
- </script>
 </body>
 
 </html>

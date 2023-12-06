@@ -238,13 +238,15 @@ let transactionId;
  let previousData;
  
  function sendTransactionInfo(formData, btn) {
+  if(!product.name) return alert('Product information not loaded. Please, check your internet connection and try again!');
+  
   const data = {
-   aff_id,
+   user_id: aff_id,
    prdid,
    timeCreated: Date.now(),
    status: 'Pending',
-   code: 0,
-   detail: 'Purchase'
+   code: 'sale',
+   detail: 'Product sale: ' + product.name
   };
 
   iter(formData, key => data[key[0]] = key[1]);
@@ -253,12 +255,12 @@ let transactionId;
   previousData && iter(formData, key => changed.push(key[1] === previousData[key[0]]));
   
   changed = !changed.length || changed.every(e => !!e === true);
- 
+  
   previousData = data;
   
   function runCallB() {
    main.firstElementChild.style.marginRight = '2rem';
-   
+   data.reference = transactionId;
    let { back, div } = confirmPayment(product, data);
    
    main.appendChild(div);
@@ -361,50 +363,36 @@ let transactionId;
 })();
 
 function confirmPayment(product, data) {
- let loaded = 0;
-
- const paystackScript = cEl('script', { src: 'https://js.paystack.co/v1/inline.js', event: { load: () => loaded = 1 } });
-
- document.body.append(paystackScript);
-
- function payWithPaystack(e) {
+ function payWithFW(e) {
   e.preventDefault();
-
-  if (!loaded) alert('Payment service not loaded! Please check your internet connection.');
-
-  let email = data.email;
+  
+  this.getElementsByTagName('button')[0].textContent = 'Loading...';
+  
+  let email = data.email || 'ojilevictor11@gmail.com';
   let amount = this.amount.value;
 
-  if (+amount < product.amount) {
+  if (+amount < product.amount + (product.charge || 0)) {
    return alert('Error initiating request! Please check the product price and try again.');
   }
-  elId('continuePayment').classList.add('d-none');
-  elId('spinner').classList.remove('d-none');
-  try {
-   const handler = PaystackPop.setup({
-    key: 'YOUR_PUBLIC_KEY',
-    email: email || "ojilevictor11@gmail.com",
-    amount: amount * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
-    currency: 'NGN', // Use GHS for Ghana Cedis or USD for US Dollars
-    callback(response) {
-     alert('Payment has been made successfully');
-     //this happens after the payment is completed successfully
-     var reference = response.reference;
-     alert('Payment complete! Reference: ' + reference);
-     // Make an AJAX call to your server with the reference to verify the transaction
-     
-    },
-    onClose() {
-     let continuePayment = elId('continuePayment');
-     continuePayment.textContent = "Try again";
-     continuePayment.classList.remove('d-none');
-     continuePayment.nextElementSibling.classList.add('d-none');
-    },
-   });
-   handler.openIframe();
-  } catch (e) {
-   console.error(e);
-  }
+  
+  fetch('/* initialize payment url on my server */', {
+   method: 'post',
+   headers: {
+    'Content-Type': 'application/json'
+   },
+   body: JSON.stringify({
+    ...data,
+    email,
+    amount,
+    detail: 'Product purchase'
+   }),
+   redirect: 'follow',
+   credentials: 'same-origin'
+  })
+  .then()
+  .catch(err => {
+   
+  });
  }
  
  const back = cEl('span', { class: 'inline-block text-blue-600 hover:text-blue-400 text-xs py-3 font-bold', textContent: '« Go back «' });
@@ -417,7 +405,7 @@ function confirmPayment(product, data) {
   back,
   cEl('hr'),
   cEl('p', { class: 'text-gray-500 text-md py-4 flex items-center justify-between' }, product.name, svg(productIcon)),
-  cEl('form', { class: 'text-sm font-bold p-1', event: { submit: payWithPaystack } },
+  cEl('form', { class: 'text-sm font-bold p-1', event: { submit: payWithFW } },
    cEl('div', { class: 'border rounded-lg bg-9 p-3 mb-3' },
     cEl('label', { textContent: 'Amount', class: 'inline-block mb-1' }),
     cEl('div', { class: 'grid grid-cols-6' },
@@ -426,7 +414,7 @@ function confirmPayment(product, data) {
     ),
     cEl('div', { class: 'flex justify-between pt-3' },
      cEl('span', { textContent: 'Charge' }),
-     cEl('span', { textContent: '0.00 NGN' })
+     cEl('span', { textContent: (product.charge || '0.00') + 'NGN' })
     ),
     cEl('div', { class: 'flex justify-between pt-3' },
      cEl('span', { textContent: 'Price' }),

@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
 import { getAuth, updateProfile, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 
 const firebaseConfig = {
  apiKey: "AIzaSyCF-PBbVOapUFD52kVTwWaLWg5Rbzh5E88",
@@ -311,7 +311,7 @@ function handleSubmit(e) {
     })
    );
 
-   location.href = '/SwiftEarn/overview.html';
+   location.href = params.get('redirect') ? decodeURIComponent(params.get('page')) : '/SwiftEarn/overview.html';
   } catch (error) {
    cover.remove();
    if (error.code == 'auth/email-already-in-use') {
@@ -368,7 +368,7 @@ function signUpWithGoogle() {
      registration_date: Date.now()
     })
    )
-   .then(() => location.href = params.get('redirect') ? params.get('page') : '/SwiftEarn/overview.html');
+   .then(() => location.href = params.get('redirect') ? decodeURIComponent(params.get('page')) : '/SwiftEarn/overview.html');
 
    document.cookie = `lastRefresh=${Date.now()};max-age=14400`;
   })

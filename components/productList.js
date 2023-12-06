@@ -1,10 +1,10 @@
 import { Link } from '../src/auth.js';
 
 export default function generateList(product) {
-
+// TODO: product url/src
 	return cEl('li', { class: 'grid grid-cols-7 md:grid-cols-1 border-b-2 border-gray-400 py-4' },
 		cEl('div', { class: 'col-span-2 p-3 md:p-0' },
-			cEl('img', { src: product.productImageUrl || '/SwiftEarn/static/images/krakenimages-376KN_ISplE-unsplash.jpg' })
+			cEl('img', { src: product.productImageUrl || '/static/images/product.png' })
 		),
 		cEl('div', { class: 'col-span-5 py-2 pr-2' },
 			cEl('a', { event: {

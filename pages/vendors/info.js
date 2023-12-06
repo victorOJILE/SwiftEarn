@@ -1,6 +1,7 @@
 import { db, getDoc, doc } from '../../src/header.js';
 import moreProductsFromVendor from '../../components/moreProductFromVendor.js';
 import HighDemandProducts from '../../components/highDemandProducts.js';
+import { request } from '../../src/auth.js';
 import { vendors } from '../../src/icons.js';
 import loader from '../../components/loader.js';
 
@@ -16,13 +17,11 @@ export default function VendorComp(uid, searchParams) {
 
  vendor_id = decodeURIComponent(vendor_id);
  
- let loaded = false;
- function getData() {
-  getDoc(doc(db, 'users', vendor_id))
-  .then(res => {
-   loaded = true;
-   
+ request(
+  getDoc(doc(db, 'users', vendor_id)),
+  function(res) {
    comp.empty();
+   
    if (res.exists()) {
     const data = res.data();
  
@@ -47,10 +46,8 @@ export default function VendorComp(uid, searchParams) {
      HighDemandProducts()
     );
    }
-  })
-  .catch(e => !loaded && setTimeout(getData, 5000));
- }
- getData();
+  }
+ );
 
  return main;
 }

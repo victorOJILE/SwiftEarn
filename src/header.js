@@ -1,4 +1,4 @@
-import { firebase_app, callSignout, passwordReset, Link } from './auth.js';
+import { firebase_app, callSignout, passwordReset, Link, request } from './auth.js';
 import { getFirestore, doc, collection, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, query, where, increment, startAt, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 import * as icons from './icons.js';
 import loader from '../components/loader.js';
@@ -34,11 +34,11 @@ export default function app(name, uid) {
 
  body.innerHTML = '';
  body.append(asideL, mainComp, asideR);
- 
+
  return mainComp;
 }
 
-let userRole, loadedData;
+let userIsVendor, loadedData, headerRendered;
 
 function asideLeft(pageName, uid) {
  const closeSidebarIcon = svg(icons.closeSidebar);
@@ -64,7 +64,9 @@ function asideLeft(pageName, uid) {
    {
     link: '/SwiftEarn/marketplace.html',
     icon: icons.marketplace,
-    text: 'Marketplace'
+    text: 'Marketplace',
+    path: '../pages/marketplace.js',
+    pathname: 'marketplace.html'
 		},
    {
     link: '/SwiftEarn/vendors.html',
@@ -99,7 +101,9 @@ function asideLeft(pageName, uid) {
    {
     link: '/SwiftEarn/profile.html',
     icon: icons.gear,
-    text: 'Settings'
+    text: 'Settings',
+    path: '../pages/profile.js',
+    pathname: 'profile.html'
 		},
    {
     link: '/SwiftEarn/help.html',
@@ -112,41 +116,54 @@ function asideLeft(pageName, uid) {
     link: 'javascript:(void)',
     icon: icons.logout,
     text: 'Log out',
-    // click: callSignout
+    click: callSignout
 		}
 	 ]
  ];
- 
- let vendorNavs = [{
-       link: '/SwiftEarn/product/addProduct.html',
-       icon: icons.cartPlus,
-       text: 'Add Product',
-       path: '../pages/product/addProduct.js',
-       pathname: 'product/addProduct.html'
-      },
-      {
-       link: '/SwiftEarn/product/products.html',
-       icon: icons.products,
-       text: 'My Products',
-       path: '../pages/product/products.js',
-       pathname: 'product/products.html'
-      },
-      {
-       link: '/SwiftEarn/vendors/signup.html',
-       icon: icons.personGear,
-       text: 'Vendor Profile',
-       path: '../pages/vendors/signup.js',
-       pathname: 'vendors/signup.html'
-      },
-      {
-       link: '/SwiftEarn/vendors/signup.html',
-       icon: icons.contests,
-       text: 'Set Up Contest',
-       path: '../pages/vendors/signup.js',
-       pathname: 'vendors/signup.html'
-      }];
-      
- loadedData && userRole && lists.splice(1, 0, vendorNavs);
+
+ let vendorNavs = {
+  icon: icons.products,
+  text: 'Products',
+  children: [
+   {
+    link: '/SwiftEarn/product/addProduct.html',
+    icon: icons.cartPlus,
+    text: 'Add Product',
+    path: '../pages/product/addProduct.js',
+    pathname: 'product/addProduct.html'
+  },
+   {
+    link: '/SwiftEarn/product/products.html',
+    icon: icons.products,
+    text: 'My Products',
+    path: '../pages/product/products.js',
+    pathname: 'product/products.html'
+  },
+   {
+    link: '/SwiftEarn/vendors/signup.html',
+    icon: icons.transaction,
+    text: 'Sales History',
+    path: '../pages/vendors/signup.js',
+    pathname: 'vendors/signup.html'
+  },
+   {
+    link: '/SwiftEarn/vendors/signup.html',
+    icon: icons.personGear,
+    text: 'Vendor Profile',
+    path: '../pages/vendors/signup.js',
+    pathname: 'vendors/signup.html'
+  },
+   {
+    link: '/SwiftEarn/vendors/signup.html',
+    icon: icons.contests,
+    text: 'Set Up Contest',
+    path: '../pages/vendors/signup.js',
+    pathname: 'vendors/signup.html'
+  }
+   ]
+ };
+
+ loadedData && userIsVendor && lists[0].splice(2, 0, vendorNavs);
 
  iter(lists, list => generateNav(aside, list, pageName));
 
@@ -165,38 +182,50 @@ function asideLeft(pageName, uid) {
   }
  });
 
- aside.append(cEl('div', { class: 'flex items-center justify-between px-4 mt-4 mb-12' }, 'Theme', cEl('span', { class: 'flex justify-between items-center ml-2' }, svg(icons.sun), themeToggle,
-  cEl('label', { class: 'switch-label cursor-pointer', htmlFor: 'switch' }), svg(icons.moon))));
- 
- function getUserData() {
-  getDoc(doc(db, 'users', uid))
-  .then(res => {
+ aside.append(
+  cEl('div', { class: 'flex items-center justify-between px-4 mt-4 mb-12' }, 'Theme', cEl('span', { class: 'flex justify-between items-center ml-2' }, svg(icons.sun), themeToggle,
+   cEl('label', { class: 'switch-label cursor-pointer', htmlFor: 'switch' }), svg(icons.moon))));
+
+ !userIsVendor && !loadedData && request(
+  getDoc(doc(db, 'users', uid)),
+  function(res) {
    loadedData = true;
    const data = res.data();
 
    EventBus.publish('loaded-data', data);
 
-   userRole = data.role.includes('vendor');
+   userIsVendor = data.role === 'vendor';
 
-   let nav = document.querySelectorAll('aside nav')[0];
-   const ul = cEl('ul');
+   if (userIsVendor) {
+    let li = document.querySelectorAll('aside li')[1];
 
-   nav.insertAdjacentElement('afterend', cEl('nav', { class: 'border-b-2 border-gray-600 py-3' }, ul));
+    let dropdown = cEl('div', { class: 'hidden mx-2 text-sm bg-gray-900' });
 
-   generateLists(vendorNavs, ul, pageName);
-  })
-  .catch(e => {
-   if(!loadedData) {
-    if(navigator.onLine) {
-     setTimeout(getData, 5000);
-    } else {
-     // Add to event queue, to run when navigator.onLine === true
-    }
+    let list = cEl('li', {},
+     cEl('a', {
+       event: {
+        click(e) {
+         dropdown.classList.toggle('hidden');
+        }
+       },
+       href: 'javascript:(void)',
+       class: 'p-3 pr-1 flex items-center trans justify-between'
+      },
+      cEl('div', { class: 'flex-grow flex items-center' },
+       svg(icons.products),
+       'Products'
+      ),
+      svg(icons.chevronDown)
+     ),
+     dropdown
+    );
+
+    generateLists(vendorNavs.children, dropdown, pageName);
+
+    li.insertAdjacentElement('afterend', list);
    }
-  });
- }
- 
- !userRole && !loadedData && getUserData();
+  }
+ );
 
  closeSidebarIcon.ae('click', function() {
   aside.classList.add("-left-full");
@@ -211,8 +240,8 @@ function main() {
  const hamburger = cEl('div', { class: 'hamburger inline-block md:hidden mr-3', id: 'hamburger' }, cEl('span'), cEl('span'), cEl('span'));
  const profile = cEl('span', { class: 'inline-block hover:bg-gray-500 p-2 text-blue-200 rounded-full transition duration-700', id: 'profileIcon' }, svg(icons.user));
 
- const div = cEl('div', { class: 'md:col-span-4 bg-custom-main-bg overflow-auto' },
-  cEl('header', {},
+ const div = cEl('div', { class: 'md:col-span-4 bg-custom-main-bg overflow-auto pt-20 md:pt-0' },
+  cEl('header', { class: 'trans fixed w-full left-0 top-0 z-10 md:static' },
    cEl('div', { class: 'p-2 md:p-3 flex items-center justify-between container mx-auto' },
     hamburger,
     cEl('div'),
@@ -225,6 +254,28 @@ function main() {
   )
  );
 
+ if (!headerRendered) {
+  headerRendered = true;
+  let waiting = false;
+  window.addEventListener('scroll', function(e) {
+   if (waiting) return;
+   waiting = true;
+
+   if (this.oldScroll <= window.pageYOffset && window.pageYOffset > window.innerHeight) {
+    setTimeout(() => {
+     document.getElementsByTagName('header')[0].classList.add('-top-full');
+     waiting = false;
+    }, 300);
+   } else {
+    setTimeout(() => {
+     document.getElementsByTagName('header')[0].classList.remove('-top-full');
+     waiting = false;
+    }, 300);
+   }
+   this.oldScroll = window.pageYOffset;
+  });
+ }
+
  return [div, hamburger, profile];
 }
 
@@ -235,7 +286,7 @@ function asideRight() {
     class: 'p-2 pr-1 flex items-center trans mb-1 hover:bg-gray-800',
     event: {
      click(e) {
-      location.href = '/SwiftEarn/profile.html';
+      Link(e, { name: 'Settings', path: '../pages/profile.js', pathname: 'profile.html' });
      }
     }
    }, svg(icons.settings), 'Profile'),
@@ -264,25 +315,52 @@ function generateNav(aside, list, pageName) {
  generateLists(list, ul, pageName);
 }
 
-function generateLists(lists, parent, pageName) {
+function generateLists(lists, parent, pageName, drop) {
  iter(lists, list => {
-  const li = cEl('li', { data: { text: list.text } },
-   cEl('a', {
-     event: {
-      click(e) {
-       Link(e, { name: list.text, path: list.path, pathname: list.pathname })
-      }
+  let li;
+  if (list.children) {
+   let dropdown = cEl('div', { class: 'hidden mx-2 text-sm bg-gray-900' });
+
+   li = cEl('li', {},
+    cEl('a', {
+      event: {
+       click(e) {
+        e.preventDefault();
+        dropdown.classList.toggle('hidden');
+       }
+      },
+      href: '',
+      class: (drop ? 'p-0' : 'p-3') + ' pr-1 flex items-center trans justify-between'
      },
-     href: list.link,
-     class: 'p-3 pr-1 flex items-center trans ' + (pageName == list.text ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-800')
-    },
-    cEl('div', { class: 'flex-grow flex items-center' },
-     svg(list.icon),
-     list.text
+     cEl('div', { class: 'flex-grow flex items-center' },
+      svg(list.icon),
+      list.text
+     ),
+     svg(icons.chevronDown)
+    ),
+    dropdown
+   );
+
+   generateLists(list.children, dropdown, pageName, true);
+  } else {
+   li = cEl('li', {},
+    cEl('a', {
+      event: {
+       click(e) {
+        Link(e, { name: list.text, path: list.path, pathname: list.pathname })
+       }
+      },
+      href: list.link,
+      class: 'p-3 pr-1 flex items-center trans ' + (pageName == list.text ? 'bg-blue-800 hover:bg-blue-800' : 'hover:bg-gray-800')
+     },
+     cEl('div', { class: 'flex-grow flex items-center' },
+      svg(list.icon),
+      list.text
+     )
     )
-   )
-  );
-  list.click && li.ae('click', list.click);
+   );
+   list.click && li.ae('click', list.click);
+  }
 
   parent.append(li);
  });
